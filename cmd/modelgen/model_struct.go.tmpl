@@ -1,0 +1,12 @@
+package models
+
+import "encoding/json"
+
+type {{.GoName}} struct { {{range .Fields}}
+    {{.GoName}} {{.ValueType}}{{end}}
+}
+
+func (m {{.GoName}}) CollectionName() string {
+	return "{{.CollectionName}}"
+}
+
