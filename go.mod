@@ -7,7 +7,6 @@ toolchain go1.23.1
 require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/log v0.2.3
-	github.com/go-chi/chi/v5 v5.0.10
 	github.com/goccy/go-yaml v1.12.0
 )
 
