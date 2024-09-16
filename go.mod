@@ -8,7 +8,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/log v0.2.3
 	github.com/goccy/go-yaml v1.12.0
-	golang.org/x/text v0.14.0
+	golang.org/x/text v0.18.0
 )
 
 require (
