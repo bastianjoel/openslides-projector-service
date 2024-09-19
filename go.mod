@@ -8,6 +8,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/log v0.2.3
 	github.com/goccy/go-yaml v1.12.0
+	github.com/iancoleman/strcase v0.3.0
 	github.com/jackc/pgx/v5 v5.7.1
 	golang.org/x/text v0.18.0
 )
@@ -17,7 +18,6 @@ require (
 	github.com/charmbracelet/lipgloss v0.7.1 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
-	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect

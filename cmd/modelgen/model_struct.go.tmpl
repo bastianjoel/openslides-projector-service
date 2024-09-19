@@ -3,7 +3,7 @@ package models
 import "encoding/json"
 
 type {{.GoName}} struct { {{range .Fields}}
-    {{.GoName}} {{.ValueType}}{{end}}
+    {{.GoName}} {{.ValueType}} `json:"{{.FieldName}}"`{{end}}
 }
 
 func (m {{.GoName}}) CollectionName() string {

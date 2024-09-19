@@ -1,11 +1,11 @@
 package models
 
 type PointOfOrderCategory struct {
-	ID         *int
-	MeetingID  int
-	Rank       int
-	SpeakerIDs []int
-	Text       string
+	ID         *int   `json:"id"`
+	MeetingID  int    `json:"meeting_id"`
+	Rank       int    `json:"rank"`
+	SpeakerIDs []int  `json:"speaker_ids"`
+	Text       string `json:"text"`
 }
 
 func (m PointOfOrderCategory) CollectionName() string {

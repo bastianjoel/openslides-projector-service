@@ -1,6 +1,7 @@
 package projector
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -16,8 +17,10 @@ type Projector struct {
 func (s *Projector) RegisterRoutes() {
 	s.ServerMux.HandleFunc("/health", s.HealthHandler())
 
-	_, err := s.DS.Collection(&models.Projector{}).SetIds(1, 2).Run()
+	projector, err := s.DS.Collection(&models.Projector{}).SetIds(1).AsSingle().Run()
 	if err != nil {
 		log.Print(err)
+	} else {
+		fmt.Println(*projector.(models.Projector).Name)
 	}
 }

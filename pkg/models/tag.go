@@ -1,10 +1,10 @@
 package models
 
 type Tag struct {
-	ID        *int
-	MeetingID int
-	Name      string
-	TaggedIDs []string
+	ID        *int     `json:"id"`
+	MeetingID int      `json:"meeting_id"`
+	Name      string   `json:"name"`
+	TaggedIDs []string `json:"tagged_ids"`
 }
 
 func (m Tag) CollectionName() string {

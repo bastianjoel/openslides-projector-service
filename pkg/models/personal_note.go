@@ -1,12 +1,12 @@
 package models
 
 type PersonalNote struct {
-	ContentObjectID *string
-	ID              *int
-	MeetingID       int
-	MeetingUserID   int
-	Note            *string
-	Star            *bool
+	ContentObjectID *string `json:"content_object_id"`
+	ID              *int    `json:"id"`
+	MeetingID       int     `json:"meeting_id"`
+	MeetingUserID   int     `json:"meeting_user_id"`
+	Note            *string `json:"note"`
+	Star            *bool   `json:"star"`
 }
 
 func (m PersonalNote) CollectionName() string {

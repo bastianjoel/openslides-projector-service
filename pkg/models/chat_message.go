@@ -1,12 +1,12 @@
 package models
 
 type ChatMessage struct {
-	ChatGroupID   int
-	Content       string
-	Created       int
-	ID            *int
-	MeetingID     int
-	MeetingUserID *int
+	ChatGroupID   int    `json:"chat_group_id"`
+	Content       string `json:"content"`
+	Created       int    `json:"created"`
+	ID            *int   `json:"id"`
+	MeetingID     int    `json:"meeting_id"`
+	MeetingUserID *int   `json:"meeting_user_id"`
 }
 
 func (m ChatMessage) CollectionName() string {

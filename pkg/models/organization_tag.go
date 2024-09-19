@@ -1,11 +1,11 @@
 package models
 
 type OrganizationTag struct {
-	Color          string
-	ID             *int
-	Name           string
-	OrganizationID int
-	TaggedIDs      []string
+	Color          string   `json:"color"`
+	ID             *int     `json:"id"`
+	Name           string   `json:"name"`
+	OrganizationID int      `json:"organization_id"`
+	TaggedIDs      []string `json:"tagged_ids"`
 }
 
 func (m OrganizationTag) CollectionName() string {

@@ -3,8 +3,8 @@ package datastore
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/OpenSlides/openslides-projector-service/pkg/models"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -39,7 +39,7 @@ func (ds *Datastore) Collection(coll interface{}) query {
 	}
 }
 
-func (ds *Datastore) getKeys(fields []string, fqids []string) (map[string][]byte, error) {
+func (ds *Datastore) getKeys(fields []string, fqids []string) ([]map[string][]byte, error) {
 	sql := fmt.Sprintf(`SELECT %s from models where fqid = ANY ($1) AND deleted=false;`, selectStringFromFields(fields))
 
 	rows, err := ds.pool.Query(ds.ctx, sql, fqids)
@@ -48,32 +48,44 @@ func (ds *Datastore) getKeys(fields []string, fqids []string) (map[string][]byte
 	}
 	defer rows.Close()
 
-	projectors, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (interface{}, error) {
-		var projector models.Projector
-		return projector, nil
-	})
-	fmt.Println(err)
-	fmt.Println(projectors)
-	/*
-		println(sql)
-		for it.Next() {
-			r := it.RawValues()
-			err := it.Scan(&projector)
-			fmt.Println(err)
-			fmt.Println(projector)
-			println(string(r[0]))
+	var results []map[string][]byte
+	for rows.Next() {
+		raw := rows.RawValues()
+		result := map[string][]byte{}
+		result["fqid"] = raw[0]
+		for i, field := range fields {
+			result[field] = raw[i+1]
 		}
-	*/
+		results = append(results, result)
+	}
 
-	// TODO: Implement data fetch from db
-	return map[string][]byte{}, nil
+	return results, nil
+}
+
+func (ds *Datastore) getFull(fqids []string) (map[string][]byte, error) {
+	sql := `SELECT fqid, data from models where fqid = ANY ($1) AND deleted=false;`
+
+	rows, err := ds.pool.Query(ds.ctx, sql, fqids)
+	if err != nil {
+		return nil, fmt.Errorf("db: %w", err)
+	}
+	defer rows.Close()
+
+	result := map[string][]byte{}
+	for rows.Next() {
+		raw := rows.RawValues()
+		result[string(raw[0])] = raw[1]
+	}
+
+	return result, nil
 }
 
 func selectStringFromFields(fqids []string) string {
-	result := "fqid"
-	for _, field := range fqids {
-		result += ", data->>'" + field + "' as " + field
+	result := make([]string, len(fqids)+1)
+	result[0] = "fqid"
+	for i, field := range fqids {
+		result[i+1] = "data->>'" + field + "'"
 	}
 
-	return result
+	return strings.Join(result, ", ")
 }
