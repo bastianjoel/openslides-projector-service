@@ -8,6 +8,7 @@ RUN go mod download
 
 COPY cmd cmd
 COPY pkg pkg
+COPY templates templates
 
 # Build service in seperate stage.
 FROM base as builder
