@@ -1,7 +1,10 @@
 FROM golang:1.23.0-alpine as base
 WORKDIR /root/
 
-RUN apk add git
+RUN apk add git curl make
+
+RUN curl -fsSL https://esbuild.github.io/dl/latest | sh
+RUN mv esbuild /usr/bin
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -9,10 +12,14 @@ RUN go mod download
 COPY cmd cmd
 COPY pkg pkg
 COPY templates templates
+COPY web web
+COPY Makefile Makefile
 
 # Build service in seperate stage.
 FROM base as builder
 RUN go build -o openslides-projector-service cmd/projectord/main.go
+
+RUN make build-web-assets
 
 
 # Test build.

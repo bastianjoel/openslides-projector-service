@@ -52,6 +52,8 @@ func run() error {
 		DS:        ds,
 	}
 	projectorHandler.RegisterRoutes()
+	fileHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
+	serverMux.Handle("/static/", fileHandler)
 
 	log.Infof("Starting server on %s", cfg.Bind)
 	srv := &http.Server{

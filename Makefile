@@ -15,3 +15,8 @@ golinter:
 
 gofmt:
 	gofmt -l -s -w .
+
+build-web-assets:
+	esbuild web/projector.js --outfile=static/projector.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
+	esbuild web/projector.css --outfile=static/projector.css --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
+	esbuild web/slide/*.css web/slide/*.js --outdir=static/slide/ --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
