@@ -17,7 +17,7 @@ type query struct {
 }
 
 // Sets the fqids of the query by plain ids
-func (q query) SetIds(ids ...int) query {
+func (q *query) SetIds(ids ...int) *query {
 	typeName := strcase.ToSnake(reflect.ValueOf(q.collection).Elem().Type().Name())
 	for _, id := range ids {
 		q.Fqids = append(q.Fqids, fmt.Sprintf("%s/%d", typeName, id))
@@ -26,7 +26,7 @@ func (q query) SetIds(ids ...int) query {
 	return q
 }
 
-func (q query) AsSingle() query {
+func (q *query) AsSingle() *query {
 	q.Single = true
 	return q
 }
@@ -35,7 +35,7 @@ func (q query) AsSingle() query {
 // the given collection struct
 // If single is set to false this will return an array otherwise the first
 // found element
-func (q query) Run() (interface{}, error) {
+func (q *query) Run() (interface{}, error) {
 	resultIsMap := q.Fields != nil
 
 	var result interface{}
@@ -64,27 +64,23 @@ func (q query) Run() (interface{}, error) {
 	return result, nil
 }
 
-/*
-func (q *query) fillFieldsByCollection() {
-	t := reflect.ValueOf(q.collection).Elem()
-	q.Fields = make([]string, t.NumField())
-	for i := 0; i < t.NumField(); i++ {
-		if fieldName := t.Type().Field(i).Tag.Get("json"); fieldName != "" {
-			q.Fields[i] = fieldName
-		} else {
-			q.Fields[i] = strcase.ToSnake(t.Type().Field(i).Name)
-		}
-	}
-}
-*/
-
 func (q *query) resultMaps() ([]map[string]interface{}, error) {
-	_, err := q.datastore.getKeys(q.Fields, q.Fqids)
+	data, err := q.datastore.getKeys(q.Fqids, q.Fields)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	var results []map[string]interface{}
+	for _, row := range data {
+		result := map[string]interface{}{}
+		if err := json.Unmarshal(row, &result); err != nil {
+			return nil, err
+		}
+		// TODO: Fix oversized fields
+		results = append(results, result)
+	}
+
+	return results, nil
 }
 
 func (q *query) resultStructs() (any, error) {

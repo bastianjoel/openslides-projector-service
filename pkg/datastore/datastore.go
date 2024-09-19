@@ -3,7 +3,6 @@ package datastore
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -31,16 +30,16 @@ func New(addr string) (*Datastore, error) {
 	return &ds, nil
 }
 
-func (ds *Datastore) Collection(coll interface{}) query {
-	return query{
+func (ds *Datastore) Collection(coll interface{}) *query {
+	return &query{
 		collection: coll,
 		datastore:  ds,
 		Single:     false,
 	}
 }
 
-func (ds *Datastore) getKeys(fields []string, fqids []string) ([]map[string][]byte, error) {
-	sql := fmt.Sprintf(`SELECT %s from models where fqid = ANY ($1) AND deleted=false;`, selectStringFromFields(fields))
+func (ds *Datastore) getKeys(fqids []string, fields []string) (map[string][]byte, error) {
+	sql := fmt.Sprintf(`SELECT t.fqid, row_to_json(t)::jsonb - 'fqid' data FROM (SELECT %s from models where fqid = ANY ($1) AND deleted=false) t`, selectStringFromFields(fields))
 
 	rows, err := ds.pool.Query(ds.ctx, sql, fqids)
 	if err != nil {
@@ -48,15 +47,10 @@ func (ds *Datastore) getKeys(fields []string, fqids []string) ([]map[string][]by
 	}
 	defer rows.Close()
 
-	var results []map[string][]byte
+	results := map[string][]byte{}
 	for rows.Next() {
 		raw := rows.RawValues()
-		result := map[string][]byte{}
-		result["fqid"] = raw[0]
-		for i, field := range fields {
-			result[field] = raw[i+1]
-		}
-		results = append(results, result)
+		results[string(raw[0])] = raw[1]
 	}
 
 	return results, nil
@@ -81,11 +75,10 @@ func (ds *Datastore) getFull(fqids []string) (map[string][]byte, error) {
 }
 
 func selectStringFromFields(fqids []string) string {
-	result := make([]string, len(fqids)+1)
-	result[0] = "fqid"
-	for i, field := range fqids {
-		result[i+1] = "data->>'" + field + "'"
+	result := "fqid"
+	for _, field := range fqids {
+		result += ", data->'" + field + "' as " + field
 	}
 
-	return strings.Join(result, ", ")
+	return result
 }
