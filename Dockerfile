@@ -14,6 +14,7 @@ COPY pkg pkg
 COPY templates templates
 COPY web web
 COPY Makefile Makefile
+RUN mkdir static
 
 # Build service in seperate stage.
 FROM base as builder

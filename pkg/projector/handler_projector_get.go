@@ -34,7 +34,9 @@ func (s *Projector) ProjectorGetHandler() http.HandlerFunc {
 			return
 		}
 
-		err = tmpl.Execute(w, projector)
+		err = tmpl.Execute(w, map[string]interface{}{
+			"Projector": projector,
+		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

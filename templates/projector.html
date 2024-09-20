@@ -2,6 +2,39 @@
 <html>
 <head>
     <title>OpenSlides</title>
+
+    <style>
+    :root {
+        {{if .Projector.Color}}
+            --projector-color: {{.Projector.Color}};
+        {{end}}
+        {{if .Projector.BackgroundColor}}
+            --projector-background-color: {{.Projector.BackgroundColor}};
+        {{end}}
+        {{if .Projector.HeaderBackgroundColor}}
+            --projector-header-background-color: {{.Projector.HeaderBackgroundColor}};
+        {{end}}
+        {{if .Projector.HeaderFontColor}}
+            --projector-header-font-color: {{.Projector.HeaderFontColor}};
+        {{end}}
+        {{if .Projector.HeaderH1Color}}
+            --projector-header-h1-color: {{.Projector.HeaderH1Color}};
+        {{end}}
+        {{if .Projector.ChyronBackgroundColor}}
+            --projector-chyron-background-color: {{.Projector.ChyronBackgroundColor}};
+        {{end}}
+        {{if .Projector.ChyronBackgroundColor2}}
+            --projector-chyron-background-color2: {{.Projector.ChyronBackgroundColor2}};
+        {{end}}
+        {{if .Projector.ChyronFontColor}}
+            --projector-chyron-font-color: {{.Projector.ChyronFontColor}};
+        {{end}}
+        {{if .Projector.ChyronFontColor2}}
+            --projector-chyron-font-color2: {{.Projector.ChyronFontColor2}};
+        {{end}}
+    }
+    </style>
+    <link rel="stylesheet" type="text/css" href="../static/projector.css" />
 </head>
 
 <body>
@@ -19,6 +52,7 @@
 
                         <div>
                             <div id="slide" class="content" style="font-size: 100%; margin-top: 0px;">
+                                {{.Projector.BackgroundColor}}
                             </div>
                         </div>
 

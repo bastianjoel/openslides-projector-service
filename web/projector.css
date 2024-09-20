@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  background-color: var(--projector-background-color);
+  color: var(--projector-color);
+}
+
+.headerFooter {
+  background-color: var(--projector-header-background-color);
+  color: var(--projector-header-font-color);
+}
+
+h1 {
+  color: var(--projector-header-h1-color);
+}
