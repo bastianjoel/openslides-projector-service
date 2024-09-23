@@ -1,3 +1,16 @@
+:root {
+  --projector-color: #000000;
+  --projector-background-color: #FFFFFF;
+  --projector-header-background-color: #317796;
+  --projector-header-font-color: #FFFFFF;
+  --projector-header-h1-color: #317796;
+  --projector-chyron-background-color: #317796;
+  --projector-chyron-background-color2: #134768;
+  --projector-chyron-font-color: #FFFFFF;
+  --projector-chyron-font-color2: #FFFFFF;
+  --projector-width: 1200;
+}
+
 body {
   margin: 0;
   background-color: var(--projector-background-color);
@@ -11,4 +24,35 @@ body {
 
 h1 {
   color: var(--projector-header-h1-color);
+}
+
+#projector-page {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#projector-container {
+  position: relative;
+  width: calc(var(--projector-container-width) * 1px);
+  height: calc(var(--projector-container-height) * 1px);
+}
+
+#projector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: left top;
+  overflow: hidden;
+
+  background-color: var(--projector-background-color);
+  color: var(--projector-color);
+
+  width: calc(var(--projector-width) * 1px);
+  height: calc(var(--projector-height) * 1px);
+  transform: scale(calc(var(--projector-container-width) / var(--projector-width)));
 }

@@ -3,6 +3,7 @@
 <head>
     <title>OpenSlides</title>
 
+    <link rel="stylesheet" type="text/css" href="../static/projector.css" />
     <style>
     :root {
         {{if .Projector.Color}}
@@ -32,37 +33,42 @@
         {{if .Projector.ChyronFontColor2}}
             --projector-chyron-font-color2: {{.Projector.ChyronFontColor2}};
         {{end}}
+        {{if .Projector.Width}}
+            --projector-width: {{.Projector.Width}};
+        {{end}}
+        {{if .Projector.AspectRatioDenominator}}
+            {{if .Projector.AspectRatioNumerator}}
+                --projector-aspect-ratio-numerator: {{.Projector.AspectRatioNumerator}};
+                --projector-aspect-ratio-denominator: {{.Projector.AspectRatioDenominator}};
+            {{end}}
+        {{end}}
     }
     </style>
-    <link rel="stylesheet" type="text/css" href="../static/projector.css" />
 </head>
 
 <body>
-    <div class="os-overlay-container stretch-to-fill-parent" style="display: block; z-index: 1000;">
-        <div id="container">
-            <div id="projector" class="nocursor" style="width: 1270px;">
-                <div id="container" class="projector-container">
-                    <div id="projector" class="projector">
-                        <div id="header" class="headerFooter">
-                            <div id="eventdata">
-                                <div class="event-name ellipsis-overflow">OpenSlides Demo</div>
-                                <div class="event-description">Presentation and assembly system</div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div id="slide" class="content" style="font-size: 100%; margin-top: 0px;">
-                                {{.Projector.BackgroundColor}}
-                            </div>
-                        </div>
-
-                        <div id="footer" class="headerFooter">
-                            <div class="footertext"></div>
-                        </div>
+    <div id="projector-page" class="projector-container">
+        <div id="projector-container" class="nocursor">
+            <div id="projector" class="nocursor">
+                <div id="header" class="headerFooter">
+                    <div id="eventdata">
+                        <div class="event-name ellipsis-overflow">OpenSlides Demo</div>
+                        <div class="event-description">Presentation and assembly system</div>
                     </div>
+                </div>
+
+                <div>
+                    <div id="slide" class="content" style="font-size: 100%; margin-top: 0px;">
+                        {{.Projector.BackgroundColor}}
+                    </div>
+                </div>
+
+                <div id="footer" class="headerFooter">
+                    <div class="footertext"></div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="../static/projector.js"></script>
 </body>
 </html>
