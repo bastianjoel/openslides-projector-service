@@ -1,9 +1,11 @@
-FROM golang:1.23.0-alpine as base
-WORKDIR /root/
+FROM golang:1.23.1-alpine as base
+WORKDIR /root
 
 RUN apk add git curl make
 
-RUN curl -fsSL https://esbuild.github.io/dl/latest | sh
+ADD https://esbuild.github.io/dl/latest esbuild-install
+RUN sh esbuild-install
+RUN rm esbuild-install
 RUN mv esbuild /usr/bin
 
 COPY go.mod go.sum ./
