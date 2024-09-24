@@ -1,4 +1,4 @@
-package projector
+package http
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/OpenSlides/openslides-projector-service/pkg/models"
 )
 
-func (s *Projector) ProjectorGetHandler() http.HandlerFunc {
+func (s *ProjectorHttp) ProjectorGetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.PathValue("id"))
 		if err != nil {

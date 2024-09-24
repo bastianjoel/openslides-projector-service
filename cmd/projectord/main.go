@@ -10,7 +10,7 @@ import (
 	"github.com/charmbracelet/log"
 
 	"github.com/OpenSlides/openslides-projector-service/pkg/datastore"
-	"github.com/OpenSlides/openslides-projector-service/pkg/projector"
+	projectorHttp "github.com/OpenSlides/openslides-projector-service/pkg/http"
 )
 
 type config struct {
@@ -47,13 +47,13 @@ func run() error {
 	}
 
 	serverMux := http.NewServeMux()
-	projectorHandler := projector.Projector{
+	projectorHandler := projectorHttp.ProjectorHttp{
 		ServerMux: serverMux,
 		DS:        ds,
 	}
 	projectorHandler.RegisterRoutes()
-	fileHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
-	serverMux.Handle("/static/", fileHandler)
+	fileHandler := http.StripPrefix("/system/projector/static/", http.FileServer(http.Dir("static")))
+	serverMux.Handle("/system/projector/static/", fileHandler)
 
 	log.Infof("Starting server on %s", cfg.Bind)
 	srv := &http.Server{

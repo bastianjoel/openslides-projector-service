@@ -6,18 +6,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/OpenSlides/openslides-projector-service/pkg/projector"
+	projectorHttp "github.com/OpenSlides/openslides-projector-service/pkg/http"
 )
 
 func TestHandlerHealth(t *testing.T) {
 	serverMux := http.NewServeMux()
-	projectorHandler := projector.Projector{
+	projectorHandler := projectorHttp.ProjectorHttp{
 		ServerMux: serverMux,
 	}
 	projectorHandler.RegisterRoutes()
 	rec := httptest.NewRecorder()
 
-	projectorHandler.ServerMux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/health", strings.NewReader(``)))
+	projectorHandler.ServerMux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/system/projector/health", strings.NewReader(``)))
 
 	if rec.Code != http.StatusOK {
 		t.Errorf("expected status code %d, got %d", http.StatusOK, rec.Code)
