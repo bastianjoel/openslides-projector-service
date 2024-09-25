@@ -22,6 +22,8 @@ type config struct {
 	PostgresDatabase     string `env:"DATABASE_NAME" envDefault:"openslides"`
 	PostgresUser         string `env:"DATABASE_USER" envDefault:"openslides"`
 	PostgresPasswordFile string `env:"DATABASE_PASSWORD_FILE" envDefault:"/run/secrets/postgres_password"`
+	MessageBusHost       string `env:"MESSAGE_BUS_HOST" envDetault:"localhost"`
+	MessageBusPort       string `env:"MESSAGE_BUS_PORT" envDetault:"6379"`
 }
 
 func main() {
@@ -82,14 +84,17 @@ func getDatabase(cfg config) (*datastore.Datastore, error) {
 		}
 	}
 
-	ds, err := datastore.New(fmt.Sprintf(
+	pgAddr := fmt.Sprintf(
 		`user='%s' password='%s' host='%s' port='%s' dbname='%s'`,
 		encodePostgresConfig(cfg.PostgresUser),
 		encodePostgresConfig(password),
 		encodePostgresConfig(cfg.PostgresHost),
 		encodePostgresConfig(cfg.PostgresPort),
 		encodePostgresConfig(cfg.PostgresDatabase),
-	))
+	)
+	redisAddr := cfg.MessageBusHost + ":" + cfg.MessageBusPort
+
+	ds, err := datastore.New(pgAddr, redisAddr)
 	if err != nil {
 		return nil, fmt.Errorf("creating datastore: %w", err)
 	}

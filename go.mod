@@ -10,12 +10,15 @@ require (
 	github.com/goccy/go-yaml v1.12.0
 	github.com/iancoleman/strcase v0.3.0
 	github.com/jackc/pgx/v5 v5.7.1
+	github.com/redis/go-redis/v9 v9.6.1
 	golang.org/x/text v0.18.0
 )
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/charmbracelet/lipgloss v0.7.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

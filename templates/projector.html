@@ -58,10 +58,10 @@
                     </div>
                 </div>
 
-                <div>
-                    <div id="slide" class="content" style="font-size: 100%; margin-top: 0px;">
-                        {{.Projector.BackgroundColor}}
-                    </div>
+                <div id="slides">
+                    {{range $index, $element := .Projections}}
+                        {{$element}}
+                    {{end}}
                 </div>
 
                 <div id="footer" class="header-footer">

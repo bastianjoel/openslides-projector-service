@@ -31,9 +31,9 @@ func (q *query) AsSingle() *query {
 	return q
 }
 
-// Returns a map[string]interface{} if Fields of the query were set otherwise
+// Returns a map[string]map[string]interface{} if Fields of the query were set otherwise
 // the given collection struct
-// If single is set to false this will return an array otherwise the first
+// If single is set to false this will return an map[string] otherwise the first
 // found element
 func (q *query) Run() (interface{}, error) {
 	resultIsMap := q.Fields != nil
@@ -52,53 +52,68 @@ func (q *query) Run() (interface{}, error) {
 		}
 	}
 
-	if q.Single {
-		resultSlice := reflect.ValueOf(result)
-		if resultSlice.Len() > 0 {
-			return resultSlice.Index(0).Interface(), nil
+	if q.Single && len(q.Fqids) == 1 {
+		resultMap := reflect.ValueOf(result)
+		el := resultMap.MapIndex(reflect.ValueOf(q.Fqids[0]))
+		if !el.IsValid() || !el.CanInterface() {
+			return nil, nil
 		}
-
-		return nil, nil
+		return el.Interface(), nil
 	}
 
 	return result, nil
 }
 
-func (q *query) resultMaps() ([]map[string]interface{}, error) {
+func (q *query) Subscribe() <-chan map[string]map[string]interface{} {
+	updateChannel := make(chan map[string]map[string]interface{})
+	listener := queryChangeListener{
+		q:       q,
+		channel: updateChannel,
+	}
+	q.datastore.change.AddListener <- &listener
+
+	return updateChannel
+}
+
+func (q *query) Unsubscribe(channel <-chan map[string]map[string]interface{}) {
+	q.datastore.change.RemoveListener <- channel
+}
+
+func (q *query) resultMaps() (map[string]map[string]interface{}, error) {
 	data, err := q.datastore.getKeys(q.Fqids, q.Fields)
 	if err != nil {
 		return nil, err
 	}
 
-	var results []map[string]interface{}
-	for _, row := range data {
+	results := map[string]map[string]interface{}{}
+	for fqid, row := range data {
 		result := map[string]interface{}{}
 		if err := json.Unmarshal(row, &result); err != nil {
 			return nil, err
 		}
 		// TODO: Fix oversized fields
-		results = append(results, result)
+		results[fqid] = result
 	}
 
 	return results, nil
 }
 
-func (q *query) resultStructs() (any, error) {
+func (q *query) resultStructs() (map[string]any, error) {
 	dsResults, err := q.datastore.getFull(q.Fqids)
 	if err != nil {
 		return nil, err
 	}
 
 	t := reflect.ValueOf(q.collection).Elem().Type()
-	results := reflect.MakeSlice(reflect.SliceOf(t), 0, len(dsResults))
-	for _, dsResult := range dsResults {
+	results := map[string]interface{}{}
+	for fqid, dsResult := range dsResults {
 		el := reflect.New(t)
 		err := json.Unmarshal(dsResult, el.Interface())
 		if err != nil {
 			return nil, err
 		}
-		results = reflect.Append(results, el.Elem())
+		results[fqid] = el.Interface()
 	}
 
-	return results.Interface(), nil
+	return results, nil
 }

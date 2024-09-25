@@ -21,6 +21,10 @@ func NewProjectorPool(db *datastore.Datastore) *ProjectorPool {
 }
 
 func (pool *ProjectorPool) readOrCreateProjector(id int) (*projector, error) {
+	if projector, ok := pool.projectors[id]; ok {
+		return projector, nil
+	}
+
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
 	if projector, ok := pool.projectors[id]; ok {
@@ -45,11 +49,23 @@ func (pool *ProjectorPool) GetProjectorContent(id int) (*string, error) {
 	return &projector.Content, nil
 }
 
-func (pool *ProjectorPool) SubscribeProjectorContent(id int) (<-chan projectorUpdateEvent, error) {
+func (pool *ProjectorPool) SubscribeProjectorContent(id int) (chan *ProjectorUpdateEvent, error) {
 	projector, err := pool.readOrCreateProjector(id)
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving projector channel: %w", err)
 	}
 
-	return projector.Channel, nil
+	channel := make(chan *ProjectorUpdateEvent)
+	projector.AddListener <- channel
+
+	return channel, nil
+}
+
+func (pool *ProjectorPool) UnsubscribeProjectorContent(id int, channel chan *ProjectorUpdateEvent) {
+	projector, err := pool.readOrCreateProjector(id)
+	if err != nil {
+		return
+	}
+
+	projector.RemoveListener <- channel
 }
