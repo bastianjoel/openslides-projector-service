@@ -2,44 +2,34 @@ package http
 
 import (
 	"fmt"
-	"html/template"
-	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/OpenSlides/openslides-projector-service/pkg/models"
 )
 
 func (s *ProjectorHttp) ProjectorGetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: Check if user can access projector
+
 		id, err := strconv.Atoi(r.PathValue("id"))
 		if err != nil {
-			fmt.Fprintln(w, `{"healthy": true}`)
 			w.WriteHeader(http.StatusBadRequest)
-			if _, err := w.Write([]byte(`{"error": true, "msg": "Projector id invalid"}`)); err != nil {
-				log.Print(err)
-			}
+			fmt.Fprintln(w, `{"error": true, "msg": "Projector id invalid"}`)
 			return
 		}
 
-		projector, err := s.DS.Collection(&models.Projector{}).SetIds(id).AsSingle().Run()
+		content, err := s.Projector.GetProjectorContent(id)
 		if err != nil {
-			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintln(w, `{"error": true, "msg": "Error reading projector content"}`)
 			return
 		}
 
-		tmpl, err := template.ParseFiles("templates/projector.html")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if content == nil {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintln(w, `{"error": true, "msg": "Projector not found"}`)
 			return
 		}
 
-		err = tmpl.Execute(w, map[string]interface{}{
-			"Projector": projector,
-		})
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		fmt.Fprintln(w, *content)
 	}
 }

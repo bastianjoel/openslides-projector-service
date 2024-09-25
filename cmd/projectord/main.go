@@ -11,6 +11,7 @@ import (
 
 	"github.com/OpenSlides/openslides-projector-service/pkg/datastore"
 	projectorHttp "github.com/OpenSlides/openslides-projector-service/pkg/http"
+	"github.com/OpenSlides/openslides-projector-service/pkg/projector"
 )
 
 type config struct {
@@ -46,10 +47,13 @@ func run() error {
 		return fmt.Errorf("connecting to database: %w", err)
 	}
 
+	projectorPool := projector.NewProjectorPool(ds)
+
 	serverMux := http.NewServeMux()
 	projectorHandler := projectorHttp.ProjectorHttp{
 		ServerMux: serverMux,
 		DS:        ds,
+		Projector: projectorPool,
 	}
 	projectorHandler.RegisterRoutes()
 	fileHandler := http.StripPrefix("/system/projector/static/", http.FileServer(http.Dir("static")))

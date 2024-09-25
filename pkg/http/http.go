@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/OpenSlides/openslides-projector-service/pkg/datastore"
+	"github.com/OpenSlides/openslides-projector-service/pkg/projector"
 )
 
 type ProjectorHttp struct {
 	ServerMux *http.ServeMux
 	DS        *datastore.Datastore
+	Projector *projector.ProjectorPool
 }
 
 func (s *ProjectorHttp) RegisterRoutes() {
