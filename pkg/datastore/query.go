@@ -8,66 +8,61 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-type query struct {
-	collection interface{}
+type query[T any] struct {
+	collection *T
 	datastore  *Datastore
 	Fields     []string
-	Fqids      []string
-	Single     bool
+	fqids      []string
 }
 
 // Sets the fqids of the query by plain ids
-func (q *query) SetIds(ids ...int) *query {
+func (q *query[T]) SetIds(ids ...int) *query[T] {
 	typeName := strcase.ToSnake(reflect.ValueOf(q.collection).Elem().Type().Name())
 	for _, id := range ids {
-		q.Fqids = append(q.Fqids, fmt.Sprintf("%s/%d", typeName, id))
+		q.fqids = append(q.fqids, fmt.Sprintf("%s/%d", typeName, id))
 	}
 
 	return q
 }
 
-func (q *query) AsSingle() *query {
-	q.Single = true
-	return q
-}
+func (q *query[T]) GetOne() (*T, error) {
+	result, err := q.resultStructs()
+	if err != nil {
+		return nil, fmt.Errorf("getting single result as struct: %w", err)
+	}
 
-// Returns a map[string]map[string]interface{} if Fields of the query were set otherwise
-// the given collection struct
-// If single is set to false this will return an map[string] otherwise the first
-// found element
-func (q *query) Run() (interface{}, error) {
-	resultIsMap := q.Fields != nil
-
-	var result interface{}
-	var err error
-	if resultIsMap {
-		result, err = q.resultMaps()
-		if err != nil {
-			return nil, fmt.Errorf("getting result as map: %w", err)
-		}
-	} else {
-		result, err = q.resultStructs()
-		if err != nil {
-			return nil, fmt.Errorf("getting result as structs: %w", err)
+	for _, fqid := range q.fqids {
+		if val, ok := result[fqid]; ok {
+			return val, nil
 		}
 	}
 
-	if q.Single && len(q.Fqids) == 1 {
-		resultMap := reflect.ValueOf(result)
-		el := resultMap.MapIndex(reflect.ValueOf(q.Fqids[0]))
-		if !el.IsValid() || !el.CanInterface() {
-			return nil, nil
-		}
-		return el.Interface(), nil
+	return nil, nil
+}
+
+func (q *query[T]) Get() (map[string]*T, error) {
+	result, err := q.resultStructs()
+	if err != nil {
+		return nil, fmt.Errorf("getting results as structs: %w", err)
 	}
 
 	return result, nil
 }
 
-func (q *query) Subscribe() <-chan map[string]map[string]interface{} {
+func (q *query[T]) GetMaps() (map[string]map[string]interface{}, error) {
+	result, err := q.resultMaps()
+	if err != nil {
+		return nil, fmt.Errorf("getting results as maps: %w", err)
+	}
+
+	return result, nil
+}
+
+func (q *query[T]) Subscribe() <-chan map[string]map[string]interface{} {
 	updateChannel := make(chan map[string]map[string]interface{})
 	listener := queryChangeListener{
-		q:       q,
+		fqids:   q.fqids,
+		fields:  q.Fields,
 		channel: updateChannel,
 	}
 	q.datastore.change.AddListener <- &listener
@@ -75,12 +70,12 @@ func (q *query) Subscribe() <-chan map[string]map[string]interface{} {
 	return updateChannel
 }
 
-func (q *query) Unsubscribe(channel <-chan map[string]map[string]interface{}) {
-	q.datastore.change.RemoveListener <- channel
+func (d *Datastore) Unsubscribe(channel <-chan map[string]map[string]interface{}) {
+	d.change.RemoveListener <- channel
 }
 
-func (q *query) resultMaps() (map[string]map[string]interface{}, error) {
-	data, err := q.datastore.getKeys(q.Fqids, q.Fields)
+func (q *query[T]) resultMaps() (map[string]map[string]interface{}, error) {
+	data, err := q.datastore.getKeys(q.fqids, q.Fields)
 	if err != nil {
 		return nil, err
 	}
@@ -98,21 +93,20 @@ func (q *query) resultMaps() (map[string]map[string]interface{}, error) {
 	return results, nil
 }
 
-func (q *query) resultStructs() (map[string]any, error) {
-	dsResults, err := q.datastore.getFull(q.Fqids)
+func (q *query[T]) resultStructs() (map[string]*T, error) {
+	dsResults, err := q.datastore.getFull(q.fqids)
 	if err != nil {
 		return nil, err
 	}
 
-	t := reflect.ValueOf(q.collection).Elem().Type()
-	results := map[string]interface{}{}
+	results := map[string]*T{}
 	for fqid, dsResult := range dsResults {
-		el := reflect.New(t)
-		err := json.Unmarshal(dsResult, el.Interface())
+		el := new(T)
+		err := json.Unmarshal(dsResult, el)
 		if err != nil {
 			return nil, err
 		}
-		results[fqid] = el.Interface()
+		results[fqid] = el
 	}
 
 	return results, nil
