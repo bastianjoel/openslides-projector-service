@@ -11,7 +11,8 @@ import (
 )
 
 type queryChangeListener struct {
-	q       *query
+	fqids   []string
+	fields  []string
 	channel chan map[string]map[string]interface{}
 }
 
@@ -60,7 +61,7 @@ func (ds *Datastore) setupRedisListener() {
 
 			for _, listener := range listeners {
 				listenerChanged := map[string]map[string]interface{}{}
-				for _, fqid := range listener.q.Fqids {
+				for _, fqid := range listener.fqids {
 					if val, ok := changeMap[fqid]; ok {
 						listenerChanged[fqid] = val
 					}
