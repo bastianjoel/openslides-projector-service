@@ -11,7 +11,7 @@ require (
 	github.com/iancoleman/strcase v0.3.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/redis/go-redis/v9 v9.6.1
-	golang.org/x/text v0.18.0
+	golang.org/x/text v0.19.0
 )
 
 require (
