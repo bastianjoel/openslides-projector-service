@@ -60,7 +60,9 @@
 
                 <div id="slides">
                     {{range $index, $element := .Projections}}
-                        {{$element}}
+                        <div class="slide" data-id="{{ $index }}">
+                            {{$element}}
+                        </div>
                     {{end}}
                 </div>
 

@@ -2,6 +2,7 @@ package projector
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -14,13 +15,13 @@ import (
 )
 
 type projector struct {
+	ctxCancel      context.CancelFunc
 	db             *datastore.Datastore
 	slideRouter    *slide.SlideRouter
-	id             int
+	projector      *models.Projector
 	listeners      []chan *ProjectorUpdateEvent
 	Content        string
-	Projections    []string
-	Data           models.Projector
+	Projections    map[int]string
 	AddListener    chan chan *ProjectorUpdateEvent
 	RemoveListener chan (<-chan *ProjectorUpdateEvent)
 }
@@ -41,15 +42,18 @@ func newProjector(id int, db *datastore.Datastore) (*projector, error) {
 		return nil, fmt.Errorf("projector not found")
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
 	p := &projector{
+		ctxCancel:      cancel,
 		db:             db,
-		id:             id,
-		slideRouter:    slide.New(db, id),
+		projector:      data,
+		slideRouter:    slide.New(ctx, db),
+		Projections:    make(map[int]string),
 		AddListener:    make(chan chan *ProjectorUpdateEvent),
 		RemoveListener: make(chan (<-chan *ProjectorUpdateEvent)),
 	}
 
-	if err = p.updateFullContent(data); err != nil {
+	if err = p.updateFullContent(); err != nil {
 		return nil, fmt.Errorf("error generating projector content: %w", err)
 	}
 
@@ -59,14 +63,15 @@ func newProjector(id int, db *datastore.Datastore) (*projector, error) {
 }
 
 func (p *projector) subscribeProjector() {
-	projectorSub := datastore.Collection(p.db, &models.Projector{}).SetIds(p.id).Subscribe()
-	defer p.db.Unsubscribe(projectorSub)
-
+	defer p.ctxCancel()
 	// TODO: Subscribe on projector settings updates
 	// Ignore e.g. projection defaults and [...]_projection_ids
 	// If header active: Meeting name + description need to be subscribed
+	projectorSub := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).Subscribe()
+	defer projectorSub.Unsubscribe()
 
-	// TODO: Slides subscription needs to pass events to projector channel
+	projectionUpdate, projections, unsubscibeProjections := p.getProjectionSubscription()
+	defer unsubscibeProjections()
 
 	for {
 		select {
@@ -83,12 +88,12 @@ func (p *projector) subscribeProjector() {
 				p.listeners[i] = p.listeners[len(p.listeners)-1]
 				p.listeners = p.listeners[:len(p.listeners)-1]
 			}
-		case data, ok := <-projectorSub:
+		case data, ok := <-projectorSub.Channel:
 			if !ok {
 				return
 			}
 
-			projectorData := data["projector/"+strconv.Itoa(p.id)]
+			projectorData := data["projector/"+strconv.Itoa(p.projector.ID)]
 			if projectorData == nil {
 				p.sendToAll(&ProjectorUpdateEvent{"deleted", ""})
 				return
@@ -100,7 +105,33 @@ func (p *projector) subscribeProjector() {
 			}
 
 			p.sendToAll(&ProjectorUpdateEvent{"settings", string(encodedData)})
+		case data, ok := <-projectionUpdate:
+			if !ok {
+				return
+			}
+
+			p.processProjectionUpdate(data, projections)
 		}
+	}
+}
+
+func (p *projector) processProjectionUpdate(updated []int, projections map[int]string) {
+	if updated == nil {
+		return
+	}
+
+	for _, projectionId := range updated {
+		if projection, ok := projections[projectionId]; ok {
+			p.Projections[projectionId] = projection
+			defer p.sendToAll(&ProjectorUpdateEvent{"projection-updated", projection})
+		} else {
+			delete(p.Projections, projectionId)
+			defer p.sendToAll(&ProjectorUpdateEvent{"projection-deleted", strconv.Itoa(projectionId)})
+		}
+	}
+
+	if err := p.updateFullContent(); err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -110,7 +141,7 @@ func (p *projector) sendToAll(event *ProjectorUpdateEvent) {
 	}
 }
 
-func (p *projector) updateFullContent(projector *models.Projector) error {
+func (p *projector) updateFullContent() error {
 	tmpl, err := template.ParseFiles("templates/projector.html")
 	if err != nil {
 		return fmt.Errorf("error reading projector template %w", err)
@@ -120,7 +151,7 @@ func (p *projector) updateFullContent(projector *models.Projector) error {
 
 	var content bytes.Buffer
 	err = tmpl.Execute(&content, map[string]interface{}{
-		"Projector":   projector,
+		"Projector":   p.projector,
 		"Projections": p.Projections,
 	})
 	if err != nil {
@@ -128,16 +159,62 @@ func (p *projector) updateFullContent(projector *models.Projector) error {
 	}
 
 	p.Content = content.String()
-	p.Data = *projector
 
 	return nil
 }
 
-func (p *projector) getProjectionSubscription(id int) (<-chan string, error) {
-	data, err := datastore.Collection(p.db, &models.Projection{}).SetIds(id).GetOne()
-	if err != nil {
-		return nil, fmt.Errorf("error fetching projector from db %w", err)
-	}
+func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, func()) {
+	query := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).SetFields("current_projection_ids")
+	updateChannel := make(chan []int)
+	projections := make(map[int]string)
+	addProjection := make(chan int)
+	removeProjection := make(chan int)
 
-	return p.slideRouter.SubscribeContent(nil, data), nil
+	go func() {
+		projectionIDs := []int{}
+		sub := query.SubscribeField(&projectionIDs)
+		defer sub.Unsubscribe()
+
+		projector, err := query.GetOne()
+		if err != nil {
+			fmt.Println("retrieving current projection ids: %w", err)
+		}
+
+		projectionChannel := p.slideRouter.SubscribeContent(addProjection, removeProjection)
+		for _, id := range projector.CurrentProjectionIDs {
+			addProjection <- id
+			projections[id] = ""
+		}
+
+		for {
+			select {
+			case <-sub.Channel:
+				updated := []int{}
+				for id := range projections {
+					if !slices.Contains(projectionIDs, id) {
+						updated = append(updated, id)
+						removeProjection <- id
+						delete(projections, id)
+					}
+				}
+
+				for _, id := range projectionIDs {
+					if _, ok := projections[id]; !ok {
+						updated = append(updated, id)
+						addProjection <- id
+						projections[id] = ""
+					}
+				}
+
+				updateChannel <- updated
+			case <-projectionChannel:
+				fmt.Println("projection update")
+				updateChannel <- projector.CurrentProjectionIDs
+			}
+		}
+	}()
+
+	return updateChannel, projections, func() {
+		// TODO: Unsubscribe
+	}
 }
