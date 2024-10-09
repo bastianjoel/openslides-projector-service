@@ -25,6 +25,13 @@ func (q *query[T]) SetIds(ids ...int) *query[T] {
 	return q
 }
 
+// Sets the fqids of the query by plain ids
+func (q *query[T]) SetFields(fields ...string) *query[T] {
+	q.Fields = append(q.Fields, fields...)
+
+	return q
+}
+
 func (q *query[T]) GetOne() (*T, error) {
 	result, err := q.resultStructs()
 	if err != nil {
@@ -56,22 +63,6 @@ func (q *query[T]) GetMaps() (map[string]map[string]interface{}, error) {
 	}
 
 	return result, nil
-}
-
-func (q *query[T]) Subscribe() <-chan map[string]map[string]interface{} {
-	updateChannel := make(chan map[string]map[string]interface{})
-	listener := queryChangeListener{
-		fqids:   q.fqids,
-		fields:  q.Fields,
-		channel: updateChannel,
-	}
-	q.datastore.change.AddListener <- &listener
-
-	return updateChannel
-}
-
-func (d *Datastore) Unsubscribe(channel <-chan map[string]map[string]interface{}) {
-	d.change.RemoveListener <- channel
 }
 
 func (q *query[T]) resultMaps() (map[string]map[string]interface{}, error) {

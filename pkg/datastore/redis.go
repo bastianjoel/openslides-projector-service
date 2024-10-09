@@ -2,7 +2,6 @@ package datastore
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -13,22 +12,22 @@ import (
 type queryChangeListener struct {
 	fqids   []string
 	fields  []string
-	channel chan map[string]map[string]interface{}
+	channel chan map[string]map[string]string
 }
 
 type changeListenerServer struct {
 	AddListener    chan *queryChangeListener
-	RemoveListener chan (<-chan map[string]map[string]interface{})
+	RemoveListener chan (<-chan map[string]map[string]string)
 }
 
 func (ds *Datastore) setupRedisListener() {
 	ds.change = &changeListenerServer{
 		AddListener:    make(chan *queryChangeListener),
-		RemoveListener: make(chan (<-chan map[string]map[string]interface{})),
+		RemoveListener: make(chan (<-chan map[string]map[string]string)),
 	}
 	c := ds.change
 
-	changeSource := make(chan map[string]map[string]interface{})
+	changeSource := make(chan map[string]map[string]string)
 	go setupChangeListener(ds.ctx, ds.redis, changeSource)
 
 	listeners := make([]*queryChangeListener, 0)
@@ -60,7 +59,7 @@ func (ds *Datastore) setupRedisListener() {
 			}
 
 			for _, listener := range listeners {
-				listenerChanged := map[string]map[string]interface{}{}
+				listenerChanged := map[string]map[string]string{}
 				for _, fqid := range listener.fqids {
 					if val, ok := changeMap[fqid]; ok {
 						listenerChanged[fqid] = val
@@ -74,7 +73,7 @@ func (ds *Datastore) setupRedisListener() {
 	}
 }
 
-func setupChangeListener(ctx context.Context, conn *redis.Client, channel chan map[string]map[string]interface{}) {
+func setupChangeListener(ctx context.Context, conn *redis.Client, channel chan map[string]map[string]string) {
 	id := "$"
 
 	for ctx.Err() == nil {
@@ -95,7 +94,7 @@ func setupChangeListener(ctx context.Context, conn *redis.Client, channel chan m
 	}
 }
 
-func getNextRedisUpdate(ctx context.Context, conn *redis.Client, id string) (string, map[string]map[string]interface{}, error) {
+func getNextRedisUpdate(ctx context.Context, conn *redis.Client, id string) (string, map[string]map[string]string, error) {
 	reply, err := conn.XRead(ctx, &redis.XReadArgs{
 		Block:   0,
 		Streams: []string{"ModifiedFields", id},
@@ -118,8 +117,8 @@ func getNextRedisUpdate(ctx context.Context, conn *redis.Client, id string) (str
 	return id, data, nil
 }
 
-func parseMessageBus(streams []redis.XStream) (string, map[string]map[string]interface{}, error) {
-	data := map[string]map[string]interface{}{}
+func parseMessageBus(streams []redis.XStream) (string, map[string]map[string]string, error) {
+	data := map[string]map[string]string{}
 
 	nextID := ""
 	for _, stream := range streams {
@@ -131,14 +130,9 @@ func parseMessageBus(streams []redis.XStream) (string, map[string]map[string]int
 					fmt.Println(fmt.Errorf("invalid fqid %s", k))
 				}
 
-				var val interface{}
-				err := json.Unmarshal([]byte(v.(string)), &val)
-				if err != nil {
-					fmt.Println(fmt.Errorf("error parsing message bus field: %w", err))
-				}
-
+				val := v.(string)
 				if _, ok := data[k[:sepIndex]]; !ok {
-					data[k[:sepIndex]] = map[string]interface{}{}
+					data[k[:sepIndex]] = map[string]string{}
 				}
 
 				// Element is marked as deleted
@@ -147,7 +141,7 @@ func parseMessageBus(streams []redis.XStream) (string, map[string]map[string]int
 				}
 
 				// Mark item as deleted
-				if k[sepIndex+1:] == "id" && val == nil {
+				if k[sepIndex+1:] == "id" && val == "null" {
 					data[k[:sepIndex]] = nil
 				} else {
 					data[k[:sepIndex]][k[sepIndex+1:]] = val
