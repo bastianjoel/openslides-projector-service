@@ -3,7 +3,7 @@ package models
 type Speaker struct {
 	BeginTime                      *int    `json:"begin_time"`
 	EndTime                        *int    `json:"end_time"`
-	ID                             *int    `json:"id"`
+	ID                             int     `json:"id"`
 	ListOfSpeakersID               int     `json:"list_of_speakers_id"`
 	MeetingID                      int     `json:"meeting_id"`
 	MeetingUserID                  *int    `json:"meeting_user_id"`

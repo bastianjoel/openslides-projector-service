@@ -2,7 +2,7 @@ package models
 
 type PersonalNote struct {
 	ContentObjectID *string `json:"content_object_id"`
-	ID              *int    `json:"id"`
+	ID              int     `json:"id"`
 	MeetingID       int     `json:"meeting_id"`
 	MeetingUserID   int     `json:"meeting_user_id"`
 	Note            *string `json:"note"`

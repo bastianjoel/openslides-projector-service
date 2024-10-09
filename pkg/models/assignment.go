@@ -6,7 +6,7 @@ type Assignment struct {
 	CandidateIDs                  []int   `json:"candidate_ids"`
 	DefaultPollDescription        *string `json:"default_poll_description"`
 	Description                   *string `json:"description"`
-	ID                            *int    `json:"id"`
+	ID                            int     `json:"id"`
 	ListOfSpeakersID              int     `json:"list_of_speakers_id"`
 	MeetingID                     int     `json:"meeting_id"`
 	NumberPollCandidates          *bool   `json:"number_poll_candidates"`

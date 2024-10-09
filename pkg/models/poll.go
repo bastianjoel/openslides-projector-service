@@ -14,7 +14,7 @@ type Poll struct {
 	GlobalNo              *bool           `json:"global_no"`
 	GlobalOptionID        *int            `json:"global_option_id"`
 	GlobalYes             *bool           `json:"global_yes"`
-	ID                    *int            `json:"id"`
+	ID                    int             `json:"id"`
 	IsPseudoanonymized    *bool           `json:"is_pseudoanonymized"`
 	MaxVotesAmount        *int            `json:"max_votes_amount"`
 	MaxVotesPerOption     *int            `json:"max_votes_per_option"`

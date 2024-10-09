@@ -6,7 +6,7 @@ type Committee struct {
 	ExternalID                         *string `json:"external_id"`
 	ForwardToCommitteeIDs              []int   `json:"forward_to_committee_ids"`
 	ForwardingUserID                   *int    `json:"forwarding_user_id"`
-	ID                                 *int    `json:"id"`
+	ID                                 int     `json:"id"`
 	ManagerIDs                         []int   `json:"manager_ids"`
 	MeetingIDs                         []int   `json:"meeting_ids"`
 	Name                               string  `json:"name"`

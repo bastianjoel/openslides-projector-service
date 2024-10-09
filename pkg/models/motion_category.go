@@ -2,7 +2,7 @@ package models
 
 type MotionCategory struct {
 	ChildIDs         []int   `json:"child_ids"`
-	ID               *int    `json:"id"`
+	ID               int     `json:"id"`
 	Level            *int    `json:"level"`
 	MeetingID        int     `json:"meeting_id"`
 	MotionIDs        []int   `json:"motion_ids"`

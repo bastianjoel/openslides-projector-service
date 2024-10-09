@@ -7,7 +7,7 @@ type Mediafile struct {
 	CreateTimestamp                     *int            `json:"create_timestamp"`
 	Filename                            *string         `json:"filename"`
 	Filesize                            *int            `json:"filesize"`
-	ID                                  *int            `json:"id"`
+	ID                                  int             `json:"id"`
 	IsDirectory                         *bool           `json:"is_directory"`
 	MeetingMediafileIDs                 []int           `json:"meeting_mediafile_ids"`
 	Mimetype                            *string         `json:"mimetype"`

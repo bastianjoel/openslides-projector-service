@@ -2,7 +2,7 @@ package models
 
 type MotionChangeRecommendation struct {
 	CreationTime     *int    `json:"creation_time"`
-	ID               *int    `json:"id"`
+	ID               int     `json:"id"`
 	Internal         *bool   `json:"internal"`
 	LineFrom         *int    `json:"line_from"`
 	LineTo           *int    `json:"line_to"`

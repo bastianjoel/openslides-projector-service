@@ -4,7 +4,7 @@ type ProjectorCountdown struct {
 	CountdownTime                          *float32 `json:"countdown_time"`
 	DefaultTime                            *int     `json:"default_time"`
 	Description                            *string  `json:"description"`
-	ID                                     *int     `json:"id"`
+	ID                                     int      `json:"id"`
 	MeetingID                              int      `json:"meeting_id"`
 	ProjectionIDs                          []int    `json:"projection_ids"`
 	Running                                *bool    `json:"running"`

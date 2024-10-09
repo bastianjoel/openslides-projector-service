@@ -5,7 +5,7 @@ type MotionWorkflow struct {
 	DefaultStatuteAmendmentWorkflowMeetingID *int   `json:"default_statute_amendment_workflow_meeting_id"`
 	DefaultWorkflowMeetingID                 *int   `json:"default_workflow_meeting_id"`
 	FirstStateID                             int    `json:"first_state_id"`
-	ID                                       *int   `json:"id"`
+	ID                                       int    `json:"id"`
 	MeetingID                                int    `json:"meeting_id"`
 	Name                                     string `json:"name"`
 	SequentialNumber                         int    `json:"sequential_number"`

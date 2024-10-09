@@ -3,7 +3,7 @@ package models
 type ListOfSpeakers struct {
 	Closed                          *bool  `json:"closed"`
 	ContentObjectID                 string `json:"content_object_id"`
-	ID                              *int   `json:"id"`
+	ID                              int    `json:"id"`
 	MeetingID                       int    `json:"meeting_id"`
 	ProjectionIDs                   []int  `json:"projection_ids"`
 	SequentialNumber                int    `json:"sequential_number"`

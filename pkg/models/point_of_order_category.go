@@ -1,7 +1,7 @@
 package models
 
 type PointOfOrderCategory struct {
-	ID         *int   `json:"id"`
+	ID         int    `json:"id"`
 	MeetingID  int    `json:"meeting_id"`
 	Rank       int    `json:"rank"`
 	SpeakerIDs []int  `json:"speaker_ids"`

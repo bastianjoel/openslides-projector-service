@@ -5,7 +5,7 @@ type Group struct {
 	AnonymousGroupForMeetingID              *int     `json:"anonymous_group_for_meeting_id"`
 	DefaultGroupForMeetingID                *int     `json:"default_group_for_meeting_id"`
 	ExternalID                              *string  `json:"external_id"`
-	ID                                      *int     `json:"id"`
+	ID                                      int      `json:"id"`
 	MeetingID                               int      `json:"meeting_id"`
 	MeetingMediafileAccessGroupIDs          []int    `json:"meeting_mediafile_access_group_ids"`
 	MeetingMediafileInheritedAccessGroupIDs []int    `json:"meeting_mediafile_inherited_access_group_ids"`

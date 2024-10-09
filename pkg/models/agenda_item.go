@@ -6,7 +6,7 @@ type AgendaItem struct {
 	Comment         *string `json:"comment"`
 	ContentObjectID string  `json:"content_object_id"`
 	Duration        *int    `json:"duration"`
-	ID              *int    `json:"id"`
+	ID              int     `json:"id"`
 	IsHidden        *bool   `json:"is_hidden"`
 	IsInternal      *bool   `json:"is_internal"`
 	ItemNumber      *string `json:"item_number"`

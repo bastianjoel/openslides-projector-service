@@ -8,10 +8,11 @@ type Organization struct {
 	CommitteeIDs               []int           `json:"committee_ids"`
 	DefaultLanguage            string          `json:"default_language"`
 	Description                *string         `json:"description"`
+	EnableAnonymous            *bool           `json:"enable_anonymous"`
 	EnableChat                 *bool           `json:"enable_chat"`
 	EnableElectronicVoting     *bool           `json:"enable_electronic_voting"`
-	Genders                    []string        `json:"genders"`
-	ID                         *int            `json:"id"`
+	GenderIDs                  []int           `json:"gender_ids"`
+	ID                         int             `json:"id"`
 	LegalNotice                *string         `json:"legal_notice"`
 	LimitOfMeetings            *int            `json:"limit_of_meetings"`
 	LimitOfUsers               *int            `json:"limit_of_users"`

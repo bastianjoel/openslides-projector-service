@@ -3,7 +3,7 @@ package models
 type Option struct {
 	Abstain                    *string `json:"abstain"`
 	ContentObjectID            *string `json:"content_object_id"`
-	ID                         *int    `json:"id"`
+	ID                         int     `json:"id"`
 	MeetingID                  int     `json:"meeting_id"`
 	No                         *string `json:"no"`
 	PollID                     *int    `json:"poll_id"`

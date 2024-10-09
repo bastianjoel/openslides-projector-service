@@ -7,7 +7,7 @@ type MotionState struct {
 	AllowSupport                     *bool    `json:"allow_support"`
 	CssClass                         string   `json:"css_class"`
 	FirstStateOfWorkflowID           *int     `json:"first_state_of_workflow_id"`
-	ID                               *int     `json:"id"`
+	ID                               int      `json:"id"`
 	IsInternal                       *bool    `json:"is_internal"`
 	MeetingID                        int      `json:"meeting_id"`
 	MergeAmendmentIntoFinal          *string  `json:"merge_amendment_into_final"`

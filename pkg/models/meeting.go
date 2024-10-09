@@ -89,7 +89,7 @@ type Meeting struct {
 	FontRegularID                                *int            `json:"font_regular_id"`
 	ForwardedMotionIDs                           []int           `json:"forwarded_motion_ids"`
 	GroupIDs                                     []int           `json:"group_ids"`
-	ID                                           *int            `json:"id"`
+	ID                                           int             `json:"id"`
 	ImportedAt                                   *int            `json:"imported_at"`
 	IsActiveInOrganizationID                     *int            `json:"is_active_in_organization_id"`
 	IsArchivedInOrganizationID                   *int            `json:"is_archived_in_organization_id"`
@@ -172,6 +172,7 @@ type Meeting struct {
 	MotionsExportPreamble                        *string         `json:"motions_export_preamble"`
 	MotionsExportSubmitterRecommendation         *bool           `json:"motions_export_submitter_recommendation"`
 	MotionsExportTitle                           *string         `json:"motions_export_title"`
+	MotionsHideMetadataBackground                *bool           `json:"motions_hide_metadata_background"`
 	MotionsLineLength                            *int            `json:"motions_line_length"`
 	MotionsNumberMinDigits                       *int            `json:"motions_number_min_digits"`
 	MotionsNumberType                            *string         `json:"motions_number_type"`

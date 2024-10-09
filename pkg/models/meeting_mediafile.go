@@ -3,7 +3,7 @@ package models
 type MeetingMediafile struct {
 	AccessGroupIDs                         []int    `json:"access_group_ids"`
 	AttachmentIDs                          []string `json:"attachment_ids"`
-	ID                                     *int     `json:"id"`
+	ID                                     int      `json:"id"`
 	InheritedAccessGroupIDs                []int    `json:"inherited_access_group_ids"`
 	IsPublic                               bool     `json:"is_public"`
 	ListOfSpeakersID                       *int     `json:"list_of_speakers_id"`

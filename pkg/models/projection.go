@@ -7,7 +7,7 @@ type Projection struct {
 	ContentObjectID    string          `json:"content_object_id"`
 	CurrentProjectorID *int            `json:"current_projector_id"`
 	HistoryProjectorID *int            `json:"history_projector_id"`
-	ID                 *int            `json:"id"`
+	ID                 int             `json:"id"`
 	MeetingID          int             `json:"meeting_id"`
 	Options            json.RawMessage `json:"options"`
 	PreviewProjectorID *int            `json:"preview_projector_id"`

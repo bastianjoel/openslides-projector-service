@@ -2,7 +2,7 @@ package models
 
 type AssignmentCandidate struct {
 	AssignmentID  int  `json:"assignment_id"`
-	ID            *int `json:"id"`
+	ID            int  `json:"id"`
 	MeetingID     int  `json:"meeting_id"`
 	MeetingUserID *int `json:"meeting_user_id"`
 	Weight        *int `json:"weight"`

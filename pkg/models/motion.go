@@ -19,7 +19,7 @@ type Motion struct {
 	DerivedMotionIDs                             []int           `json:"derived_motion_ids"`
 	EditorIDs                                    []int           `json:"editor_ids"`
 	Forwarded                                    *int            `json:"forwarded"`
-	ID                                           *int            `json:"id"`
+	ID                                           int             `json:"id"`
 	IDenticalMotionIDs                           []int           `json:"identical_motion_ids"`
 	LastModified                                 *int            `json:"last_modified"`
 	LeadMotionID                                 *int            `json:"lead_motion_id"`

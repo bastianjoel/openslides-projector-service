@@ -10,8 +10,8 @@ type User struct {
 	Email                       *string `json:"email"`
 	FirstName                   *string `json:"first_name"`
 	ForwardingCommitteeIDs      []int   `json:"forwarding_committee_ids"`
-	Gender                      *string `json:"gender"`
-	ID                          *int    `json:"id"`
+	GenderID                    *int    `json:"gender_id"`
+	ID                          int     `json:"id"`
 	IsActive                    *bool   `json:"is_active"`
 	IsDemoUser                  *bool   `json:"is_demo_user"`
 	IsPhysicalPerson            *bool   `json:"is_physical_person"`

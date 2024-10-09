@@ -1,7 +1,7 @@
 package models
 
 type MotionStatuteParagraph struct {
-	ID               *int    `json:"id"`
+	ID               int     `json:"id"`
 	MeetingID        int     `json:"meeting_id"`
 	MotionIDs        []int   `json:"motion_ids"`
 	SequentialNumber int     `json:"sequential_number"`

@@ -14,7 +14,7 @@ type Projector struct {
 	HeaderFontColor                                           *string `json:"header_font_color"`
 	HeaderH1Color                                             *string `json:"header_h1_color"`
 	HistoryProjectionIDs                                      []int   `json:"history_projection_ids"`
-	ID                                                        *int    `json:"id"`
+	ID                                                        int     `json:"id"`
 	IsInternal                                                *bool   `json:"is_internal"`
 	MeetingID                                                 int     `json:"meeting_id"`
 	Name                                                      *string `json:"name"`

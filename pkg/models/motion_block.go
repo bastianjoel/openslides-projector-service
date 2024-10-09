@@ -2,7 +2,7 @@ package models
 
 type MotionBlock struct {
 	AgendaItemID     *int   `json:"agenda_item_id"`
-	ID               *int   `json:"id"`
+	ID               int    `json:"id"`
 	Internal         *bool  `json:"internal"`
 	ListOfSpeakersID int    `json:"list_of_speakers_id"`
 	MeetingID        int    `json:"meeting_id"`

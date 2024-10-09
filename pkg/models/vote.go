@@ -2,7 +2,7 @@ package models
 
 type Vote struct {
 	DelegatedUserID *int    `json:"delegated_user_id"`
-	ID              *int    `json:"id"`
+	ID              int     `json:"id"`
 	MeetingID       int     `json:"meeting_id"`
 	OptionID        int     `json:"option_id"`
 	UserID          *int    `json:"user_id"`
