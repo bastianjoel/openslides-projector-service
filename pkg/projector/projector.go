@@ -208,8 +208,9 @@ func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, f
 				}
 
 				updateChannel <- updated
-			case <-projectionChannel:
-				updateChannel <- projector.CurrentProjectionIDs
+			case update := <-projectionChannel:
+				projections[update.ID] = update.Content
+				updateChannel <- []int{update.ID}
 			}
 		}
 	}()

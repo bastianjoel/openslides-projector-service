@@ -16,17 +16,21 @@ type projectionRequest struct {
 }
 
 type projectionUpdate struct {
+	ID      int
 	Content string
 }
+
+type slideHandler func(context.Context, *projectionRequest) (<-chan string, error)
 
 type SlideRouter struct {
 	ctx    context.Context
 	db     *datastore.Datastore
-	Routes map[string]func(*projectionRequest) <-chan string
+	Routes map[string]slideHandler
 }
 
 func New(ctx context.Context, db *datastore.Datastore) *SlideRouter {
-	routes := make(map[string]func(*projectionRequest) <-chan string)
+	routes := make(map[string]slideHandler)
+	routes["topic"] = TopicSlideHandler
 
 	return &SlideRouter{
 		ctx:    ctx,
@@ -75,17 +79,27 @@ func (r *SlideRouter) subscribeProjection(id int, updateChannel chan<- *projecti
 
 	projectionType := getProjectionType(projection)
 	if handler, ok := r.Routes[projectionType]; ok {
-		projectionChan := handler(&projectionRequest{
+		projectionChan, err := handler(r.ctx, &projectionRequest{
 			Projection: projection,
 			DB:         r.db,
 		})
+
+		if err != nil {
+			log.Error().Err(err).Msg("failed initialize projection handler")
+			return
+		}
 
 		for {
 			select {
 			case <-closeSubscription:
 				return
-			case projectionContent := <-projectionChan:
+			case projectionContent, ok := <-projectionChan:
+				if !ok {
+					return
+				}
+
 				updateChannel <- &projectionUpdate{
+					ID:      id,
 					Content: projectionContent,
 				}
 			}
