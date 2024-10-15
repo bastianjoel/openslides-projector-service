@@ -2,8 +2,9 @@ package slide
 
 import (
 	"context"
-	"fmt"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/OpenSlides/openslides-projector-service/pkg/datastore"
 	"github.com/OpenSlides/openslides-projector-service/pkg/models"
@@ -68,7 +69,7 @@ func (r *SlideRouter) SubscribeContent(addProjection <-chan int, removeProjectio
 func (r *SlideRouter) subscribeProjection(id int, updateChannel chan<- *projectionUpdate, closeSubscription <-chan struct{}) {
 	projection, err := datastore.Collection(r.db, &models.Projection{}).SetIds(id).SetFields("id", "content_object_id", "type").GetOne()
 	if err != nil {
-		fmt.Println("getting projection type and content object from db: %w", err)
+		log.Error().Err(err).Msg("getting projection type and content object from db")
 		return
 	}
 
@@ -90,7 +91,7 @@ func (r *SlideRouter) subscribeProjection(id int, updateChannel chan<- *projecti
 			}
 		}
 	} else {
-		fmt.Println(fmt.Errorf("unknown projection type %s", projectionType))
+		log.Warn().Msgf("unknown projection type %s", projectionType)
 	}
 }
 

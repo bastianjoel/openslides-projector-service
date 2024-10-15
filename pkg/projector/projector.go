@@ -12,6 +12,7 @@ import (
 	"github.com/OpenSlides/openslides-projector-service/pkg/datastore"
 	"github.com/OpenSlides/openslides-projector-service/pkg/models"
 	"github.com/OpenSlides/openslides-projector-service/pkg/projector/slide"
+	"github.com/rs/zerolog/log"
 )
 
 type projector struct {
@@ -101,10 +102,10 @@ func (p *projector) subscribeProjector() {
 
 			encodedData, err := json.Marshal(projectorData)
 			if err != nil {
-				fmt.Println(err)
+				log.Error().Err(err).Msg("could not encode projector data")
+			} else {
+				p.sendToAll(&ProjectorUpdateEvent{"settings", string(encodedData)})
 			}
-
-			p.sendToAll(&ProjectorUpdateEvent{"settings", string(encodedData)})
 		case data, ok := <-projectionUpdate:
 			if !ok {
 				return
@@ -131,7 +132,7 @@ func (p *projector) processProjectionUpdate(updated []int, projections map[int]s
 	}
 
 	if err := p.updateFullContent(); err != nil {
-		fmt.Println(err)
+		log.Error().Err(err).Msg("failed to generate projector content")
 	}
 }
 
@@ -177,7 +178,7 @@ func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, f
 
 		projector, err := query.GetOne()
 		if err != nil {
-			fmt.Println("retrieving current projection ids: %w", err)
+			log.Warn().Err(err).Msg("retrieving current projection ids")
 		}
 
 		projectionChannel := p.slideRouter.SubscribeContent(addProjection, removeProjection)
@@ -208,7 +209,6 @@ func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, f
 
 				updateChannel <- updated
 			case <-projectionChannel:
-				fmt.Println("projection update")
 				updateChannel <- projector.CurrentProjectionIDs
 			}
 		}

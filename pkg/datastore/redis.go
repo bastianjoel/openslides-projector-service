@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog/log"
 )
 
 type queryChangeListener struct {
@@ -83,7 +84,7 @@ func setupChangeListener(ctx context.Context, conn *redis.Client, channel chan m
 				id = nextID
 			}
 
-			fmt.Println(err)
+			log.Error().Err(err).Msg("reading update from message bus")
 			time.Sleep(5 * time.Second)
 			continue
 		}
@@ -127,7 +128,7 @@ func parseMessageBus(streams []redis.XStream) (string, map[string]map[string]str
 			for k, v := range message.Values {
 				sepIndex := strings.LastIndex(k, "/")
 				if sepIndex < 0 {
-					fmt.Println(fmt.Errorf("invalid fqid %s", k))
+					log.Error().Err(fmt.Errorf("invalid fqid %s", k)).Msg("parsing message bus entry")
 				}
 
 				val := v.(string)

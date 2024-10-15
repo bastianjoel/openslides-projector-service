@@ -7,7 +7,8 @@ import (
 	"strings"
 
 	"github.com/caarlos0/env/v6"
-	"github.com/charmbracelet/log"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"github.com/OpenSlides/openslides-projector-service/pkg/datastore"
 	projectorHttp "github.com/OpenSlides/openslides-projector-service/pkg/http"
@@ -27,23 +28,24 @@ type config struct {
 }
 
 func main() {
-	log.Info("Starting...")
-
-	if err := run(); err != nil {
-		log.Fatalf("ERROR: %v", err)
-	}
-
-	log.Info("Stopped")
-}
-
-func run() error {
-	log.Info("Parsing environment variables...")
 	var cfg config
 	err := env.Parse(&cfg)
 	if err != nil {
-		return fmt.Errorf("parsing config: %w", err)
+		log.Err(err).Msg("parsing config")
 	}
 
+	if cfg.Development {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
+
+	if err := run(cfg); err != nil {
+		log.Fatal().Err(err).Msg("Error during startup")
+	}
+
+	log.Info().Msg("Stopped")
+}
+
+func run(cfg config) error {
 	ds, err := getDatabase(cfg)
 	if err != nil {
 		return fmt.Errorf("connecting to database: %w", err)
@@ -61,14 +63,14 @@ func run() error {
 	fileHandler := http.StripPrefix("/system/projector/static/", http.FileServer(http.Dir("static")))
 	serverMux.Handle("/system/projector/static/", fileHandler)
 
-	log.Infof("Starting server on %s", cfg.Bind)
+	log.Info().Msgf("Starting server on %s", cfg.Bind)
 	srv := &http.Server{
 		Addr:    cfg.Bind,
 		Handler: serverMux,
 	}
 
 	if err := srv.ListenAndServe(); err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msg("Could not listen and serve")
 	}
 
 	return nil

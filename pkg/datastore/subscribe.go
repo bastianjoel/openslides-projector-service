@@ -2,7 +2,8 @@ package datastore
 
 import (
 	"encoding/json"
-	"fmt"
+
+	"github.com/rs/zerolog/log"
 )
 
 type subscription[V any] struct {
@@ -35,7 +36,7 @@ func (q *query[T]) Subscribe() *subscription[<-chan map[string]map[string]interf
 					var fieldData interface{}
 					err := json.Unmarshal([]byte(val), &fieldData)
 					if err != nil {
-						fmt.Println(err, key, fqid, val, next[fqid])
+						log.Error().Err(err).Msgf("parsing subscription field `%s` for fqid `%s` with value %s", key, fqid, val)
 					}
 
 					next[fqid][key] = fieldData
@@ -68,7 +69,7 @@ func (q *query[T]) SubscribeField(field interface{}) *subscription[<-chan struct
 				if val, ok := obj[q.Fields[0]]; ok {
 					err := json.Unmarshal([]byte(val), field)
 					if err != nil {
-						fmt.Println(err)
+						log.Error().Err(err).Msg("parsing subscription field")
 					}
 
 					notifyChannel <- struct{}{}
