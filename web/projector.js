@@ -9,16 +9,30 @@ eventSource.addEventListener(`deleted`, (e) => {
   console.log(e);
 });
 
-eventSource.addEventListener(`connected`, (e) => {
-  console.log(e);
+eventSource.addEventListener(`connected`, () => {
+  console.debug(`connected`);
 });
 
 eventSource.addEventListener(`projection-updated`, (e) => {
-  console.log(e);
+  const data = JSON.parse(e.data);
+  console.debug(`projection-updated`, data);
+
+  for (let id of Object.keys(data)) {
+    let el = document.querySelector(`.slide[data-id="${id}"]`);
+    if (!el) {
+      el = document.getElementById(`slides`).appendChild(document.createElement(`div`));
+      el.classList.add(`slide`);
+      el.dataset.id = id;
+    }
+
+    el.innerHTML = data[id];
+  }
 });
 
 eventSource.addEventListener(`projection-deleted`, (e) => {
-  console.log(e);
+  console.debug(`projection-deleted`, e.data);
+
+  document.querySelector(`.slide[data-id="${e.data}"]`).remove();
 });
 
 window.addEventListener(`unload`, () => {

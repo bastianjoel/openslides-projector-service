@@ -121,13 +121,23 @@ func (p *projector) processProjectionUpdate(updated []int, projections map[int]s
 		return
 	}
 
+	updatedProjections := map[int]string{}
 	for _, projectionId := range updated {
 		if projection, ok := projections[projectionId]; ok {
 			p.Projections[projectionId] = projection
-			defer p.sendToAll(&ProjectorUpdateEvent{"projection-updated", projection})
+			updatedProjections[projectionId] = projection
 		} else {
 			delete(p.Projections, projectionId)
 			defer p.sendToAll(&ProjectorUpdateEvent{"projection-deleted", strconv.Itoa(projectionId)})
+		}
+	}
+
+	if len(updatedProjections) > 0 {
+		eventContent, err := json.Marshal(updatedProjections)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to encode update event")
+		} else {
+			p.sendToAll(&ProjectorUpdateEvent{"projection-updated", string(eventContent)})
 		}
 	}
 
@@ -165,28 +175,17 @@ func (p *projector) updateFullContent() error {
 }
 
 func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, func()) {
-	query := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).SetFields("current_projection_ids")
 	updateChannel := make(chan []int)
 	projections := make(map[int]string)
 	addProjection := make(chan int)
 	removeProjection := make(chan int)
 
 	go func() {
-		projectionIDs := []int{}
-		sub := query.SubscribeField(&projectionIDs)
+		var projectionIDs []int
+		sub := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).SetFields("current_projection_ids").SubscribeField(&projectionIDs)
 		defer sub.Unsubscribe()
 
-		projector, err := query.GetOne()
-		if err != nil {
-			log.Warn().Err(err).Msg("retrieving current projection ids")
-		}
-
 		projectionChannel := p.slideRouter.SubscribeContent(addProjection, removeProjection)
-		for _, id := range projector.CurrentProjectionIDs {
-			addProjection <- id
-			projections[id] = ""
-		}
-
 		for {
 			select {
 			case <-sub.Channel:
@@ -201,13 +200,13 @@ func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, f
 
 				for _, id := range projectionIDs {
 					if _, ok := projections[id]; !ok {
-						updated = append(updated, id)
 						addProjection <- id
-						projections[id] = ""
 					}
 				}
 
-				updateChannel <- updated
+				if len(updated) > 0 || len(projectionIDs) == 0 {
+					updateChannel <- updated
+				}
 			case update := <-projectionChannel:
 				projections[update.ID] = update.Content
 				updateChannel <- []int{update.ID}

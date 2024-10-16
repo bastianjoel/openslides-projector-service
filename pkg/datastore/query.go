@@ -8,7 +8,12 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-type query[T any] struct {
+type baseModel interface {
+	CollectionName() string
+	Get(field string) interface{}
+}
+
+type query[T baseModel] struct {
 	collection *T
 	datastore  *Datastore
 	Fields     []string

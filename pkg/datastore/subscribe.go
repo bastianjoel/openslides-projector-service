@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"encoding/json"
+	"reflect"
 
 	"github.com/rs/zerolog/log"
 )
@@ -62,8 +63,20 @@ func (q *query[T]) SubscribeField(field interface{}) *subscription[<-chan struct
 		channel: updateChannel,
 	}
 	q.datastore.change.AddListener <- &listener
-
 	go func() {
+		val := reflect.ValueOf(field)
+		if val.Kind() != reflect.Ptr {
+			log.Fatal().Msg("value passed to SubscribeField must be a pointer")
+		}
+
+		data, err := q.GetOne()
+		if err != nil {
+			log.Warn().Msgf("failed initial data fetch for subscription on %s", q.fqids[0])
+		} else if data != nil {
+			val.Elem().Set(reflect.ValueOf((*data).Get(q.Fields[0])))
+			notifyChannel <- struct{}{}
+		}
+
 		for update := range updateChannel {
 			if obj, ok := update[q.fqids[0]]; ok {
 				if val, ok := obj[q.Fields[0]]; ok {
