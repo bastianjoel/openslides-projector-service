@@ -11,6 +11,7 @@ import (
 type baseModel interface {
 	CollectionName() string
 	Get(field string) interface{}
+	Update(data map[string]string) error
 }
 
 type query[T baseModel] struct {

@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MotionCategory struct {
 	ChildIDs         []int   `json:"child_ids"`
 	ID               int     `json:"id"`
@@ -39,6 +41,80 @@ func (m MotionCategory) Get(field string) interface{} {
 		return m.SequentialNumber
 	case "weight":
 		return m.Weight
+	}
+
+	return nil
+}
+
+func (m MotionCategory) Update(data map[string]string) error {
+	if val, ok := data["child_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChildIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["level"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Level)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["parent_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ParentID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["prefix"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Prefix)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

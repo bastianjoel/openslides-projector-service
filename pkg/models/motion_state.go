@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MotionState struct {
 	AllowCreatePoll                  *bool    `json:"allow_create_poll"`
 	AllowMotionForwarding            *bool    `json:"allow_motion_forwarding"`
@@ -84,6 +86,185 @@ func (m MotionState) Get(field string) interface{} {
 		return m.Weight
 	case "workflow_id":
 		return m.WorkflowID
+	}
+
+	return nil
+}
+
+func (m MotionState) Update(data map[string]string) error {
+	if val, ok := data["allow_create_poll"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllowCreatePoll)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["allow_motion_forwarding"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllowMotionForwarding)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["allow_submitter_edit"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllowSubmitterEdit)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["allow_support"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllowSupport)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["css_class"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CssClass)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["first_state_of_workflow_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FirstStateOfWorkflowID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_internal"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsInternal)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["merge_amendment_into_final"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MergeAmendmentIntoFinal)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_recommendation_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionRecommendationIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["next_state_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.NextStateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["previous_state_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PreviousStateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["recommendation_label"]; ok {
+		err := json.Unmarshal([]byte(val), &m.RecommendationLabel)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["restrictions"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Restrictions)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["set_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SetNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["set_workflow_timestamp"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SetWorkflowTimestamp)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["show_recommendation_extension_field"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ShowRecommendationExtensionField)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["show_state_extension_field"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ShowStateExtensionField)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["submitter_withdraw_back_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SubmitterWithdrawBackIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["submitter_withdraw_state_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SubmitterWithdrawStateID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["workflow_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WorkflowID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

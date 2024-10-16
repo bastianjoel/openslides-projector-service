@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MeetingUser struct {
 	AboutMe                      *string `json:"about_me"`
 	AssignmentCandidateIDs       []int   `json:"assignment_candidate_ids"`
@@ -69,6 +71,150 @@ func (m MeetingUser) Get(field string) interface{} {
 		return m.VoteDelegationsFromIDs
 	case "vote_weight":
 		return m.VoteWeight
+	}
+
+	return nil
+}
+
+func (m MeetingUser) Update(data map[string]string) error {
+	if val, ok := data["about_me"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AboutMe)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_candidate_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentCandidateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chat_message_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChatMessageIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["comment"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Comment)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["locked_out"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LockedOut)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_editor_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionEditorIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_submitter_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionSubmitterIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_working_group_speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionWorkingGroupSpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Number)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["personal_note_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PersonalNoteIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["supported_motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SupportedMotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UserID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["vote_delegated_to_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VoteDelegatedToID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["vote_delegations_from_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VoteDelegationsFromIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["vote_weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VoteWeight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -126,3 +126,266 @@ func (m Organization) Get(field string) interface{} {
 
 	return nil
 }
+
+func (m Organization) Update(data map[string]string) error {
+	if val, ok := data["active_meeting_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ActiveMeetingIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["archived_meeting_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ArchivedMeetingIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["committee_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CommitteeIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_language"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultLanguage)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["description"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Description)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["enable_anonymous"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EnableAnonymous)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["enable_chat"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EnableChat)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["enable_electronic_voting"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EnableElectronicVoting)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["gender_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GenderIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["legal_notice"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LegalNotice)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["limit_of_meetings"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LimitOfMeetings)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["limit_of_users"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LimitOfUsers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["login_text"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LoginText)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["organization_tag_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OrganizationTagIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["privacy_policy"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PrivacyPolicy)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["published_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PublishedMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["require_duplicate_from"]; ok {
+		err := json.Unmarshal([]byte(val), &m.RequireDuplicateFrom)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["reset_password_verbose_errors"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ResetPasswordVerboseErrors)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["saml_attr_mapping"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SamlAttrMapping)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["saml_enabled"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SamlEnabled)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["saml_login_button_text"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SamlLoginButtonText)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["saml_metadata_idp"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SamlMetadataIDp)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["saml_metadata_sp"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SamlMetadataSp)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["saml_private_key"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SamlPrivateKey)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["template_meeting_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TemplateMeetingIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["theme_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ThemeID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["theme_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ThemeIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["url"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Url)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_body"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailBody)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_replyto"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailReplyto)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_sender"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailSender)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_subject"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailSubject)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["vote_decrypt_public_main_key"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VoteDecryptPublicMainKey)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -729,3 +729,1673 @@ func (m Meeting) Get(field string) interface{} {
 
 	return nil
 }
+
+func (m Meeting) Update(data map[string]string) error {
+	if val, ok := data["admin_group_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AdminGroupID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_enable_numbering"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaEnableNumbering)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_item_creation"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaItemCreation)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_item_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaItemIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_new_items_default_visibility"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaNewItemsDefaultVisibility)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_number_prefix"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaNumberPrefix)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_numeral_system"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaNumeralSystem)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_show_internal_items_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaShowInternalItemsOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_show_subtitles"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaShowSubtitles)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_show_topic_navigation_on_detail_view"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaShowTopicNavigationOnDetailView)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["all_projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["anonymous_group_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AnonymousGroupID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_enable"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseEnable)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_max_amount"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseMaxAmount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_min_amount"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseMinAmount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_particle_image_url"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseParticleImageUrl)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_show_level"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseShowLevel)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_timeout"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseTimeout)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["applause_type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ApplauseType)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_candidate_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentCandidateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_add_candidates_to_list_of_speakers"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollAddCandidatesToListOfSpeakers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_ballot_paper_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollBallotPaperNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_ballot_paper_selection"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollBallotPaperSelection)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_default_backend"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollDefaultBackend)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_default_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollDefaultGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_default_method"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollDefaultMethod)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_default_onehundred_percent_base"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollDefaultOnehundredPercentBase)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_default_type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollDefaultType)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_enable_max_votes_per_option"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollEnableMaxVotesPerOption)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignment_poll_sort_poll_result_by_votes"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentPollSortPollResultByVotes)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignments_export_preamble"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentsExportPreamble)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["assignments_export_title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentsExportTitle)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chat_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChatGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chat_message_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChatMessageIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["committee_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CommitteeID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_auto_connect"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceAutoConnect)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_auto_connect_next_speakers"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceAutoConnectNextSpeakers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_enable_helpdesk"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceEnableHelpdesk)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_los_restriction"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceLosRestriction)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_open_microphone"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceOpenMicrophone)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_open_video"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceOpenVideo)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_show"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceShow)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_stream_poster_url"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceStreamPosterUrl)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["conference_stream_url"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ConferenceStreamUrl)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["custom_translations"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CustomTranslations)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_group_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultGroupID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_meeting_for_committee_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultMeetingForCommitteeID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_agenda_item_list_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorAgendaItemListIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_amendment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorAmendmentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_assignment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorAssignmentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_assignment_poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorAssignmentPollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_countdown_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorCountdownIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_current_list_of_speakers_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorCurrentListOfSpeakersIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_list_of_speakers_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorListOfSpeakersIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_message_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorMessageIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_motion_block_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorMotionBlockIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorMotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_motion_poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorMotionPollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorPollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_projector_topic_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultProjectorTopicIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["description"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Description)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["enable_anonymous"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EnableAnonymous)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["end_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EndTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_csv_encoding"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportCsvEncoding)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_csv_separator"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportCsvSeparator)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_fontsize"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfFontsize)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_line_height"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfLineHeight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_page_margin_bottom"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfPageMarginBottom)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_page_margin_left"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfPageMarginLeft)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_page_margin_right"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfPageMarginRight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_page_margin_top"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfPageMarginTop)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_pagenumber_alignment"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfPagenumberAlignment)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["export_pdf_pagesize"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExportPdfPagesize)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["external_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExternalID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_bold_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontBoldID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_bold_italic_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontBoldItalicID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_chyron_speaker_name_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontChyronSpeakerNameID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_italic_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontItalicID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_monospace_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontMonospaceID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_projector_h1_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontProjectorH1ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_projector_h2_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontProjectorH2ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["font_regular_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.FontRegularID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["forwarded_motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ForwardedMotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["imported_at"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ImportedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_active_in_organization_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsActiveInOrganizationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_archived_in_organization_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsArchivedInOrganizationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["jitsi_domain"]; ok {
+		err := json.Unmarshal([]byte(val), &m.JitsiDomain)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["jitsi_room_name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.JitsiRoomName)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["jitsi_room_password"]; ok {
+		err := json.Unmarshal([]byte(val), &m.JitsiRoomPassword)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["language"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Language)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_allow_multiple_speakers"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersAllowMultipleSpeakers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_amount_last_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersAmountLastOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_amount_next_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersAmountNextOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_can_create_point_of_order_for_others"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersCanCreatePointOfOrderForOthers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_can_set_contribution_self"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersCanSetContributionSelf)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_closing_disables_point_of_order"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersClosingDisablesPointOfOrder)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_countdown_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersCountdownID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_couple_countdown"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersCoupleCountdown)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_default_structure_level_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersDefaultStructureLevelTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_enable_interposed_question"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersEnableInterposedQuestion)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_enable_point_of_order_categories"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersEnablePointOfOrderCategories)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_enable_point_of_order_speakers"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersEnablePointOfOrderSpeakers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_enable_pro_contra_speech"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersEnableProContraSpeech)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_hide_contribution_count"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersHideContributionCount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_initially_closed"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersInitiallyClosed)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_intervention_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersInterventionTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_present_users_only"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersPresentUsersOnly)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_show_amount_of_speakers_on_slide"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersShowAmountOfSpeakersOnSlide)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_show_first_contribution"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersShowFirstContribution)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_speaker_note_for_everyone"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersSpeakerNoteForEveryone)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["location"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Location)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["locked_from_inside"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LockedFromInside)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_pdf_ballot_paper_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoPdfBallotPaperID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_pdf_footer_l_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoPdfFooterLID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_pdf_footer_r_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoPdfFooterRID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_pdf_header_l_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoPdfHeaderLID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_pdf_header_r_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoPdfHeaderRID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_projector_header_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoProjectorHeaderID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_projector_main_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoProjectorMainID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["logo_web_header_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LogoWebHeaderID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_block_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionBlockIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_category_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionCategoryIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_change_recommendation_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionChangeRecommendationIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_comment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionCommentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_comment_section_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionCommentSectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_editor_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionEditorIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_ballot_paper_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollBallotPaperNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_ballot_paper_selection"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollBallotPaperSelection)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_default_backend"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollDefaultBackend)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_default_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollDefaultGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_default_method"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollDefaultMethod)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_default_onehundred_percent_base"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollDefaultOnehundredPercentBase)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_poll_default_type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionPollDefaultType)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_state_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionStateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_statute_paragraph_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionStatuteParagraphIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_submitter_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionSubmitterIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_workflow_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionWorkflowIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_working_group_speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionWorkingGroupSpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_amendments_enabled"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsAmendmentsEnabled)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_amendments_in_main_list"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsAmendmentsInMainList)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_amendments_multiple_paragraphs"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsAmendmentsMultipleParagraphs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_amendments_of_amendments"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsAmendmentsOfAmendments)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_amendments_prefix"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsAmendmentsPrefix)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_amendments_text_mode"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsAmendmentsTextMode)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_block_slide_columns"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsBlockSlideColumns)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_default_amendment_workflow_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsDefaultAmendmentWorkflowID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_default_line_numbering"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsDefaultLineNumbering)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_default_sorting"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsDefaultSorting)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_default_statute_amendment_workflow_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsDefaultStatuteAmendmentWorkflowID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_default_workflow_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsDefaultWorkflowID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_enable_editor"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsEnableEditor)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_enable_reason_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsEnableReasonOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_enable_recommendation_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsEnableRecommendationOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_enable_sidebox_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsEnableSideboxOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_enable_text_on_projector"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsEnableTextOnProjector)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_enable_working_group_speaker"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsEnableWorkingGroupSpeaker)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_export_follow_recommendation"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsExportFollowRecommendation)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_export_preamble"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsExportPreamble)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_export_submitter_recommendation"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsExportSubmitterRecommendation)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_export_title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsExportTitle)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_hide_metadata_background"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsHideMetadataBackground)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_line_length"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsLineLength)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_number_min_digits"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsNumberMinDigits)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_number_type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsNumberType)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_number_with_blank"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsNumberWithBlank)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_preamble"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsPreamble)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_reason_required"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsReasonRequired)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_recommendation_text_mode"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsRecommendationTextMode)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_recommendations_by"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsRecommendationsBy)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_show_referring_motions"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsShowReferringMotions)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_show_sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsShowSequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_statute_recommendations_by"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsStatuteRecommendationsBy)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_statutes_enabled"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsStatutesEnabled)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motions_supporters_min_amount"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionsSupportersMinAmount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["option_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OptionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["organization_tag_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OrganizationTagIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["personal_note_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PersonalNoteIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["point_of_order_category_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PointOfOrderCategoryIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ballot_paper_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollBallotPaperNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ballot_paper_selection"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollBallotPaperSelection)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_candidate_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollCandidateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_candidate_list_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollCandidateListIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_countdown_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollCountdownID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_couple_countdown"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollCoupleCountdown)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_default_backend"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollDefaultBackend)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_default_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollDefaultGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_default_method"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollDefaultMethod)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_default_onehundred_percent_base"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollDefaultOnehundredPercentBase)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_default_type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollDefaultType)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_sort_poll_result_by_votes"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollSortPollResultByVotes)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["present_user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PresentUserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projector_countdown_default_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectorCountdownDefaultTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projector_countdown_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectorCountdownIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projector_countdown_warning_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectorCountdownWarningTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projector_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectorIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projector_message_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectorMessageIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["reference_projector_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ReferenceProjectorID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["start_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StartTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_list_of_speakers_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelListOfSpeakersIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["tag_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TagIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["template_for_organization_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TemplateForOrganizationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["topic_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TopicIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["topic_poll_default_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TopicPollDefaultGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_allow_self_set_present"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersAllowSelfSetPresent)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_body"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailBody)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_replyto"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailReplyto)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_sender"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailSender)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_email_subject"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEmailSubject)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_enable_presence_view"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEnablePresenceView)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_enable_vote_delegations"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEnableVoteDelegations)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_enable_vote_weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersEnableVoteWeight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_forbid_delegator_as_submitter"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersForbidDelegatorAsSubmitter)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_forbid_delegator_as_supporter"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersForbidDelegatorAsSupporter)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_forbid_delegator_in_list_of_speakers"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersForbidDelegatorInListOfSpeakers)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_forbid_delegator_to_vote"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersForbidDelegatorToVote)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_pdf_welcometext"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersPdfWelcometext)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_pdf_welcometitle"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersPdfWelcometitle)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_pdf_wlan_encryption"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersPdfWlanEncryption)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_pdf_wlan_password"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersPdfWlanPassword)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["users_pdf_wlan_ssid"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsersPdfWlanSsid)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["vote_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VoteIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["welcome_text"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WelcomeText)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["welcome_title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WelcomeTitle)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

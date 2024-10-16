@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Topic struct {
 	AgendaItemID                  int     `json:"agenda_item_id"`
 	AttachmentMeetingMediafileIDs []int   `json:"attachment_meeting_mediafile_ids"`
@@ -39,6 +41,80 @@ func (m Topic) Get(field string) interface{} {
 		return m.Text
 	case "title":
 		return m.Title
+	}
+
+	return nil
+}
+
+func (m Topic) Update(data map[string]string) error {
+	if val, ok := data["agenda_item_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["attachment_meeting_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AttachmentMeetingMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["text"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Text)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Title)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

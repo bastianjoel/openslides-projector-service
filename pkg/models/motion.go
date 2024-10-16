@@ -177,3 +177,385 @@ func (m Motion) Get(field string) interface{} {
 
 	return nil
 }
+
+func (m Motion) Update(data map[string]string) error {
+	if val, ok := data["additional_submitter"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AdditionalSubmitter)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["agenda_item_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["all_derived_motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllDerivedMotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["all_origin_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AllOriginIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["amendment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AmendmentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["amendment_paragraphs"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AmendmentParagraphs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["attachment_meeting_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AttachmentMeetingMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["block_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.BlockID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["category_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CategoryID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["category_weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CategoryWeight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["change_recommendation_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChangeRecommendationIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["comment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CommentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["created"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Created)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["derived_motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DerivedMotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["editor_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EditorIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["forwarded"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Forwarded)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["identical_motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IDenticalMotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["last_modified"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LastModified)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["lead_motion_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LeadMotionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["modified_final_version"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ModifiedFinalVersion)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Number)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["number_value"]; ok {
+		err := json.Unmarshal([]byte(val), &m.NumberValue)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["option_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OptionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["origin_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OriginID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["origin_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OriginMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["personal_note_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PersonalNoteIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["reason"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Reason)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["recommendation_extension"]; ok {
+		err := json.Unmarshal([]byte(val), &m.RecommendationExtension)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["recommendation_extension_reference_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.RecommendationExtensionReferenceIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["recommendation_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.RecommendationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["referenced_in_motion_recommendation_extension_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ReferencedInMotionRecommendationExtensionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["referenced_in_motion_state_extension_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ReferencedInMotionStateExtensionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sort_child_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SortChildIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sort_parent_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SortParentID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sort_weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SortWeight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["start_line_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StartLineNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["state_extension"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StateExtension)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["state_extension_reference_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StateExtensionReferenceIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["state_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StateID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["statute_paragraph_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StatuteParagraphID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["submitter_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SubmitterIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["supporter_meeting_user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SupporterMeetingUserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["tag_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TagIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["text"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Text)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["text_hash"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TextHash)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Title)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["workflow_timestamp"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WorkflowTimestamp)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["working_group_speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WorkingGroupSpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

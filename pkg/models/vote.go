@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Vote struct {
 	DelegatedUserID *int    `json:"delegated_user_id"`
 	ID              int     `json:"id"`
@@ -33,6 +35,66 @@ func (m Vote) Get(field string) interface{} {
 		return m.Value
 	case "weight":
 		return m.Weight
+	}
+
+	return nil
+}
+
+func (m Vote) Update(data map[string]string) error {
+	if val, ok := data["delegated_user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DelegatedUserID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["option_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OptionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UserID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["user_token"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UserToken)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["value"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Value)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type StructureLevelListOfSpeakers struct {
 	AdditionalTime   *float32 `json:"additional_time"`
 	CurrentStartTime *int     `json:"current_start_time"`
@@ -36,6 +38,73 @@ func (m StructureLevelListOfSpeakers) Get(field string) interface{} {
 		return m.SpeakerIDs
 	case "structure_level_id":
 		return m.StructureLevelID
+	}
+
+	return nil
+}
+
+func (m StructureLevelListOfSpeakers) Update(data map[string]string) error {
+	if val, ok := data["additional_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AdditionalTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["current_start_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CurrentStartTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["initial_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.InitialTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["remaining_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.RemainingTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

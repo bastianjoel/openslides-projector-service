@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MotionChangeRecommendation struct {
 	CreationTime     *int    `json:"creation_time"`
 	ID               int     `json:"id"`
@@ -42,6 +44,87 @@ func (m MotionChangeRecommendation) Get(field string) interface{} {
 		return m.Text
 	case "type":
 		return m.Type
+	}
+
+	return nil
+}
+
+func (m MotionChangeRecommendation) Update(data map[string]string) error {
+	if val, ok := data["creation_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CreationTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["internal"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Internal)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["line_from"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LineFrom)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["line_to"]; ok {
+		err := json.Unmarshal([]byte(val), &m.LineTo)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["other_description"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OtherDescription)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["rejected"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Rejected)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["text"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Text)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Type)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

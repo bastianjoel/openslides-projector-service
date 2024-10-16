@@ -111,3 +111,231 @@ func (m Poll) Get(field string) interface{} {
 
 	return nil
 }
+
+func (m Poll) Update(data map[string]string) error {
+	if val, ok := data["backend"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Backend)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["content_object_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ContentObjectID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["crypt_key"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CryptKey)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["crypt_signature"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CryptSignature)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["description"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Description)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["entitled_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EntitledGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["entitled_users_at_stop"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EntitledUsersAtStop)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["global_abstain"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GlobalAbstain)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["global_no"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GlobalNo)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["global_option_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GlobalOptionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["global_yes"]; ok {
+		err := json.Unmarshal([]byte(val), &m.GlobalYes)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_pseudoanonymized"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsPseudoanonymized)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["max_votes_amount"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MaxVotesAmount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["max_votes_per_option"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MaxVotesPerOption)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["min_votes_amount"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MinVotesAmount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["onehundred_percent_base"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OnehundredPercentBase)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["option_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OptionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["pollmethod"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Pollmethod)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["state"]; ok {
+		err := json.Unmarshal([]byte(val), &m.State)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Title)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Type)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["vote_count"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VoteCount)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["voted_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VotedIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["votes_raw"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VotesRaw)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["votes_signature"]; ok {
+		err := json.Unmarshal([]byte(val), &m.VotesSignature)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["votescast"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Votescast)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["votesinvalid"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Votesinvalid)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["votesvalid"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Votesvalid)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

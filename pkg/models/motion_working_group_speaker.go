@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MotionWorkingGroupSpeaker struct {
 	ID            int  `json:"id"`
 	MeetingID     int  `json:"meeting_id"`
@@ -24,6 +26,45 @@ func (m MotionWorkingGroupSpeaker) Get(field string) interface{} {
 		return m.MotionID
 	case "weight":
 		return m.Weight
+	}
+
+	return nil
+}
+
+func (m MotionWorkingGroupSpeaker) Update(data map[string]string) error {
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type PollCandidateList struct {
 	ID               int   `json:"id"`
 	MeetingID        int   `json:"meeting_id"`
@@ -21,6 +23,38 @@ func (m PollCandidateList) Get(field string) interface{} {
 		return m.OptionID
 	case "poll_candidate_ids":
 		return m.PollCandidateIDs
+	}
+
+	return nil
+}
+
+func (m PollCandidateList) Update(data map[string]string) error {
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["option_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OptionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_candidate_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollCandidateIDs)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

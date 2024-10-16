@@ -19,3 +19,15 @@ func (m {{.GoName}}) Get(field string) interface{} {
 	return nil
 }
 
+func (m {{.GoName}}) Update(data map[string]string) error { {{range .Fields}}
+	if val, ok := data["{{.FieldName}}"]; ok {
+		err := json.Unmarshal([]byte(val), &m.{{.GoName}})
+		if err != nil {
+			return err
+		}
+	}
+	{{end}}
+
+	return nil
+}
+

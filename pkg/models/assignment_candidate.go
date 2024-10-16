@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type AssignmentCandidate struct {
 	AssignmentID  int  `json:"assignment_id"`
 	ID            int  `json:"id"`
@@ -24,6 +26,45 @@ func (m AssignmentCandidate) Get(field string) interface{} {
 		return m.MeetingUserID
 	case "weight":
 		return m.Weight
+	}
+
+	return nil
+}
+
+func (m AssignmentCandidate) Update(data map[string]string) error {
+	if val, ok := data["assignment_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AssignmentID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

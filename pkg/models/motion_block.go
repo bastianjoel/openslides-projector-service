@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MotionBlock struct {
 	AgendaItemID     *int   `json:"agenda_item_id"`
 	ID               int    `json:"id"`
@@ -36,6 +38,73 @@ func (m MotionBlock) Get(field string) interface{} {
 		return m.SequentialNumber
 	case "title":
 		return m.Title
+	}
+
+	return nil
+}
+
+func (m MotionBlock) Update(data map[string]string) error {
+	if val, ok := data["agenda_item_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["internal"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Internal)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["motion_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MotionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Title)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

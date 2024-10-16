@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type AgendaItem struct {
 	ChildIDs        []int   `json:"child_ids"`
 	Closed          *bool   `json:"closed"`
@@ -60,6 +62,129 @@ func (m AgendaItem) Get(field string) interface{} {
 		return m.Type
 	case "weight":
 		return m.Weight
+	}
+
+	return nil
+}
+
+func (m AgendaItem) Update(data map[string]string) error {
+	if val, ok := data["child_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChildIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["closed"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Closed)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["comment"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Comment)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["content_object_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ContentObjectID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["duration"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Duration)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_hidden"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsHidden)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_internal"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsInternal)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["item_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ItemNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["level"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Level)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["moderator_notes"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ModeratorNotes)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["parent_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ParentID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["tag_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TagIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Type)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

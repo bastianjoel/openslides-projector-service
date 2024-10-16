@@ -57,3 +57,105 @@ func (m Mediafile) Get(field string) interface{} {
 
 	return nil
 }
+
+func (m Mediafile) Update(data map[string]string) error {
+	if val, ok := data["child_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChildIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["create_timestamp"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CreateTimestamp)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["filename"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Filename)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["filesize"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Filesize)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_directory"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsDirectory)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["mimetype"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Mimetype)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["owner_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OwnerID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["parent_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ParentID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["pdf_information"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PdfInformation)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["published_to_meetings_in_organization_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PublishedToMeetingsInOrganizationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Title)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["token"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Token)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

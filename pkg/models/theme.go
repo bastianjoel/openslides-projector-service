@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Theme struct {
 	Abstain                *string `json:"abstain"`
 	Accent100              *string `json:"accent_100"`
@@ -159,6 +161,360 @@ func (m Theme) Get(field string) interface{} {
 		return m.WarnA700
 	case "yes":
 		return m.Yes
+	}
+
+	return nil
+}
+
+func (m Theme) Update(data map[string]string) error {
+	if val, ok := data["abstain"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Abstain)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_100"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent100)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_200"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent200)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_300"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent300)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_400"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent400)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_50"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent50)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_500"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent500)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_600"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent600)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_700"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent700)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_800"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent800)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_900"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Accent900)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_a100"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AccentA100)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_a200"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AccentA200)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_a400"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AccentA400)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["accent_a700"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AccentA700)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["headbar"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Headbar)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["no"]; ok {
+		err := json.Unmarshal([]byte(val), &m.No)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["organization_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OrganizationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_100"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary100)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_200"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary200)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_300"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary300)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_400"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary400)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_50"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary50)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_500"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary500)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_600"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary600)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_700"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary700)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_800"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary800)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_900"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Primary900)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_a100"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PrimaryA100)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_a200"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PrimaryA200)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_a400"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PrimaryA400)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["primary_a700"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PrimaryA700)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["theme_for_organization_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ThemeForOrganizationID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_100"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn100)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_200"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn200)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_300"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn300)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_400"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn400)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_50"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn50)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_500"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn500)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_600"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn600)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_700"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn700)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_800"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn800)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_900"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Warn900)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_a100"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WarnA100)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_a200"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WarnA200)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_a400"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WarnA400)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["warn_a700"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WarnA700)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["yes"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Yes)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Group struct {
 	AdminGroupForMeetingID                  *int     `json:"admin_group_for_meeting_id"`
 	AnonymousGroupForMeetingID              *int     `json:"anonymous_group_for_meeting_id"`
@@ -72,6 +74,157 @@ func (m Group) Get(field string) interface{} {
 		return m.WriteChatGroupIDs
 	case "write_comment_section_ids":
 		return m.WriteCommentSectionIDs
+	}
+
+	return nil
+}
+
+func (m Group) Update(data map[string]string) error {
+	if val, ok := data["admin_group_for_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AdminGroupForMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["anonymous_group_for_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AnonymousGroupForMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_group_for_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultGroupForMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["external_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ExternalID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_mediafile_access_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingMediafileAccessGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_mediafile_inherited_access_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingMediafileInheritedAccessGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["permissions"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Permissions)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["read_chat_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ReadChatGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["read_comment_section_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ReadCommentSectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_assignment_poll_default_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsAssignmentPollDefaultID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_motion_poll_default_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsMotionPollDefaultID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_poll_default_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsPollDefaultID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_topic_poll_default_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsTopicPollDefaultID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["write_chat_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WriteChatGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["write_comment_section_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.WriteCommentSectionIDs)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

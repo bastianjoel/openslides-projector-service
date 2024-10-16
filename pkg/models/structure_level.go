@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type StructureLevel struct {
 	Color                           *string `json:"color"`
 	DefaultTime                     *int    `json:"default_time"`
@@ -30,6 +32,59 @@ func (m StructureLevel) Get(field string) interface{} {
 		return m.Name
 	case "structure_level_list_of_speakers_ids":
 		return m.StructureLevelListOfSpeakersIDs
+	}
+
+	return nil
+}
+
+func (m StructureLevel) Update(data map[string]string) error {
+	if val, ok := data["color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Color)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_list_of_speakers_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelListOfSpeakersIDs)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

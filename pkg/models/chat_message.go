@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type ChatMessage struct {
 	ChatGroupID   int    `json:"chat_group_id"`
 	Content       string `json:"content"`
@@ -27,6 +29,52 @@ func (m ChatMessage) Get(field string) interface{} {
 		return m.MeetingID
 	case "meeting_user_id":
 		return m.MeetingUserID
+	}
+
+	return nil
+}
+
+func (m ChatMessage) Update(data map[string]string) error {
+	if val, ok := data["chat_group_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChatGroupID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["content"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Content)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["created"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Created)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

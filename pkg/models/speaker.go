@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Speaker struct {
 	BeginTime                      *int    `json:"begin_time"`
 	EndTime                        *int    `json:"end_time"`
@@ -54,6 +56,115 @@ func (m Speaker) Get(field string) interface{} {
 		return m.UnpauseTime
 	case "weight":
 		return m.Weight
+	}
+
+	return nil
+}
+
+func (m Speaker) Update(data map[string]string) error {
+	if val, ok := data["begin_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.BeginTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["end_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.EndTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_user_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingUserID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["note"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Note)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["pause_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PauseTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["point_of_order"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PointOfOrder)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["point_of_order_category_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PointOfOrderCategoryID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["speech_state"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SpeechState)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["total_pause"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TotalPause)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["unpause_time"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UnpauseTime)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

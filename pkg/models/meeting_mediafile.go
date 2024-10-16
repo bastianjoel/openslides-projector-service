@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type MeetingMediafile struct {
 	AccessGroupIDs                         []int    `json:"access_group_ids"`
 	AttachmentIDs                          []string `json:"attachment_ids"`
@@ -84,6 +86,185 @@ func (m MeetingMediafile) Get(field string) interface{} {
 		return m.UsedAsLogoProjectorMainInMeetingID
 	case "used_as_logo_web_header_in_meeting_id":
 		return m.UsedAsLogoWebHeaderInMeetingID
+	}
+
+	return nil
+}
+
+func (m MeetingMediafile) Update(data map[string]string) error {
+	if val, ok := data["access_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AccessGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["attachment_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AttachmentIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["inherited_access_group_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.InheritedAccessGroupIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_public"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsPublic)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["mediafile_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MediafileID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_bold_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontBoldInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_bold_italic_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontBoldItalicInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_chyron_speaker_name_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontChyronSpeakerNameInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_italic_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontItalicInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_monospace_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontMonospaceInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_projector_h1_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontProjectorH1InMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_projector_h2_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontProjectorH2InMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_font_regular_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsFontRegularInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_pdf_ballot_paper_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoPdfBallotPaperInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_pdf_footer_l_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoPdfFooterLInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_pdf_footer_r_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoPdfFooterRInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_pdf_header_l_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoPdfHeaderLInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_pdf_header_r_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoPdfHeaderRInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_projector_header_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoProjectorHeaderInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_projector_main_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoProjectorMainInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_logo_web_header_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsLogoWebHeaderInMeetingID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

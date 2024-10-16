@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Assignment struct {
 	AgendaItemID                  *int    `json:"agenda_item_id"`
 	AttachmentMeetingMediafileIDs []int   `json:"attachment_meeting_mediafile_ids"`
@@ -57,6 +59,122 @@ func (m Assignment) Get(field string) interface{} {
 		return m.TagIDs
 	case "title":
 		return m.Title
+	}
+
+	return nil
+}
+
+func (m Assignment) Update(data map[string]string) error {
+	if val, ok := data["agenda_item_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["attachment_meeting_mediafile_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AttachmentMeetingMediafileIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["candidate_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CandidateIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["default_poll_description"]; ok {
+		err := json.Unmarshal([]byte(val), &m.DefaultPollDescription)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["description"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Description)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["list_of_speakers_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ListOfSpeakersID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["number_poll_candidates"]; ok {
+		err := json.Unmarshal([]byte(val), &m.NumberPollCandidates)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["open_posts"]; ok {
+		err := json.Unmarshal([]byte(val), &m.OpenPosts)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["phase"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Phase)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["poll_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PollIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["tag_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.TagIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Title)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

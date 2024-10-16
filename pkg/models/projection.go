@@ -48,3 +48,84 @@ func (m Projection) Get(field string) interface{} {
 
 	return nil
 }
+
+func (m Projection) Update(data map[string]string) error {
+	if val, ok := data["content"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Content)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["content_object_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ContentObjectID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["current_projector_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CurrentProjectorID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["history_projector_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.HistoryProjectorID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["options"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Options)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["preview_projector_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PreviewProjectorID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["stable"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Stable)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["type"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Type)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["weight"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Weight)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

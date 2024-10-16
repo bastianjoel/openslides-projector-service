@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type Projector struct {
 	AspectRatioDenominator                                    *int    `json:"aspect_ratio_denominator"`
 	AspectRatioNumerator                                      *int    `json:"aspect_ratio_numerator"`
@@ -132,6 +134,297 @@ func (m Projector) Get(field string) interface{} {
 		return m.UsedAsReferenceProjectorMeetingID
 	case "width":
 		return m.Width
+	}
+
+	return nil
+}
+
+func (m Projector) Update(data map[string]string) error {
+	if val, ok := data["aspect_ratio_denominator"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AspectRatioDenominator)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["aspect_ratio_numerator"]; ok {
+		err := json.Unmarshal([]byte(val), &m.AspectRatioNumerator)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["background_color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.BackgroundColor)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chyron_background_color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChyronBackgroundColor)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chyron_background_color_2"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChyronBackgroundColor2)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chyron_font_color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChyronFontColor)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["chyron_font_color_2"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ChyronFontColor2)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Color)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["current_projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.CurrentProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["header_background_color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.HeaderBackgroundColor)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["header_font_color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.HeaderFontColor)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["header_h1_color"]; ok {
+		err := json.Unmarshal([]byte(val), &m.HeaderH1Color)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["history_projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.HistoryProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["is_internal"]; ok {
+		err := json.Unmarshal([]byte(val), &m.IsInternal)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["name"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Name)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["preview_projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.PreviewProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["scale"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Scale)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["scroll"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Scroll)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["show_clock"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ShowClock)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["show_header_footer"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ShowHeaderFooter)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["show_logo"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ShowLogo)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["show_title"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ShowTitle)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_agenda_item_list_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForAgendaItemListInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_amendment_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForAmendmentInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_assignment_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForAssignmentInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_assignment_poll_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForAssignmentPollInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_countdown_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForCountdownInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_current_list_of_speakers_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForCurrentListOfSpeakersInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_list_of_speakers_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForListOfSpeakersInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_mediafile_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForMediafileInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_message_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForMessageInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_motion_block_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForMotionBlockInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_motion_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForMotionInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_motion_poll_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForMotionPollInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_poll_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForPollInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_default_projector_for_topic_in_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsDefaultProjectorForTopicInMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["used_as_reference_projector_meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.UsedAsReferenceProjectorMeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["width"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Width)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

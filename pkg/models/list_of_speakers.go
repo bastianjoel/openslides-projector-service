@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 type ListOfSpeakers struct {
 	Closed                          *bool  `json:"closed"`
 	ContentObjectID                 string `json:"content_object_id"`
@@ -33,6 +35,66 @@ func (m ListOfSpeakers) Get(field string) interface{} {
 		return m.SpeakerIDs
 	case "structure_level_list_of_speakers_ids":
 		return m.StructureLevelListOfSpeakersIDs
+	}
+
+	return nil
+}
+
+func (m ListOfSpeakers) Update(data map[string]string) error {
+	if val, ok := data["closed"]; ok {
+		err := json.Unmarshal([]byte(val), &m.Closed)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["content_object_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ContentObjectID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["meeting_id"]; ok {
+		err := json.Unmarshal([]byte(val), &m.MeetingID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["projection_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.ProjectionIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["sequential_number"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SequentialNumber)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["speaker_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.SpeakerIDs)
+		if err != nil {
+			return err
+		}
+	}
+
+	if val, ok := data["structure_level_list_of_speakers_ids"]; ok {
+		err := json.Unmarshal([]byte(val), &m.StructureLevelListOfSpeakersIDs)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
