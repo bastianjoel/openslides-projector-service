@@ -68,10 +68,16 @@ func (p *projector) subscribeProjector() {
 	// TODO: Subscribe on projector settings updates
 	// Ignore e.g. projection defaults and [...]_projection_ids
 	// If header active: Meeting name + description need to be subscribed
-	projectorSub := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).Subscribe()
+	projectorSub, err := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).SubscribeOne(p.projector)
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not open projector subscription")
+	}
 	defer projectorSub.Unsubscribe()
 
-	projectionUpdate, projections, unsubscibeProjections := p.getProjectionSubscription()
+	projectionUpdate, projections, unsubscibeProjections, err := p.getProjectionSubscription()
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not open projection subscription")
+	}
 	defer unsubscibeProjections()
 
 	for {
@@ -89,18 +95,17 @@ func (p *projector) subscribeProjector() {
 				p.listeners[i] = p.listeners[len(p.listeners)-1]
 				p.listeners = p.listeners[:len(p.listeners)-1]
 			}
-		case data, ok := <-projectorSub.Channel:
+		case updatedFields, ok := <-projectorSub.Channel:
 			if !ok {
-				return
-			}
-
-			projectorData := data["projector/"+strconv.Itoa(p.projector.ID)]
-			if projectorData == nil {
 				p.sendToAll(&ProjectorUpdateEvent{"deleted", ""})
 				return
 			}
 
-			encodedData, err := json.Marshal(projectorData)
+			updatedData := map[string]interface{}{}
+			for _, field := range updatedFields {
+				updatedData[field] = p.projector.Get(field)
+			}
+			encodedData, err := json.Marshal(updatedData)
 			if err != nil {
 				log.Error().Err(err).Msg("could not encode projector data")
 			} else {
@@ -174,15 +179,18 @@ func (p *projector) updateFullContent() error {
 	return nil
 }
 
-func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, func()) {
+func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, func(), error) {
 	updateChannel := make(chan []int)
 	projections := make(map[int]string)
 	addProjection := make(chan int)
 	removeProjection := make(chan int)
+	var projectionIDs []int
+	sub, err := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).SetFields("current_projection_ids").SubscribeField(&projectionIDs)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("failed to subscibe projection ids: %w", err)
+	}
 
 	go func() {
-		var projectionIDs []int
-		sub := datastore.Collection(p.db, &models.Projector{}).SetIds(p.projector.ID).SetFields("current_projection_ids").SubscribeField(&projectionIDs)
 		defer sub.Unsubscribe()
 
 		projectionChannel := p.slideRouter.SubscribeContent(addProjection, removeProjection)
@@ -216,5 +224,5 @@ func (p *projector) getProjectionSubscription() (<-chan []int, map[int]string, f
 
 	return updateChannel, projections, func() {
 		// TODO: Unsubscribe
-	}
+	}, nil
 }

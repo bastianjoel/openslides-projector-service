@@ -2,11 +2,11 @@ import './projector/scale.js';
 
 const eventSource = new EventSource(`/system/projector/subscribe/${window.location.href.substring(window.location.href.lastIndexOf('/') + 1)}`)
 eventSource.addEventListener(`settings`, (e) => {
-  console.log(e);
+  console.debug(`settings`, e.data);
 });
 
-eventSource.addEventListener(`deleted`, (e) => {
-  console.log(e);
+eventSource.addEventListener(`deleted`, () => {
+  console.debug(`deleted`);
 });
 
 eventSource.addEventListener(`connected`, () => {
