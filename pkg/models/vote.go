@@ -14,3 +14,26 @@ type Vote struct {
 func (m Vote) CollectionName() string {
 	return "vote"
 }
+
+func (m Vote) Get(field string) interface{} {
+	switch field {
+	case "delegated_user_id":
+		return m.DelegatedUserID
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "option_id":
+		return m.OptionID
+	case "user_id":
+		return m.UserID
+	case "user_token":
+		return m.UserToken
+	case "value":
+		return m.Value
+	case "weight":
+		return m.Weight
+	}
+
+	return nil
+}

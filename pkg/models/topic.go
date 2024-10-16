@@ -16,3 +16,30 @@ type Topic struct {
 func (m Topic) CollectionName() string {
 	return "topic"
 }
+
+func (m Topic) Get(field string) interface{} {
+	switch field {
+	case "agenda_item_id":
+		return m.AgendaItemID
+	case "attachment_meeting_mediafile_ids":
+		return m.AttachmentMeetingMediafileIDs
+	case "id":
+		return m.ID
+	case "list_of_speakers_id":
+		return m.ListOfSpeakersID
+	case "meeting_id":
+		return m.MeetingID
+	case "poll_ids":
+		return m.PollIDs
+	case "projection_ids":
+		return m.ProjectionIDs
+	case "sequential_number":
+		return m.SequentialNumber
+	case "text":
+		return m.Text
+	case "title":
+		return m.Title
+	}
+
+	return nil
+}

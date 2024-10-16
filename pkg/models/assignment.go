@@ -22,3 +22,42 @@ type Assignment struct {
 func (m Assignment) CollectionName() string {
 	return "assignment"
 }
+
+func (m Assignment) Get(field string) interface{} {
+	switch field {
+	case "agenda_item_id":
+		return m.AgendaItemID
+	case "attachment_meeting_mediafile_ids":
+		return m.AttachmentMeetingMediafileIDs
+	case "candidate_ids":
+		return m.CandidateIDs
+	case "default_poll_description":
+		return m.DefaultPollDescription
+	case "description":
+		return m.Description
+	case "id":
+		return m.ID
+	case "list_of_speakers_id":
+		return m.ListOfSpeakersID
+	case "meeting_id":
+		return m.MeetingID
+	case "number_poll_candidates":
+		return m.NumberPollCandidates
+	case "open_posts":
+		return m.OpenPosts
+	case "phase":
+		return m.Phase
+	case "poll_ids":
+		return m.PollIDs
+	case "projection_ids":
+		return m.ProjectionIDs
+	case "sequential_number":
+		return m.SequentialNumber
+	case "tag_ids":
+		return m.TagIDs
+	case "title":
+		return m.Title
+	}
+
+	return nil
+}

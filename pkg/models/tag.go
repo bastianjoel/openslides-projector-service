@@ -10,3 +10,18 @@ type Tag struct {
 func (m Tag) CollectionName() string {
 	return "tag"
 }
+
+func (m Tag) Get(field string) interface{} {
+	switch field {
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "name":
+		return m.Name
+	case "tagged_ids":
+		return m.TaggedIDs
+	}
+
+	return nil
+}

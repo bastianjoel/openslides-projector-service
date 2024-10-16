@@ -11,3 +11,20 @@ type PollCandidate struct {
 func (m PollCandidate) CollectionName() string {
 	return "poll_candidate"
 }
+
+func (m PollCandidate) Get(field string) interface{} {
+	switch field {
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "poll_candidate_list_id":
+		return m.PollCandidateListID
+	case "user_id":
+		return m.UserID
+	case "weight":
+		return m.Weight
+	}
+
+	return nil
+}

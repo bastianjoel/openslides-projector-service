@@ -10,3 +10,12 @@ func (m {{.GoName}}) CollectionName() string {
 	return "{{.CollectionName}}"
 }
 
+func (m {{.GoName}}) Get(field string) interface{} {
+	switch field { {{range .Fields}}
+	case "{{.FieldName}}":
+	    return m.{{.GoName}}{{end}}
+	}
+
+	return nil
+}
+

@@ -10,3 +10,18 @@ type ProjectorMessage struct {
 func (m ProjectorMessage) CollectionName() string {
 	return "projector_message"
 }
+
+func (m ProjectorMessage) Get(field string) interface{} {
+	switch field {
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "message":
+		return m.Message
+	case "projection_ids":
+		return m.ProjectionIDs
+	}
+
+	return nil
+}

@@ -22,3 +22,38 @@ type Mediafile struct {
 func (m Mediafile) CollectionName() string {
 	return "mediafile"
 }
+
+func (m Mediafile) Get(field string) interface{} {
+	switch field {
+	case "child_ids":
+		return m.ChildIDs
+	case "create_timestamp":
+		return m.CreateTimestamp
+	case "filename":
+		return m.Filename
+	case "filesize":
+		return m.Filesize
+	case "id":
+		return m.ID
+	case "is_directory":
+		return m.IsDirectory
+	case "meeting_mediafile_ids":
+		return m.MeetingMediafileIDs
+	case "mimetype":
+		return m.Mimetype
+	case "owner_id":
+		return m.OwnerID
+	case "parent_id":
+		return m.ParentID
+	case "pdf_information":
+		return m.PdfInformation
+	case "published_to_meetings_in_organization_id":
+		return m.PublishedToMeetingsInOrganizationID
+	case "title":
+		return m.Title
+	case "token":
+		return m.Token
+	}
+
+	return nil
+}

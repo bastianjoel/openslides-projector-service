@@ -13,3 +13,24 @@ type StructureLevel struct {
 func (m StructureLevel) CollectionName() string {
 	return "structure_level"
 }
+
+func (m StructureLevel) Get(field string) interface{} {
+	switch field {
+	case "color":
+		return m.Color
+	case "default_time":
+		return m.DefaultTime
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "meeting_user_ids":
+		return m.MeetingUserIDs
+	case "name":
+		return m.Name
+	case "structure_level_list_of_speakers_ids":
+		return m.StructureLevelListOfSpeakersIDs
+	}
+
+	return nil
+}

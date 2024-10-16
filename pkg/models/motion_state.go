@@ -31,3 +31,60 @@ type MotionState struct {
 func (m MotionState) CollectionName() string {
 	return "motion_state"
 }
+
+func (m MotionState) Get(field string) interface{} {
+	switch field {
+	case "allow_create_poll":
+		return m.AllowCreatePoll
+	case "allow_motion_forwarding":
+		return m.AllowMotionForwarding
+	case "allow_submitter_edit":
+		return m.AllowSubmitterEdit
+	case "allow_support":
+		return m.AllowSupport
+	case "css_class":
+		return m.CssClass
+	case "first_state_of_workflow_id":
+		return m.FirstStateOfWorkflowID
+	case "id":
+		return m.ID
+	case "is_internal":
+		return m.IsInternal
+	case "meeting_id":
+		return m.MeetingID
+	case "merge_amendment_into_final":
+		return m.MergeAmendmentIntoFinal
+	case "motion_ids":
+		return m.MotionIDs
+	case "motion_recommendation_ids":
+		return m.MotionRecommendationIDs
+	case "name":
+		return m.Name
+	case "next_state_ids":
+		return m.NextStateIDs
+	case "previous_state_ids":
+		return m.PreviousStateIDs
+	case "recommendation_label":
+		return m.RecommendationLabel
+	case "restrictions":
+		return m.Restrictions
+	case "set_number":
+		return m.SetNumber
+	case "set_workflow_timestamp":
+		return m.SetWorkflowTimestamp
+	case "show_recommendation_extension_field":
+		return m.ShowRecommendationExtensionField
+	case "show_state_extension_field":
+		return m.ShowStateExtensionField
+	case "submitter_withdraw_back_ids":
+		return m.SubmitterWithdrawBackIDs
+	case "submitter_withdraw_state_id":
+		return m.SubmitterWithdrawStateID
+	case "weight":
+		return m.Weight
+	case "workflow_id":
+		return m.WorkflowID
+	}
+
+	return nil
+}

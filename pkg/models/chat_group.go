@@ -13,3 +13,24 @@ type ChatGroup struct {
 func (m ChatGroup) CollectionName() string {
 	return "chat_group"
 }
+
+func (m ChatGroup) Get(field string) interface{} {
+	switch field {
+	case "chat_message_ids":
+		return m.ChatMessageIDs
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "name":
+		return m.Name
+	case "read_group_ids":
+		return m.ReadGroupIDs
+	case "weight":
+		return m.Weight
+	case "write_group_ids":
+		return m.WriteGroupIDs
+	}
+
+	return nil
+}

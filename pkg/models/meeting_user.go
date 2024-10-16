@@ -26,3 +26,50 @@ type MeetingUser struct {
 func (m MeetingUser) CollectionName() string {
 	return "meeting_user"
 }
+
+func (m MeetingUser) Get(field string) interface{} {
+	switch field {
+	case "about_me":
+		return m.AboutMe
+	case "assignment_candidate_ids":
+		return m.AssignmentCandidateIDs
+	case "chat_message_ids":
+		return m.ChatMessageIDs
+	case "comment":
+		return m.Comment
+	case "group_ids":
+		return m.GroupIDs
+	case "id":
+		return m.ID
+	case "locked_out":
+		return m.LockedOut
+	case "meeting_id":
+		return m.MeetingID
+	case "motion_editor_ids":
+		return m.MotionEditorIDs
+	case "motion_submitter_ids":
+		return m.MotionSubmitterIDs
+	case "motion_working_group_speaker_ids":
+		return m.MotionWorkingGroupSpeakerIDs
+	case "number":
+		return m.Number
+	case "personal_note_ids":
+		return m.PersonalNoteIDs
+	case "speaker_ids":
+		return m.SpeakerIDs
+	case "structure_level_ids":
+		return m.StructureLevelIDs
+	case "supported_motion_ids":
+		return m.SupportedMotionIDs
+	case "user_id":
+		return m.UserID
+	case "vote_delegated_to_id":
+		return m.VoteDelegatedToID
+	case "vote_delegations_from_ids":
+		return m.VoteDelegationsFromIDs
+	case "vote_weight":
+		return m.VoteWeight
+	}
+
+	return nil
+}

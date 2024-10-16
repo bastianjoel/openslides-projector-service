@@ -15,3 +15,28 @@ type MotionWorkflow struct {
 func (m MotionWorkflow) CollectionName() string {
 	return "motion_workflow"
 }
+
+func (m MotionWorkflow) Get(field string) interface{} {
+	switch field {
+	case "default_amendment_workflow_meeting_id":
+		return m.DefaultAmendmentWorkflowMeetingID
+	case "default_statute_amendment_workflow_meeting_id":
+		return m.DefaultStatuteAmendmentWorkflowMeetingID
+	case "default_workflow_meeting_id":
+		return m.DefaultWorkflowMeetingID
+	case "first_state_id":
+		return m.FirstStateID
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "name":
+		return m.Name
+	case "sequential_number":
+		return m.SequentialNumber
+	case "state_ids":
+		return m.StateIDs
+	}
+
+	return nil
+}

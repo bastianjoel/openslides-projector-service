@@ -13,3 +13,20 @@ type ImportPreview struct {
 func (m ImportPreview) CollectionName() string {
 	return "import_preview"
 }
+
+func (m ImportPreview) Get(field string) interface{} {
+	switch field {
+	case "created":
+		return m.Created
+	case "id":
+		return m.ID
+	case "name":
+		return m.Name
+	case "result":
+		return m.Result
+	case "state":
+		return m.State
+	}
+
+	return nil
+}

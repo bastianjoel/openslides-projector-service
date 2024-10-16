@@ -15,3 +15,28 @@ type MotionCommentSection struct {
 func (m MotionCommentSection) CollectionName() string {
 	return "motion_comment_section"
 }
+
+func (m MotionCommentSection) Get(field string) interface{} {
+	switch field {
+	case "comment_ids":
+		return m.CommentIDs
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "name":
+		return m.Name
+	case "read_group_ids":
+		return m.ReadGroupIDs
+	case "sequential_number":
+		return m.SequentialNumber
+	case "submitter_can_write":
+		return m.SubmitterCanWrite
+	case "weight":
+		return m.Weight
+	case "write_group_ids":
+		return m.WriteGroupIDs
+	}
+
+	return nil
+}

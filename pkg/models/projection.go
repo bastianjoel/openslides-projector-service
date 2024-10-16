@@ -19,3 +19,32 @@ type Projection struct {
 func (m Projection) CollectionName() string {
 	return "projection"
 }
+
+func (m Projection) Get(field string) interface{} {
+	switch field {
+	case "content":
+		return m.Content
+	case "content_object_id":
+		return m.ContentObjectID
+	case "current_projector_id":
+		return m.CurrentProjectorID
+	case "history_projector_id":
+		return m.HistoryProjectorID
+	case "id":
+		return m.ID
+	case "meeting_id":
+		return m.MeetingID
+	case "options":
+		return m.Options
+	case "preview_projector_id":
+		return m.PreviewProjectorID
+	case "stable":
+		return m.Stable
+	case "type":
+		return m.Type
+	case "weight":
+		return m.Weight
+	}
+
+	return nil
+}
