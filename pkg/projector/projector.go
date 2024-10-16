@@ -22,7 +22,7 @@ type projector struct {
 	projector      *models.Projector
 	listeners      []chan *ProjectorUpdateEvent
 	Content        string
-	Projections    map[int]string
+	Projections    map[int]template.HTML
 	AddListener    chan chan *ProjectorUpdateEvent
 	RemoveListener chan (<-chan *ProjectorUpdateEvent)
 }
@@ -49,7 +49,7 @@ func newProjector(id int, db *datastore.Datastore) (*projector, error) {
 		db:             db,
 		projector:      data,
 		slideRouter:    slide.New(ctx, db),
-		Projections:    make(map[int]string),
+		Projections:    make(map[int]template.HTML),
 		AddListener:    make(chan chan *ProjectorUpdateEvent),
 		RemoveListener: make(chan (<-chan *ProjectorUpdateEvent)),
 	}
@@ -129,7 +129,7 @@ func (p *projector) processProjectionUpdate(updated []int, projections map[int]s
 	updatedProjections := map[int]string{}
 	for _, projectionId := range updated {
 		if projection, ok := projections[projectionId]; ok {
-			p.Projections[projectionId] = projection
+			p.Projections[projectionId] = template.HTML(projection)
 			updatedProjections[projectionId] = projection
 		} else {
 			delete(p.Projections, projectionId)
