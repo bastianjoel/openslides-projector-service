@@ -21,6 +21,12 @@ type query[T baseModel] struct {
 	fqids      []string
 }
 
+func (q *query[T]) SetFqids(ids ...string) *query[T] {
+	q.fqids = append(q.fqids, ids...)
+
+	return q
+}
+
 // Sets the fqids of the query by plain ids
 func (q *query[T]) SetIds(ids ...int) *query[T] {
 	typeName := strcase.ToSnake(reflect.ValueOf(q.collection).Elem().Type().Name())
