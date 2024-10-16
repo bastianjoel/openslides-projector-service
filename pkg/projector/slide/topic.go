@@ -28,13 +28,13 @@ func TopicSlideHandler(ctx context.Context, req *projectionRequest) (<-chan stri
 	}
 
 	go func() {
-		content <- getTopicSlideContent(agendaItem, topic)
+		content <- getTopicSlideContent(&agendaItem, &topic)
 
 		for {
 			select {
 			case <-topicSub.Channel:
 			case <-agendaSub.Channel:
-				content <- getTopicSlideContent(agendaItem, topic)
+				content <- getTopicSlideContent(&agendaItem, &topic)
 			}
 		}
 	}()
@@ -42,7 +42,7 @@ func TopicSlideHandler(ctx context.Context, req *projectionRequest) (<-chan stri
 	return content, nil
 }
 
-func getTopicSlideContent(agendaItem models.AgendaItem, topic models.Topic) string {
+func getTopicSlideContent(agendaItem *models.AgendaItem, topic *models.Topic) string {
 	tmpl, err := template.ParseFiles("templates/slides/topic.html")
 	if err != nil {
 		log.Error().Err(err).Msg("could not load topic template")

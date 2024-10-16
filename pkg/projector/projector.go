@@ -60,6 +60,17 @@ func newProjector(id int, db *datastore.Datastore) (*projector, error) {
 
 	go p.subscribeProjector()
 
+	if len(p.projector.CurrentProjectionIDs) > 0 {
+		initListener := make(chan *ProjectorUpdateEvent)
+		p.AddListener <- initListener
+		for event := range initListener {
+			if event.Event == "projection-updated" {
+				break
+			}
+		}
+		p.RemoveListener <- initListener
+	}
+
 	return p, nil
 }
 
@@ -110,6 +121,10 @@ func (p *projector) subscribeProjector() {
 				log.Error().Err(err).Msg("could not encode projector data")
 			} else {
 				p.sendToAll(&ProjectorUpdateEvent{"settings", string(encodedData)})
+			}
+
+			if err = p.updateFullContent(); err != nil {
+				log.Error().Err(err).Msg("error generating projector content after settings update")
 			}
 		case data, ok := <-projectionUpdate:
 			if !ok {
@@ -162,8 +177,6 @@ func (p *projector) updateFullContent() error {
 	if err != nil {
 		return fmt.Errorf("error reading projector template %w", err)
 	}
-
-	// TODO: Queue projections update if `p.Projections` is nil
 
 	var content bytes.Buffer
 	err = tmpl.Execute(&content, map[string]interface{}{
