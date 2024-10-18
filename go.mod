@@ -9,7 +9,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/redis/go-redis/v9 v9.6.2
 	github.com/rs/zerolog v1.33.0
-	golang.org/x/text v0.18.0
+	golang.org/x/text v0.19.0
 )
 
 require (
