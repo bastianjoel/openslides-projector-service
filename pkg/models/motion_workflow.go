@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionWorkflow struct {
 	DefaultAmendmentWorkflowMeetingID        *int   `json:"default_amendment_workflow_meeting_id"`
@@ -12,10 +16,65 @@ type MotionWorkflow struct {
 	Name                                     string `json:"name"`
 	SequentialNumber                         int    `json:"sequential_number"`
 	StateIDs                                 []int  `json:"state_ids"`
+	loadedRelations                          map[string]struct{}
+	defaultAmendmentWorkflowMeeting          *Meeting
+	states                                   *MotionState
+	defaultStatuteAmendmentWorkflowMeeting   *Meeting
+	defaultWorkflowMeeting                   *Meeting
+	firstState                               *MotionState
+	meeting                                  *Meeting
 }
 
 func (m MotionWorkflow) CollectionName() string {
 	return "motion_workflow"
+}
+
+func (m *MotionWorkflow) DefaultAmendmentWorkflowMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_amendment_workflow_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
+	}
+
+	return m.defaultAmendmentWorkflowMeeting
+}
+
+func (m *MotionWorkflow) States() *MotionState {
+	if _, ok := m.loadedRelations["state_ids"]; !ok {
+		log.Panic().Msg("Tried to access States relation of MotionWorkflow which was not loaded.")
+	}
+
+	return m.states
+}
+
+func (m *MotionWorkflow) DefaultStatuteAmendmentWorkflowMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_statute_amendment_workflow_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultStatuteAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
+	}
+
+	return m.defaultStatuteAmendmentWorkflowMeeting
+}
+
+func (m *MotionWorkflow) DefaultWorkflowMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_workflow_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultWorkflowMeeting relation of MotionWorkflow which was not loaded.")
+	}
+
+	return m.defaultWorkflowMeeting
+}
+
+func (m *MotionWorkflow) FirstState() MotionState {
+	if _, ok := m.loadedRelations["first_state_id"]; !ok {
+		log.Panic().Msg("Tried to access FirstState relation of MotionWorkflow which was not loaded.")
+	}
+
+	return *m.firstState
+}
+
+func (m *MotionWorkflow) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionWorkflow which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m MotionWorkflow) Get(field string) interface{} {

@@ -16,33 +16,23 @@ func TopicSlideHandler(ctx context.Context, req *projectionRequest) (<-chan stri
 	projection := req.Projection
 
 	var topic models.Topic
-	topicSub, err := datastore.Collection(req.DB, &models.Topic{}).SetFqids(projection.ContentObjectID).SubscribeOne(&topic)
-	if err != nil {
-		return nil, fmt.Errorf("TopicSlideHandler: %w", err)
-	}
-
-	var agendaItem models.AgendaItem
-	agendaSub, err := datastore.Collection(req.DB, &models.AgendaItem{}).SetIds(topic.AgendaItemID).SubscribeOne(&agendaItem)
+	topicSub, err := datastore.Collection(req.DB, &models.Topic{}).With("agenda_item_id").SetFqids(projection.ContentObjectID).SubscribeOne(&topic)
 	if err != nil {
 		return nil, fmt.Errorf("TopicSlideHandler: %w", err)
 	}
 
 	go func() {
-		content <- getTopicSlideContent(&agendaItem, &topic)
+		content <- getTopicSlideContent(&topic)
 
-		for {
-			select {
-			case <-topicSub.Channel:
-			case <-agendaSub.Channel:
-				content <- getTopicSlideContent(&agendaItem, &topic)
-			}
+		for range <-topicSub.Channel {
+			content <- getTopicSlideContent(&topic)
 		}
 	}()
 
 	return content, nil
 }
 
-func getTopicSlideContent(agendaItem *models.AgendaItem, topic *models.Topic) string {
+func getTopicSlideContent(topic *models.Topic) string {
 	tmpl, err := template.ParseFiles("templates/slides/topic.html")
 	if err != nil {
 		log.Error().Err(err).Msg("could not load topic template")
@@ -56,7 +46,7 @@ func getTopicSlideContent(agendaItem *models.AgendaItem, topic *models.Topic) st
 
 	var content bytes.Buffer
 	err = tmpl.Execute(&content, map[string]interface{}{
-		"AgendaItem": agendaItem,
+		"AgendaItem": topic.AgendaItem(),
 		"Topic":      topic,
 		"Text":       template.HTML(text),
 	})

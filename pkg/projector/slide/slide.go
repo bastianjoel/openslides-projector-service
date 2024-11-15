@@ -31,6 +31,7 @@ type SlideRouter struct {
 func New(ctx context.Context, db *datastore.Datastore) *SlideRouter {
 	routes := make(map[string]slideHandler)
 	routes["topic"] = TopicSlideHandler
+	routes["current_list_of_speakers"] = CurrentListOfSpeakersSlideHandler
 
 	return &SlideRouter{
 		ctx:    ctx,

@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Group struct {
 	AdminGroupForMeetingID                  *int     `json:"admin_group_for_meeting_id"`
@@ -24,10 +28,155 @@ type Group struct {
 	Weight                                  *int     `json:"weight"`
 	WriteChatGroupIDs                       []int    `json:"write_chat_group_ids"`
 	WriteCommentSectionIDs                  []int    `json:"write_comment_section_ids"`
+	loadedRelations                         map[string]struct{}
+	defaultGroupForMeeting                  *Meeting
+	meetingMediafileAccessGroups            *MeetingMediafile
+	meetingMediafileInheritedAccessGroups   *MeetingMediafile
+	meetingUsers                            *MeetingUser
+	usedAsMotionPollDefault                 *Meeting
+	writeCommentSections                    *MotionCommentSection
+	adminGroupForMeeting                    *Meeting
+	polls                                   *Poll
+	usedAsAssignmentPollDefault             *Meeting
+	writeChatGroups                         *ChatGroup
+	meeting                                 *Meeting
+	readChatGroups                          *ChatGroup
+	readCommentSections                     *MotionCommentSection
+	usedAsPollDefault                       *Meeting
+	usedAsTopicPollDefault                  *Meeting
+	anonymousGroupForMeeting                *Meeting
 }
 
 func (m Group) CollectionName() string {
 	return "group"
+}
+
+func (m *Group) DefaultGroupForMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_group_for_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultGroupForMeeting relation of Group which was not loaded.")
+	}
+
+	return m.defaultGroupForMeeting
+}
+
+func (m *Group) MeetingMediafileAccessGroups() *MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_access_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafileAccessGroups relation of Group which was not loaded.")
+	}
+
+	return m.meetingMediafileAccessGroups
+}
+
+func (m *Group) MeetingMediafileInheritedAccessGroups() *MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_inherited_access_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafileInheritedAccessGroups relation of Group which was not loaded.")
+	}
+
+	return m.meetingMediafileInheritedAccessGroups
+}
+
+func (m *Group) MeetingUsers() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUsers relation of Group which was not loaded.")
+	}
+
+	return m.meetingUsers
+}
+
+func (m *Group) UsedAsMotionPollDefault() *Meeting {
+	if _, ok := m.loadedRelations["used_as_motion_poll_default_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsMotionPollDefault relation of Group which was not loaded.")
+	}
+
+	return m.usedAsMotionPollDefault
+}
+
+func (m *Group) WriteCommentSections() *MotionCommentSection {
+	if _, ok := m.loadedRelations["write_comment_section_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteCommentSections relation of Group which was not loaded.")
+	}
+
+	return m.writeCommentSections
+}
+
+func (m *Group) AdminGroupForMeeting() *Meeting {
+	if _, ok := m.loadedRelations["admin_group_for_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access AdminGroupForMeeting relation of Group which was not loaded.")
+	}
+
+	return m.adminGroupForMeeting
+}
+
+func (m *Group) Polls() *Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Group which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Group) UsedAsAssignmentPollDefault() *Meeting {
+	if _, ok := m.loadedRelations["used_as_assignment_poll_default_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsAssignmentPollDefault relation of Group which was not loaded.")
+	}
+
+	return m.usedAsAssignmentPollDefault
+}
+
+func (m *Group) WriteChatGroups() *ChatGroup {
+	if _, ok := m.loadedRelations["write_chat_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteChatGroups relation of Group which was not loaded.")
+	}
+
+	return m.writeChatGroups
+}
+
+func (m *Group) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Group which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Group) ReadChatGroups() *ChatGroup {
+	if _, ok := m.loadedRelations["read_chat_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadChatGroups relation of Group which was not loaded.")
+	}
+
+	return m.readChatGroups
+}
+
+func (m *Group) ReadCommentSections() *MotionCommentSection {
+	if _, ok := m.loadedRelations["read_comment_section_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadCommentSections relation of Group which was not loaded.")
+	}
+
+	return m.readCommentSections
+}
+
+func (m *Group) UsedAsPollDefault() *Meeting {
+	if _, ok := m.loadedRelations["used_as_poll_default_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsPollDefault relation of Group which was not loaded.")
+	}
+
+	return m.usedAsPollDefault
+}
+
+func (m *Group) UsedAsTopicPollDefault() *Meeting {
+	if _, ok := m.loadedRelations["used_as_topic_poll_default_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsTopicPollDefault relation of Group which was not loaded.")
+	}
+
+	return m.usedAsTopicPollDefault
+}
+
+func (m *Group) AnonymousGroupForMeeting() *Meeting {
+	if _, ok := m.loadedRelations["anonymous_group_for_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access AnonymousGroupForMeeting relation of Group which was not loaded.")
+	}
+
+	return m.anonymousGroupForMeeting
 }
 
 func (m Group) Get(field string) interface{} {

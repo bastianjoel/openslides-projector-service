@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Speaker struct {
 	BeginTime                      *int    `json:"begin_time"`
@@ -18,10 +22,56 @@ type Speaker struct {
 	TotalPause                     *int    `json:"total_pause"`
 	UnpauseTime                    *int    `json:"unpause_time"`
 	Weight                         *int    `json:"weight"`
+	loadedRelations                map[string]struct{}
+	pointOfOrderCategory           *PointOfOrderCategory
+	structureLevelListOfSpeakers   *StructureLevelListOfSpeakers
+	meeting                        *Meeting
+	meetingUser                    *MeetingUser
+	listOfSpeakers                 *ListOfSpeakers
 }
 
 func (m Speaker) CollectionName() string {
 	return "speaker"
+}
+
+func (m *Speaker) PointOfOrderCategory() *PointOfOrderCategory {
+	if _, ok := m.loadedRelations["point_of_order_category_id"]; !ok {
+		log.Panic().Msg("Tried to access PointOfOrderCategory relation of Speaker which was not loaded.")
+	}
+
+	return m.pointOfOrderCategory
+}
+
+func (m *Speaker) StructureLevelListOfSpeakers() *StructureLevelListOfSpeakers {
+	if _, ok := m.loadedRelations["structure_level_list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevelListOfSpeakers relation of Speaker which was not loaded.")
+	}
+
+	return m.structureLevelListOfSpeakers
+}
+
+func (m *Speaker) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Speaker which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Speaker) MeetingUser() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUser relation of Speaker which was not loaded.")
+	}
+
+	return m.meetingUser
+}
+
+func (m *Speaker) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of Speaker which was not loaded.")
+	}
+
+	return *m.listOfSpeakers
 }
 
 func (m Speaker) Get(field string) interface{} {

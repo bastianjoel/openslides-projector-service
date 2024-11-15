@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionBlock struct {
 	AgendaItemID     *int   `json:"agenda_item_id"`
@@ -12,10 +16,56 @@ type MotionBlock struct {
 	ProjectionIDs    []int  `json:"projection_ids"`
 	SequentialNumber int    `json:"sequential_number"`
 	Title            string `json:"title"`
+	loadedRelations  map[string]struct{}
+	meeting          *Meeting
+	motions          *Motion
+	agendaItem       *AgendaItem
+	listOfSpeakers   *ListOfSpeakers
+	projections      *Projection
 }
 
 func (m MotionBlock) CollectionName() string {
 	return "motion_block"
+}
+
+func (m *MotionBlock) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionBlock which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionBlock) Motions() *Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of MotionBlock which was not loaded.")
+	}
+
+	return m.motions
+}
+
+func (m *MotionBlock) AgendaItem() *AgendaItem {
+	if _, ok := m.loadedRelations["agenda_item_id"]; !ok {
+		log.Panic().Msg("Tried to access AgendaItem relation of MotionBlock which was not loaded.")
+	}
+
+	return m.agendaItem
+}
+
+func (m *MotionBlock) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of MotionBlock which was not loaded.")
+	}
+
+	return *m.listOfSpeakers
+}
+
+func (m *MotionBlock) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
+	}
+
+	return m.projections
 }
 
 func (m MotionBlock) Get(field string) interface{} {

@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MeetingUser struct {
 	AboutMe                      *string `json:"about_me"`
@@ -23,10 +27,137 @@ type MeetingUser struct {
 	VoteDelegatedToID            *int    `json:"vote_delegated_to_id"`
 	VoteDelegationsFromIDs       []int   `json:"vote_delegations_from_ids"`
 	VoteWeight                   *string `json:"vote_weight"`
+	loadedRelations              map[string]struct{}
+	meeting                      *Meeting
+	speakers                     *Speaker
+	user                         *User
+	voteDelegatedTo              *MeetingUser
+	supportedMotions             *Motion
+	chatMessages                 *ChatMessage
+	motionEditors                *MotionEditor
+	structureLevels              *StructureLevel
+	assignmentCandidates         *AssignmentCandidate
+	motionWorkingGroupSpeakers   *MotionWorkingGroupSpeaker
+	personalNotes                *PersonalNote
+	voteDelegationsFroms         *MeetingUser
+	groups                       *Group
+	motionSubmitters             *MotionSubmitter
 }
 
 func (m MeetingUser) CollectionName() string {
 	return "meeting_user"
+}
+
+func (m *MeetingUser) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MeetingUser which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MeetingUser) Speakers() *Speaker {
+	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access Speakers relation of MeetingUser which was not loaded.")
+	}
+
+	return m.speakers
+}
+
+func (m *MeetingUser) User() User {
+	if _, ok := m.loadedRelations["user_id"]; !ok {
+		log.Panic().Msg("Tried to access User relation of MeetingUser which was not loaded.")
+	}
+
+	return *m.user
+}
+
+func (m *MeetingUser) VoteDelegatedTo() *MeetingUser {
+	if _, ok := m.loadedRelations["vote_delegated_to_id"]; !ok {
+		log.Panic().Msg("Tried to access VoteDelegatedTo relation of MeetingUser which was not loaded.")
+	}
+
+	return m.voteDelegatedTo
+}
+
+func (m *MeetingUser) SupportedMotions() *Motion {
+	if _, ok := m.loadedRelations["supported_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access SupportedMotions relation of MeetingUser which was not loaded.")
+	}
+
+	return m.supportedMotions
+}
+
+func (m *MeetingUser) ChatMessages() *ChatMessage {
+	if _, ok := m.loadedRelations["chat_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access ChatMessages relation of MeetingUser which was not loaded.")
+	}
+
+	return m.chatMessages
+}
+
+func (m *MeetingUser) MotionEditors() *MotionEditor {
+	if _, ok := m.loadedRelations["motion_editor_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionEditors relation of MeetingUser which was not loaded.")
+	}
+
+	return m.motionEditors
+}
+
+func (m *MeetingUser) StructureLevels() *StructureLevel {
+	if _, ok := m.loadedRelations["structure_level_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevels relation of MeetingUser which was not loaded.")
+	}
+
+	return m.structureLevels
+}
+
+func (m *MeetingUser) AssignmentCandidates() *AssignmentCandidate {
+	if _, ok := m.loadedRelations["assignment_candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access AssignmentCandidates relation of MeetingUser which was not loaded.")
+	}
+
+	return m.assignmentCandidates
+}
+
+func (m *MeetingUser) MotionWorkingGroupSpeakers() *MotionWorkingGroupSpeaker {
+	if _, ok := m.loadedRelations["motion_working_group_speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionWorkingGroupSpeakers relation of MeetingUser which was not loaded.")
+	}
+
+	return m.motionWorkingGroupSpeakers
+}
+
+func (m *MeetingUser) PersonalNotes() *PersonalNote {
+	if _, ok := m.loadedRelations["personal_note_ids"]; !ok {
+		log.Panic().Msg("Tried to access PersonalNotes relation of MeetingUser which was not loaded.")
+	}
+
+	return m.personalNotes
+}
+
+func (m *MeetingUser) VoteDelegationsFroms() *MeetingUser {
+	if _, ok := m.loadedRelations["vote_delegations_from_ids"]; !ok {
+		log.Panic().Msg("Tried to access VoteDelegationsFroms relation of MeetingUser which was not loaded.")
+	}
+
+	return m.voteDelegationsFroms
+}
+
+func (m *MeetingUser) Groups() *Group {
+	if _, ok := m.loadedRelations["group_ids"]; !ok {
+		log.Panic().Msg("Tried to access Groups relation of MeetingUser which was not loaded.")
+	}
+
+	return m.groups
+}
+
+func (m *MeetingUser) MotionSubmitters() *MotionSubmitter {
+	if _, ok := m.loadedRelations["motion_submitter_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionSubmitters relation of MeetingUser which was not loaded.")
+	}
+
+	return m.motionSubmitters
 }
 
 func (m MeetingUser) Get(field string) interface{} {

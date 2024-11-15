@@ -1,19 +1,60 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type ChatGroup struct {
-	ChatMessageIDs []int  `json:"chat_message_ids"`
-	ID             int    `json:"id"`
-	MeetingID      int    `json:"meeting_id"`
-	Name           string `json:"name"`
-	ReadGroupIDs   []int  `json:"read_group_ids"`
-	Weight         *int   `json:"weight"`
-	WriteGroupIDs  []int  `json:"write_group_ids"`
+	ChatMessageIDs  []int  `json:"chat_message_ids"`
+	ID              int    `json:"id"`
+	MeetingID       int    `json:"meeting_id"`
+	Name            string `json:"name"`
+	ReadGroupIDs    []int  `json:"read_group_ids"`
+	Weight          *int   `json:"weight"`
+	WriteGroupIDs   []int  `json:"write_group_ids"`
+	loadedRelations map[string]struct{}
+	readGroups      *Group
+	writeGroups     *Group
+	chatMessages    *ChatMessage
+	meeting         *Meeting
 }
 
 func (m ChatGroup) CollectionName() string {
 	return "chat_group"
+}
+
+func (m *ChatGroup) ReadGroups() *Group {
+	if _, ok := m.loadedRelations["read_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadGroups relation of ChatGroup which was not loaded.")
+	}
+
+	return m.readGroups
+}
+
+func (m *ChatGroup) WriteGroups() *Group {
+	if _, ok := m.loadedRelations["write_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteGroups relation of ChatGroup which was not loaded.")
+	}
+
+	return m.writeGroups
+}
+
+func (m *ChatGroup) ChatMessages() *ChatMessage {
+	if _, ok := m.loadedRelations["chat_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access ChatMessages relation of ChatGroup which was not loaded.")
+	}
+
+	return m.chatMessages
+}
+
+func (m *ChatGroup) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of ChatGroup which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m ChatGroup) Get(field string) interface{} {

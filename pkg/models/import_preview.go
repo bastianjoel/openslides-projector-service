@@ -1,6 +1,8 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type ImportPreview struct {
 	Created int             `json:"created"`

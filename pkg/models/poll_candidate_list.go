@@ -1,16 +1,48 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type PollCandidateList struct {
 	ID               int   `json:"id"`
 	MeetingID        int   `json:"meeting_id"`
 	OptionID         int   `json:"option_id"`
 	PollCandidateIDs []int `json:"poll_candidate_ids"`
+	loadedRelations  map[string]struct{}
+	option           *Option
+	pollCandidates   *PollCandidate
+	meeting          *Meeting
 }
 
 func (m PollCandidateList) CollectionName() string {
 	return "poll_candidate_list"
+}
+
+func (m *PollCandidateList) Option() Option {
+	if _, ok := m.loadedRelations["option_id"]; !ok {
+		log.Panic().Msg("Tried to access Option relation of PollCandidateList which was not loaded.")
+	}
+
+	return *m.option
+}
+
+func (m *PollCandidateList) PollCandidates() *PollCandidate {
+	if _, ok := m.loadedRelations["poll_candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollCandidates relation of PollCandidateList which was not loaded.")
+	}
+
+	return m.pollCandidates
+}
+
+func (m *PollCandidateList) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of PollCandidateList which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m PollCandidateList) Get(field string) interface{} {

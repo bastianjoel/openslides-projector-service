@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionChangeRecommendation struct {
 	CreationTime     *int    `json:"creation_time"`
@@ -14,10 +18,29 @@ type MotionChangeRecommendation struct {
 	Rejected         *bool   `json:"rejected"`
 	Text             *string `json:"text"`
 	Type             *string `json:"type"`
+	loadedRelations  map[string]struct{}
+	meeting          *Meeting
+	motion           *Motion
 }
 
 func (m MotionChangeRecommendation) CollectionName() string {
 	return "motion_change_recommendation"
+}
+
+func (m *MotionChangeRecommendation) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionChangeRecommendation which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionChangeRecommendation) Motion() Motion {
+	if _, ok := m.loadedRelations["motion_id"]; !ok {
+		log.Panic().Msg("Tried to access Motion relation of MotionChangeRecommendation which was not loaded.")
+	}
+
+	return *m.motion
 }
 
 func (m MotionChangeRecommendation) Get(field string) interface{} {

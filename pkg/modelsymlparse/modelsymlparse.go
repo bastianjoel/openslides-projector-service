@@ -44,6 +44,7 @@ func (m *Model) UnmarshalYAML(node []byte) error {
 // Field of a model.
 type Field struct {
 	Type            string
+	To              string
 	restrictionMode string
 	relation        Relation
 	Required        bool
@@ -67,9 +68,10 @@ func (f *Field) RestrictionMode() string {
 // UnmarshalYAML decodes a model attribute from yaml.
 func (f *Field) UnmarshalYAML(node []byte) error {
 	var typer struct {
-		Type            string `yaml:"type"`
-		RestrictionMode string `yaml:"restriction_mode"`
-		Required        bool   `yaml:"required"`
+		Type            string      `yaml:"type"`
+		RestrictionMode string      `yaml:"restriction_mode"`
+		Required        bool        `yaml:"required"`
+		To              interface{} `yaml:"to"`
 	}
 	if err := yaml.Unmarshal(node, &typer); err != nil {
 		return fmt.Errorf("field object without type: %w", err)
@@ -83,6 +85,7 @@ func (f *Field) UnmarshalYAML(node []byte) error {
 	switch typer.Type {
 	case "relation-list":
 		list = true
+		f.To = typer.To.(string)
 		fallthrough
 
 	case "relation":
@@ -92,6 +95,7 @@ func (f *Field) UnmarshalYAML(node []byte) error {
 		}
 		relation.list = list
 		f.relation = &relation
+		f.To = typer.To.(string)
 
 	case "generic-relation-list":
 		list = true

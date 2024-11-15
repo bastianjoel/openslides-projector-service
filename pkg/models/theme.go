@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Theme struct {
 	Abstain                *string `json:"abstain"`
@@ -53,10 +57,29 @@ type Theme struct {
 	WarnA400               *string `json:"warn_a400"`
 	WarnA700               *string `json:"warn_a700"`
 	Yes                    *string `json:"yes"`
+	loadedRelations        map[string]struct{}
+	organization           *Organization
+	themeForOrganization   *Organization
 }
 
 func (m Theme) CollectionName() string {
 	return "theme"
+}
+
+func (m *Theme) Organization() Organization {
+	if _, ok := m.loadedRelations["organization_id"]; !ok {
+		log.Panic().Msg("Tried to access Organization relation of Theme which was not loaded.")
+	}
+
+	return *m.organization
+}
+
+func (m *Theme) ThemeForOrganization() *Organization {
+	if _, ok := m.loadedRelations["theme_for_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access ThemeForOrganization relation of Theme which was not loaded.")
+	}
+
+	return m.themeForOrganization
 }
 
 func (m Theme) Get(field string) interface{} {

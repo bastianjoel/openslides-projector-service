@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Mediafile struct {
 	ChildIDs                            []int           `json:"child_ids"`
@@ -17,10 +21,47 @@ type Mediafile struct {
 	PublishedToMeetingsInOrganizationID *int            `json:"published_to_meetings_in_organization_id"`
 	Title                               *string         `json:"title"`
 	Token                               *string         `json:"token"`
+	loadedRelations                     map[string]struct{}
+	publishedToMeetingsInOrganization   *Organization
+	meetingMediafiles                   *MeetingMediafile
+	parent                              *Mediafile
+	childs                              *Mediafile
 }
 
 func (m Mediafile) CollectionName() string {
 	return "mediafile"
+}
+
+func (m *Mediafile) PublishedToMeetingsInOrganization() *Organization {
+	if _, ok := m.loadedRelations["published_to_meetings_in_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access PublishedToMeetingsInOrganization relation of Mediafile which was not loaded.")
+	}
+
+	return m.publishedToMeetingsInOrganization
+}
+
+func (m *Mediafile) MeetingMediafiles() *MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafiles relation of Mediafile which was not loaded.")
+	}
+
+	return m.meetingMediafiles
+}
+
+func (m *Mediafile) Parent() *Mediafile {
+	if _, ok := m.loadedRelations["parent_id"]; !ok {
+		log.Panic().Msg("Tried to access Parent relation of Mediafile which was not loaded.")
+	}
+
+	return m.parent
+}
+
+func (m *Mediafile) Childs() *Mediafile {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of Mediafile which was not loaded.")
+	}
+
+	return m.childs
 }
 
 func (m Mediafile) Get(field string) interface{} {

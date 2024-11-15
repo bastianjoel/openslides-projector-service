@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Topic struct {
 	AgendaItemID                  int     `json:"agenda_item_id"`
@@ -13,10 +17,65 @@ type Topic struct {
 	SequentialNumber              int     `json:"sequential_number"`
 	Text                          *string `json:"text"`
 	Title                         string  `json:"title"`
+	loadedRelations               map[string]struct{}
+	meeting                       *Meeting
+	polls                         *Poll
+	agendaItem                    *AgendaItem
+	attachmentMeetingMediafiles   *MeetingMediafile
+	listOfSpeakers                *ListOfSpeakers
+	projections                   *Projection
 }
 
 func (m Topic) CollectionName() string {
 	return "topic"
+}
+
+func (m *Topic) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Topic which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Topic) Polls() *Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Topic which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Topic) AgendaItem() AgendaItem {
+	if _, ok := m.loadedRelations["agenda_item_id"]; !ok {
+		log.Panic().Msg("Tried to access AgendaItem relation of Topic which was not loaded.")
+	}
+
+	return *m.agendaItem
+}
+
+func (m *Topic) AttachmentMeetingMediafiles() *MeetingMediafile {
+	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Topic which was not loaded.")
+	}
+
+	return m.attachmentMeetingMediafiles
+}
+
+func (m *Topic) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of Topic which was not loaded.")
+	}
+
+	return *m.listOfSpeakers
+}
+
+func (m *Topic) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Topic which was not loaded.")
+	}
+
+	return m.projections
 }
 
 func (m Topic) Get(field string) interface{} {

@@ -1,15 +1,30 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type {{.GoName}} struct { {{range .Fields}}
-    {{.GoName}} {{.ValueType}} `json:"{{.FieldName}}"`{{end}}
+	{{.GoName}} {{.ValueType}} `json:"{{.FieldName}}"`{{end}}
+	{{if .HasRelations}}loadedRelations map[string]struct{}{{range .Relations}}
+	{{.PropNameLc}} *{{.CollectionName}}{{end}}{{end}}
 }
 
 func (m {{.GoName}}) CollectionName() string {
 	return "{{.CollectionName}}"
 }
 
+{{range .Relations}}func (m *{{.GoName}}) {{.PropName}}() {{if not .Required}}*{{end}}{{.CollectionName}} {
+	if _, ok := m.loadedRelations["{{.IdField}}"]; !ok {
+		log.Panic().Msg("Tried to access {{.PropName}} relation of {{.GoName}} which was not loaded.")
+	}
+
+	return {{if .Required}}*{{end}}m.{{.PropNameLc}}
+}
+
+{{end}}
 func (m {{.GoName}}) Get(field string) interface{} {
 	switch field { {{range .Fields}}
 	case "{{.FieldName}}":

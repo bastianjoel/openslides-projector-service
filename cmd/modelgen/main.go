@@ -15,6 +15,7 @@ import (
 	"sort"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"github.com/OpenSlides/openslides-projector-service/pkg/modelsymlparse"
 	"golang.org/x/text/cases"
@@ -91,6 +92,7 @@ func parse(r io.Reader) ([]collection, error) {
 	var collections []collection
 	for collectionName, modelCollection := range inData {
 		var fields []field
+		var relations []relation
 		for fieldName, modelField := range modelCollection.Fields {
 			f := field{}
 			f.GoName = goName(fieldName)
@@ -100,6 +102,28 @@ func parse(r io.Reader) ([]collection, error) {
 
 			if modelField.Type == "relation" || modelField.Type == "generic-relation" {
 				f.SingleRelation = true
+			}
+
+			if modelField.Type == "relation" || modelField.Type == "relation-list" {
+				var propName string
+				if modelField.Type == "relation" {
+					propName = strings.Replace(fieldName+"$", "_id$", "", 1)
+				} else {
+					propName = strings.Replace(fieldName+"$", "_ids$", "s", 1)
+				}
+				propName = goName(propName)
+				propNameLc := []rune(propName)
+				propNameLc[0] = unicode.ToLower(propNameLc[0])
+
+				collection := goName(strings.Split(modelField.To, "/")[0])
+				relations = append(relations, relation{
+					GoName:         goName(collectionName),
+					PropName:       propName,
+					PropNameLc:     string(propNameLc),
+					CollectionName: collection,
+					IdField:        fieldName,
+					Required:       modelField.Required,
+				})
 			}
 
 			fields = append(fields, f)
@@ -113,6 +137,8 @@ func parse(r io.Reader) ([]collection, error) {
 			GoName:         goName(collectionName),
 			CollectionName: collectionName,
 			Fields:         fields,
+			Relations:      relations,
+			HasRelations:   len(relations) > 0,
 		})
 	}
 
@@ -123,6 +149,8 @@ type collection struct {
 	GoName         string
 	CollectionName string
 	Fields         []field
+	Relations      []relation
+	HasRelations   bool
 }
 
 type field struct {
@@ -133,6 +161,15 @@ type field struct {
 	FieldName      string
 	Required       bool
 	SingleRelation bool
+}
+
+type relation struct {
+	GoName         string
+	PropName       string
+	PropNameLc     string
+	CollectionName string
+	IdField        string
+	Required       bool
 }
 
 func goName(name string) string {

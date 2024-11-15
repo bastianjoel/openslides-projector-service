@@ -1,16 +1,30 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Tag struct {
-	ID        int      `json:"id"`
-	MeetingID int      `json:"meeting_id"`
-	Name      string   `json:"name"`
-	TaggedIDs []string `json:"tagged_ids"`
+	ID              int      `json:"id"`
+	MeetingID       int      `json:"meeting_id"`
+	Name            string   `json:"name"`
+	TaggedIDs       []string `json:"tagged_ids"`
+	loadedRelations map[string]struct{}
+	meeting         *Meeting
 }
 
 func (m Tag) CollectionName() string {
 	return "tag"
+}
+
+func (m *Tag) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Tag which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m Tag) Get(field string) interface{} {

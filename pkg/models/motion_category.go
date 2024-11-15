@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionCategory struct {
 	ChildIDs         []int   `json:"child_ids"`
@@ -13,10 +17,47 @@ type MotionCategory struct {
 	Prefix           *string `json:"prefix"`
 	SequentialNumber int     `json:"sequential_number"`
 	Weight           *int    `json:"weight"`
+	loadedRelations  map[string]struct{}
+	childs           *MotionCategory
+	meeting          *Meeting
+	motions          *Motion
+	parent           *MotionCategory
 }
 
 func (m MotionCategory) CollectionName() string {
 	return "motion_category"
+}
+
+func (m *MotionCategory) Childs() *MotionCategory {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of MotionCategory which was not loaded.")
+	}
+
+	return m.childs
+}
+
+func (m *MotionCategory) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionCategory which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionCategory) Motions() *Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of MotionCategory which was not loaded.")
+	}
+
+	return m.motions
+}
+
+func (m *MotionCategory) Parent() *MotionCategory {
+	if _, ok := m.loadedRelations["parent_id"]; !ok {
+		log.Panic().Msg("Tried to access Parent relation of MotionCategory which was not loaded.")
+	}
+
+	return m.parent
 }
 
 func (m MotionCategory) Get(field string) interface{} {

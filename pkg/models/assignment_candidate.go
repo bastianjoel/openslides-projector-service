@@ -1,17 +1,49 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type AssignmentCandidate struct {
-	AssignmentID  int  `json:"assignment_id"`
-	ID            int  `json:"id"`
-	MeetingID     int  `json:"meeting_id"`
-	MeetingUserID *int `json:"meeting_user_id"`
-	Weight        *int `json:"weight"`
+	AssignmentID    int  `json:"assignment_id"`
+	ID              int  `json:"id"`
+	MeetingID       int  `json:"meeting_id"`
+	MeetingUserID   *int `json:"meeting_user_id"`
+	Weight          *int `json:"weight"`
+	loadedRelations map[string]struct{}
+	meeting         *Meeting
+	meetingUser     *MeetingUser
+	assignment      *Assignment
 }
 
 func (m AssignmentCandidate) CollectionName() string {
 	return "assignment_candidate"
+}
+
+func (m *AssignmentCandidate) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of AssignmentCandidate which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *AssignmentCandidate) MeetingUser() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUser relation of AssignmentCandidate which was not loaded.")
+	}
+
+	return m.meetingUser
+}
+
+func (m *AssignmentCandidate) Assignment() Assignment {
+	if _, ok := m.loadedRelations["assignment_id"]; !ok {
+		log.Panic().Msg("Tried to access Assignment relation of AssignmentCandidate which was not loaded.")
+	}
+
+	return *m.assignment
 }
 
 func (m AssignmentCandidate) Get(field string) interface{} {

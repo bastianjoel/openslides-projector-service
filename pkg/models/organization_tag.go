@@ -1,17 +1,31 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type OrganizationTag struct {
-	Color          string   `json:"color"`
-	ID             int      `json:"id"`
-	Name           string   `json:"name"`
-	OrganizationID int      `json:"organization_id"`
-	TaggedIDs      []string `json:"tagged_ids"`
+	Color           string   `json:"color"`
+	ID              int      `json:"id"`
+	Name            string   `json:"name"`
+	OrganizationID  int      `json:"organization_id"`
+	TaggedIDs       []string `json:"tagged_ids"`
+	loadedRelations map[string]struct{}
+	organization    *Organization
 }
 
 func (m OrganizationTag) CollectionName() string {
 	return "organization_tag"
+}
+
+func (m *OrganizationTag) Organization() Organization {
+	if _, ok := m.loadedRelations["organization_id"]; !ok {
+		log.Panic().Msg("Tried to access Organization relation of OrganizationTag which was not loaded.")
+	}
+
+	return *m.organization
 }
 
 func (m OrganizationTag) Get(field string) interface{} {

@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type AgendaItem struct {
 	ChildIDs        []int   `json:"child_ids"`
@@ -20,10 +24,56 @@ type AgendaItem struct {
 	TagIDs          []int   `json:"tag_ids"`
 	Type            *string `json:"type"`
 	Weight          *int    `json:"weight"`
+	loadedRelations map[string]struct{}
+	meeting         *Meeting
+	childs          *AgendaItem
+	parent          *AgendaItem
+	projections     *Projection
+	tags            *Tag
 }
 
 func (m AgendaItem) CollectionName() string {
 	return "agenda_item"
+}
+
+func (m *AgendaItem) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of AgendaItem which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *AgendaItem) Childs() *AgendaItem {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of AgendaItem which was not loaded.")
+	}
+
+	return m.childs
+}
+
+func (m *AgendaItem) Parent() *AgendaItem {
+	if _, ok := m.loadedRelations["parent_id"]; !ok {
+		log.Panic().Msg("Tried to access Parent relation of AgendaItem which was not loaded.")
+	}
+
+	return m.parent
+}
+
+func (m *AgendaItem) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of AgendaItem which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *AgendaItem) Tags() *Tag {
+	if _, ok := m.loadedRelations["tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access Tags relation of AgendaItem which was not loaded.")
+	}
+
+	return m.tags
 }
 
 func (m AgendaItem) Get(field string) interface{} {

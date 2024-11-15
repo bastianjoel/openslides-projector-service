@@ -1,17 +1,40 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type PointOfOrderCategory struct {
-	ID         int    `json:"id"`
-	MeetingID  int    `json:"meeting_id"`
-	Rank       int    `json:"rank"`
-	SpeakerIDs []int  `json:"speaker_ids"`
-	Text       string `json:"text"`
+	ID              int    `json:"id"`
+	MeetingID       int    `json:"meeting_id"`
+	Rank            int    `json:"rank"`
+	SpeakerIDs      []int  `json:"speaker_ids"`
+	Text            string `json:"text"`
+	loadedRelations map[string]struct{}
+	meeting         *Meeting
+	speakers        *Speaker
 }
 
 func (m PointOfOrderCategory) CollectionName() string {
 	return "point_of_order_category"
+}
+
+func (m *PointOfOrderCategory) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of PointOfOrderCategory which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *PointOfOrderCategory) Speakers() *Speaker {
+	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access Speakers relation of PointOfOrderCategory which was not loaded.")
+	}
+
+	return m.speakers
 }
 
 func (m PointOfOrderCategory) Get(field string) interface{} {

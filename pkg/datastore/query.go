@@ -27,6 +27,12 @@ func (q *query[T]) SetFqids(ids ...string) *query[T] {
 	return q
 }
 
+func (q *query[T]) With(idField string) *query[T] {
+	// TODO: Add relations to query
+
+	return q
+}
+
 // Sets the fqids of the query by plain ids
 func (q *query[T]) SetIds(ids ...int) *query[T] {
 	typeName := strcase.ToSnake(reflect.ValueOf(q.collection).Elem().Type().Name())

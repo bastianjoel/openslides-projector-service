@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionStatuteParagraph struct {
 	ID               int     `json:"id"`
@@ -10,10 +14,29 @@ type MotionStatuteParagraph struct {
 	Text             *string `json:"text"`
 	Title            string  `json:"title"`
 	Weight           *int    `json:"weight"`
+	loadedRelations  map[string]struct{}
+	meeting          *Meeting
+	motions          *Motion
 }
 
 func (m MotionStatuteParagraph) CollectionName() string {
 	return "motion_statute_paragraph"
+}
+
+func (m *MotionStatuteParagraph) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionStatuteParagraph which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionStatuteParagraph) Motions() *Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of MotionStatuteParagraph which was not loaded.")
+	}
+
+	return m.motions
 }
 
 func (m MotionStatuteParagraph) Get(field string) interface{} {

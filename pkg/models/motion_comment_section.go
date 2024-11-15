@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionCommentSection struct {
 	CommentIDs        []int  `json:"comment_ids"`
@@ -12,10 +16,47 @@ type MotionCommentSection struct {
 	SubmitterCanWrite *bool  `json:"submitter_can_write"`
 	Weight            *int   `json:"weight"`
 	WriteGroupIDs     []int  `json:"write_group_ids"`
+	loadedRelations   map[string]struct{}
+	readGroups        *Group
+	writeGroups       *Group
+	comments          *MotionComment
+	meeting           *Meeting
 }
 
 func (m MotionCommentSection) CollectionName() string {
 	return "motion_comment_section"
+}
+
+func (m *MotionCommentSection) ReadGroups() *Group {
+	if _, ok := m.loadedRelations["read_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadGroups relation of MotionCommentSection which was not loaded.")
+	}
+
+	return m.readGroups
+}
+
+func (m *MotionCommentSection) WriteGroups() *Group {
+	if _, ok := m.loadedRelations["write_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteGroups relation of MotionCommentSection which was not loaded.")
+	}
+
+	return m.writeGroups
+}
+
+func (m *MotionCommentSection) Comments() *MotionComment {
+	if _, ok := m.loadedRelations["comment_ids"]; !ok {
+		log.Panic().Msg("Tried to access Comments relation of MotionCommentSection which was not loaded.")
+	}
+
+	return m.comments
+}
+
+func (m *MotionCommentSection) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionCommentSection which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m MotionCommentSection) Get(field string) interface{} {

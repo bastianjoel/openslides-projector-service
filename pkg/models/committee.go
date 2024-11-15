@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Committee struct {
 	DefaultMeetingID                   *int    `json:"default_meeting_id"`
@@ -16,10 +20,92 @@ type Committee struct {
 	OrganizationTagIDs                 []int   `json:"organization_tag_ids"`
 	ReceiveForwardingsFromCommitteeIDs []int   `json:"receive_forwardings_from_committee_ids"`
 	UserIDs                            []int   `json:"user_ids"`
+	loadedRelations                    map[string]struct{}
+	defaultMeeting                     *Meeting
+	forwardToCommittees                *Committee
+	managers                           *User
+	meetings                           *Meeting
+	users                              *User
+	forwardingUser                     *User
+	organization                       *Organization
+	organizationTags                   *OrganizationTag
+	receiveForwardingsFromCommittees   *Committee
 }
 
 func (m Committee) CollectionName() string {
 	return "committee"
+}
+
+func (m *Committee) DefaultMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultMeeting relation of Committee which was not loaded.")
+	}
+
+	return m.defaultMeeting
+}
+
+func (m *Committee) ForwardToCommittees() *Committee {
+	if _, ok := m.loadedRelations["forward_to_committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access ForwardToCommittees relation of Committee which was not loaded.")
+	}
+
+	return m.forwardToCommittees
+}
+
+func (m *Committee) Managers() *User {
+	if _, ok := m.loadedRelations["manager_ids"]; !ok {
+		log.Panic().Msg("Tried to access Managers relation of Committee which was not loaded.")
+	}
+
+	return m.managers
+}
+
+func (m *Committee) Meetings() *Meeting {
+	if _, ok := m.loadedRelations["meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access Meetings relation of Committee which was not loaded.")
+	}
+
+	return m.meetings
+}
+
+func (m *Committee) Users() *User {
+	if _, ok := m.loadedRelations["user_ids"]; !ok {
+		log.Panic().Msg("Tried to access Users relation of Committee which was not loaded.")
+	}
+
+	return m.users
+}
+
+func (m *Committee) ForwardingUser() *User {
+	if _, ok := m.loadedRelations["forwarding_user_id"]; !ok {
+		log.Panic().Msg("Tried to access ForwardingUser relation of Committee which was not loaded.")
+	}
+
+	return m.forwardingUser
+}
+
+func (m *Committee) Organization() Organization {
+	if _, ok := m.loadedRelations["organization_id"]; !ok {
+		log.Panic().Msg("Tried to access Organization relation of Committee which was not loaded.")
+	}
+
+	return *m.organization
+}
+
+func (m *Committee) OrganizationTags() *OrganizationTag {
+	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access OrganizationTags relation of Committee which was not loaded.")
+	}
+
+	return m.organizationTags
+}
+
+func (m *Committee) ReceiveForwardingsFromCommittees() *Committee {
+	if _, ok := m.loadedRelations["receive_forwardings_from_committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReceiveForwardingsFromCommittees relation of Committee which was not loaded.")
+	}
+
+	return m.receiveForwardingsFromCommittees
 }
 
 func (m Committee) Get(field string) interface{} {

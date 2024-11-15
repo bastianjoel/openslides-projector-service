@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type PersonalNote struct {
 	ContentObjectID *string `json:"content_object_id"`
@@ -9,10 +13,29 @@ type PersonalNote struct {
 	MeetingUserID   int     `json:"meeting_user_id"`
 	Note            *string `json:"note"`
 	Star            *bool   `json:"star"`
+	loadedRelations map[string]struct{}
+	meeting         *Meeting
+	meetingUser     *MeetingUser
 }
 
 func (m PersonalNote) CollectionName() string {
 	return "personal_note"
+}
+
+func (m *PersonalNote) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of PersonalNote which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *PersonalNote) MeetingUser() MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUser relation of PersonalNote which was not loaded.")
+	}
+
+	return *m.meetingUser
 }
 
 func (m PersonalNote) Get(field string) interface{} {

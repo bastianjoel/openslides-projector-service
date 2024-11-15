@@ -1,6 +1,8 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type ActionWorker struct {
 	Created   int             `json:"created"`

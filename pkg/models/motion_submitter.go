@@ -1,17 +1,49 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type MotionSubmitter struct {
-	ID            int  `json:"id"`
-	MeetingID     int  `json:"meeting_id"`
-	MeetingUserID int  `json:"meeting_user_id"`
-	MotionID      int  `json:"motion_id"`
-	Weight        *int `json:"weight"`
+	ID              int  `json:"id"`
+	MeetingID       int  `json:"meeting_id"`
+	MeetingUserID   int  `json:"meeting_user_id"`
+	MotionID        int  `json:"motion_id"`
+	Weight          *int `json:"weight"`
+	loadedRelations map[string]struct{}
+	meeting         *Meeting
+	meetingUser     *MeetingUser
+	motion          *Motion
 }
 
 func (m MotionSubmitter) CollectionName() string {
 	return "motion_submitter"
+}
+
+func (m *MotionSubmitter) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionSubmitter which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionSubmitter) MeetingUser() MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUser relation of MotionSubmitter which was not loaded.")
+	}
+
+	return *m.meetingUser
+}
+
+func (m *MotionSubmitter) Motion() Motion {
+	if _, ok := m.loadedRelations["motion_id"]; !ok {
+		log.Panic().Msg("Tried to access Motion relation of MotionSubmitter which was not loaded.")
+	}
+
+	return *m.motion
 }
 
 func (m MotionSubmitter) Get(field string) interface{} {

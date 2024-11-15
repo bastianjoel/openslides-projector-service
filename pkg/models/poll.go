@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Poll struct {
 	Backend               string          `json:"backend"`
@@ -35,10 +39,65 @@ type Poll struct {
 	Votescast             *string         `json:"votescast"`
 	Votesinvalid          *string         `json:"votesinvalid"`
 	Votesvalid            *string         `json:"votesvalid"`
+	loadedRelations       map[string]struct{}
+	voteds                *User
+	entitledGroups        *Group
+	projections           *Projection
+	meeting               *Meeting
+	options               *Option
+	globalOption          *Option
 }
 
 func (m Poll) CollectionName() string {
 	return "poll"
+}
+
+func (m *Poll) Voteds() *User {
+	if _, ok := m.loadedRelations["voted_ids"]; !ok {
+		log.Panic().Msg("Tried to access Voteds relation of Poll which was not loaded.")
+	}
+
+	return m.voteds
+}
+
+func (m *Poll) EntitledGroups() *Group {
+	if _, ok := m.loadedRelations["entitled_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access EntitledGroups relation of Poll which was not loaded.")
+	}
+
+	return m.entitledGroups
+}
+
+func (m *Poll) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Poll which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *Poll) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Poll which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Poll) Options() *Option {
+	if _, ok := m.loadedRelations["option_ids"]; !ok {
+		log.Panic().Msg("Tried to access Options relation of Poll which was not loaded.")
+	}
+
+	return m.options
+}
+
+func (m *Poll) GlobalOption() *Option {
+	if _, ok := m.loadedRelations["global_option_id"]; !ok {
+		log.Panic().Msg("Tried to access GlobalOption relation of Poll which was not loaded.")
+	}
+
+	return m.globalOption
 }
 
 func (m Poll) Get(field string) interface{} {

@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Motion struct {
 	AdditionalSubmitter                          *string         `json:"additional_submitter"`
@@ -57,10 +61,299 @@ type Motion struct {
 	Title                                        string          `json:"title"`
 	WorkflowTimestamp                            *int            `json:"workflow_timestamp"`
 	WorkingGroupSpeakerIDs                       []int           `json:"working_group_speaker_ids"`
+	loadedRelations                              map[string]struct{}
+	state                                        *MotionState
+	allDerivedMotions                            *Motion
+	allOrigins                                   *Motion
+	leadMotion                                   *Motion
+	referencedInMotionRecommendationExtensions   *Motion
+	referencedInMotionStateExtensions            *Motion
+	category                                     *MotionCategory
+	polls                                        *Poll
+	submitters                                   *MotionSubmitter
+	projections                                  *Projection
+	amendments                                   *Motion
+	workingGroupSpeakers                         *MotionWorkingGroupSpeaker
+	editors                                      *MotionEditor
+	sortChilds                                   *Motion
+	iDenticalMotions                             *Motion
+	supporterMeetingUsers                        *MeetingUser
+	origin                                       *Motion
+	tags                                         *Tag
+	originMeeting                                *Meeting
+	changeRecommendations                        *MotionChangeRecommendation
+	comments                                     *MotionComment
+	personalNotes                                *PersonalNote
+	agendaItem                                   *AgendaItem
+	block                                        *MotionBlock
+	sortParent                                   *Motion
+	derivedMotions                               *Motion
+	options                                      *Option
+	statuteParagraph                             *MotionStatuteParagraph
+	attachmentMeetingMediafiles                  *MeetingMediafile
+	listOfSpeakers                               *ListOfSpeakers
+	recommendation                               *MotionState
+	meeting                                      *Meeting
 }
 
 func (m Motion) CollectionName() string {
 	return "motion"
+}
+
+func (m *Motion) State() MotionState {
+	if _, ok := m.loadedRelations["state_id"]; !ok {
+		log.Panic().Msg("Tried to access State relation of Motion which was not loaded.")
+	}
+
+	return *m.state
+}
+
+func (m *Motion) AllDerivedMotions() *Motion {
+	if _, ok := m.loadedRelations["all_derived_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access AllDerivedMotions relation of Motion which was not loaded.")
+	}
+
+	return m.allDerivedMotions
+}
+
+func (m *Motion) AllOrigins() *Motion {
+	if _, ok := m.loadedRelations["all_origin_ids"]; !ok {
+		log.Panic().Msg("Tried to access AllOrigins relation of Motion which was not loaded.")
+	}
+
+	return m.allOrigins
+}
+
+func (m *Motion) LeadMotion() *Motion {
+	if _, ok := m.loadedRelations["lead_motion_id"]; !ok {
+		log.Panic().Msg("Tried to access LeadMotion relation of Motion which was not loaded.")
+	}
+
+	return m.leadMotion
+}
+
+func (m *Motion) ReferencedInMotionRecommendationExtensions() *Motion {
+	if _, ok := m.loadedRelations["referenced_in_motion_recommendation_extension_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReferencedInMotionRecommendationExtensions relation of Motion which was not loaded.")
+	}
+
+	return m.referencedInMotionRecommendationExtensions
+}
+
+func (m *Motion) ReferencedInMotionStateExtensions() *Motion {
+	if _, ok := m.loadedRelations["referenced_in_motion_state_extension_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReferencedInMotionStateExtensions relation of Motion which was not loaded.")
+	}
+
+	return m.referencedInMotionStateExtensions
+}
+
+func (m *Motion) Category() *MotionCategory {
+	if _, ok := m.loadedRelations["category_id"]; !ok {
+		log.Panic().Msg("Tried to access Category relation of Motion which was not loaded.")
+	}
+
+	return m.category
+}
+
+func (m *Motion) Polls() *Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Motion which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Motion) Submitters() *MotionSubmitter {
+	if _, ok := m.loadedRelations["submitter_ids"]; !ok {
+		log.Panic().Msg("Tried to access Submitters relation of Motion which was not loaded.")
+	}
+
+	return m.submitters
+}
+
+func (m *Motion) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Motion which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *Motion) Amendments() *Motion {
+	if _, ok := m.loadedRelations["amendment_ids"]; !ok {
+		log.Panic().Msg("Tried to access Amendments relation of Motion which was not loaded.")
+	}
+
+	return m.amendments
+}
+
+func (m *Motion) WorkingGroupSpeakers() *MotionWorkingGroupSpeaker {
+	if _, ok := m.loadedRelations["working_group_speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access WorkingGroupSpeakers relation of Motion which was not loaded.")
+	}
+
+	return m.workingGroupSpeakers
+}
+
+func (m *Motion) Editors() *MotionEditor {
+	if _, ok := m.loadedRelations["editor_ids"]; !ok {
+		log.Panic().Msg("Tried to access Editors relation of Motion which was not loaded.")
+	}
+
+	return m.editors
+}
+
+func (m *Motion) SortChilds() *Motion {
+	if _, ok := m.loadedRelations["sort_child_ids"]; !ok {
+		log.Panic().Msg("Tried to access SortChilds relation of Motion which was not loaded.")
+	}
+
+	return m.sortChilds
+}
+
+func (m *Motion) IDenticalMotions() *Motion {
+	if _, ok := m.loadedRelations["identical_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access IDenticalMotions relation of Motion which was not loaded.")
+	}
+
+	return m.iDenticalMotions
+}
+
+func (m *Motion) SupporterMeetingUsers() *MeetingUser {
+	if _, ok := m.loadedRelations["supporter_meeting_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access SupporterMeetingUsers relation of Motion which was not loaded.")
+	}
+
+	return m.supporterMeetingUsers
+}
+
+func (m *Motion) Origin() *Motion {
+	if _, ok := m.loadedRelations["origin_id"]; !ok {
+		log.Panic().Msg("Tried to access Origin relation of Motion which was not loaded.")
+	}
+
+	return m.origin
+}
+
+func (m *Motion) Tags() *Tag {
+	if _, ok := m.loadedRelations["tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access Tags relation of Motion which was not loaded.")
+	}
+
+	return m.tags
+}
+
+func (m *Motion) OriginMeeting() *Meeting {
+	if _, ok := m.loadedRelations["origin_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access OriginMeeting relation of Motion which was not loaded.")
+	}
+
+	return m.originMeeting
+}
+
+func (m *Motion) ChangeRecommendations() *MotionChangeRecommendation {
+	if _, ok := m.loadedRelations["change_recommendation_ids"]; !ok {
+		log.Panic().Msg("Tried to access ChangeRecommendations relation of Motion which was not loaded.")
+	}
+
+	return m.changeRecommendations
+}
+
+func (m *Motion) Comments() *MotionComment {
+	if _, ok := m.loadedRelations["comment_ids"]; !ok {
+		log.Panic().Msg("Tried to access Comments relation of Motion which was not loaded.")
+	}
+
+	return m.comments
+}
+
+func (m *Motion) PersonalNotes() *PersonalNote {
+	if _, ok := m.loadedRelations["personal_note_ids"]; !ok {
+		log.Panic().Msg("Tried to access PersonalNotes relation of Motion which was not loaded.")
+	}
+
+	return m.personalNotes
+}
+
+func (m *Motion) AgendaItem() *AgendaItem {
+	if _, ok := m.loadedRelations["agenda_item_id"]; !ok {
+		log.Panic().Msg("Tried to access AgendaItem relation of Motion which was not loaded.")
+	}
+
+	return m.agendaItem
+}
+
+func (m *Motion) Block() *MotionBlock {
+	if _, ok := m.loadedRelations["block_id"]; !ok {
+		log.Panic().Msg("Tried to access Block relation of Motion which was not loaded.")
+	}
+
+	return m.block
+}
+
+func (m *Motion) SortParent() *Motion {
+	if _, ok := m.loadedRelations["sort_parent_id"]; !ok {
+		log.Panic().Msg("Tried to access SortParent relation of Motion which was not loaded.")
+	}
+
+	return m.sortParent
+}
+
+func (m *Motion) DerivedMotions() *Motion {
+	if _, ok := m.loadedRelations["derived_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access DerivedMotions relation of Motion which was not loaded.")
+	}
+
+	return m.derivedMotions
+}
+
+func (m *Motion) Options() *Option {
+	if _, ok := m.loadedRelations["option_ids"]; !ok {
+		log.Panic().Msg("Tried to access Options relation of Motion which was not loaded.")
+	}
+
+	return m.options
+}
+
+func (m *Motion) StatuteParagraph() *MotionStatuteParagraph {
+	if _, ok := m.loadedRelations["statute_paragraph_id"]; !ok {
+		log.Panic().Msg("Tried to access StatuteParagraph relation of Motion which was not loaded.")
+	}
+
+	return m.statuteParagraph
+}
+
+func (m *Motion) AttachmentMeetingMediafiles() *MeetingMediafile {
+	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Motion which was not loaded.")
+	}
+
+	return m.attachmentMeetingMediafiles
+}
+
+func (m *Motion) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of Motion which was not loaded.")
+	}
+
+	return *m.listOfSpeakers
+}
+
+func (m *Motion) Recommendation() *MotionState {
+	if _, ok := m.loadedRelations["recommendation_id"]; !ok {
+		log.Panic().Msg("Tried to access Recommendation relation of Motion which was not loaded.")
+	}
+
+	return m.recommendation
+}
+
+func (m *Motion) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Motion which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m Motion) Get(field string) interface{} {

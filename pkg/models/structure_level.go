@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type StructureLevel struct {
 	Color                           *string `json:"color"`
@@ -10,10 +14,38 @@ type StructureLevel struct {
 	MeetingUserIDs                  []int   `json:"meeting_user_ids"`
 	Name                            string  `json:"name"`
 	StructureLevelListOfSpeakersIDs []int   `json:"structure_level_list_of_speakers_ids"`
+	loadedRelations                 map[string]struct{}
+	structureLevelListOfSpeakerss   *StructureLevelListOfSpeakers
+	meeting                         *Meeting
+	meetingUsers                    *MeetingUser
 }
 
 func (m StructureLevel) CollectionName() string {
 	return "structure_level"
+}
+
+func (m *StructureLevel) StructureLevelListOfSpeakerss() *StructureLevelListOfSpeakers {
+	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of StructureLevel which was not loaded.")
+	}
+
+	return m.structureLevelListOfSpeakerss
+}
+
+func (m *StructureLevel) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of StructureLevel which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *StructureLevel) MeetingUsers() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUsers relation of StructureLevel which was not loaded.")
+	}
+
+	return m.meetingUsers
 }
 
 func (m StructureLevel) Get(field string) interface{} {

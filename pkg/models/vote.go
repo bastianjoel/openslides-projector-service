@@ -1,6 +1,10 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Vote struct {
 	DelegatedUserID *int    `json:"delegated_user_id"`
@@ -11,10 +15,47 @@ type Vote struct {
 	UserToken       string  `json:"user_token"`
 	Value           *string `json:"value"`
 	Weight          *string `json:"weight"`
+	loadedRelations map[string]struct{}
+	delegatedUser   *User
+	meeting         *Meeting
+	option          *Option
+	user            *User
 }
 
 func (m Vote) CollectionName() string {
 	return "vote"
+}
+
+func (m *Vote) DelegatedUser() *User {
+	if _, ok := m.loadedRelations["delegated_user_id"]; !ok {
+		log.Panic().Msg("Tried to access DelegatedUser relation of Vote which was not loaded.")
+	}
+
+	return m.delegatedUser
+}
+
+func (m *Vote) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Vote which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Vote) Option() Option {
+	if _, ok := m.loadedRelations["option_id"]; !ok {
+		log.Panic().Msg("Tried to access Option relation of Vote which was not loaded.")
+	}
+
+	return *m.option
+}
+
+func (m *Vote) User() *User {
+	if _, ok := m.loadedRelations["user_id"]; !ok {
+		log.Panic().Msg("Tried to access User relation of Vote which was not loaded.")
+	}
+
+	return m.user
 }
 
 func (m Vote) Get(field string) interface{} {
