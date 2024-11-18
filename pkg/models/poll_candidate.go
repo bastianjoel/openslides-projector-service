@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -46,6 +48,54 @@ func (m *PollCandidate) User() *User {
 	return m.user
 }
 
+func (m *PollCandidate) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "poll_candidate_list_id":
+			m.pollCandidateList = content.(*PollCandidateList)
+		case "user_id":
+			m.user = content.(*User)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *PollCandidate) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "poll_candidate_list_id":
+		err := json.Unmarshal(content, &m.pollCandidateList)
+		if err != nil {
+			return err
+		}
+	case "user_id":
+		err := json.Unmarshal(content, &m.user)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
+}
+
 func (m *PollCandidate) Get(field string) interface{} {
 	switch field {
 	case "id":
@@ -61,6 +111,22 @@ func (m *PollCandidate) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *PollCandidate) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "poll_candidate_list_id":
+		return []string{"poll_candidate_list/" + strconv.Itoa(m.PollCandidateListID)}
+
+	case "user_id":
+		if m.UserID != nil {
+			return []string{"user/" + strconv.Itoa(*m.UserID)}
+		}
+	}
+	return []string{}
 }
 
 func (m *PollCandidate) Update(data map[string]string) error {

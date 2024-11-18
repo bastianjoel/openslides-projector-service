@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -46,6 +48,54 @@ func (m *MotionComment) Section() MotionCommentSection {
 	return *m.section
 }
 
+func (m *MotionComment) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "motion_id":
+			m.motion = content.(*Motion)
+		case "section_id":
+			m.section = content.(*MotionCommentSection)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *MotionComment) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "motion_id":
+		err := json.Unmarshal(content, &m.motion)
+		if err != nil {
+			return err
+		}
+	case "section_id":
+		err := json.Unmarshal(content, &m.section)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
+}
+
 func (m *MotionComment) Get(field string) interface{} {
 	switch field {
 	case "comment":
@@ -61,6 +111,20 @@ func (m *MotionComment) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *MotionComment) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "motion_id":
+		return []string{"motion/" + strconv.Itoa(m.MotionID)}
+
+	case "section_id":
+		return []string{"motion_comment_section/" + strconv.Itoa(m.SectionID)}
+	}
+	return []string{}
 }
 
 func (m *MotionComment) Update(data map[string]string) error {

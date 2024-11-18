@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -246,308 +248,108 @@ type Meeting struct {
 	WelcomeText                                  *string         `json:"welcome_text"`
 	WelcomeTitle                                 *string         `json:"welcome_title"`
 	loadedRelations                              map[string]struct{}
-	allProjections                               *Projection
-	pollCandidateLists                           *PollCandidateList
-	adminGroup                                   *Group
-	logoPdfFooterL                               *MeetingMediafile
-	motionWorkingGroupSpeakers                   *MotionWorkingGroupSpeaker
-	options                                      *Option
-	meetingUsers                                 *MeetingUser
-	motionStates                                 *MotionState
-	projectorMessages                            *ProjectorMessage
-	fontRegular                                  *MeetingMediafile
-	organizationTags                             *OrganizationTag
-	personalNotes                                *PersonalNote
-	listOfSpeakerss                              *ListOfSpeakers
-	structureLevels                              *StructureLevel
-	logoPdfBallotPaper                           *MeetingMediafile
-	referenceProjector                           *Projector
-	assignments                                  *Assignment
-	fontChyronSpeakerName                        *MeetingMediafile
-	listOfSpeakersCountdown                      *ProjectorCountdown
-	motionsDefaultStatuteAmendmentWorkflow       *MotionWorkflow
-	defaultMeetingForCommittee                   *Committee
-	logoPdfFooterR                               *MeetingMediafile
-	groups                                       *Group
-	assignmentCandidates                         *AssignmentCandidate
-	defaultProjectorListOfSpeakerss              *Projector
-	motionBlocks                                 *MotionBlock
+	assignments                                  []Assignment
 	fontProjectorH1                              *MeetingMediafile
-	structureLevelListOfSpeakerss                *StructureLevelListOfSpeakers
-	assignmentPollDefaultGroups                  *Group
-	pollCandidates                               *PollCandidate
-	anonymousGroup                               *Group
-	defaultProjectorMotionPolls                  *Projector
-	isArchivedInOrganization                     *Organization
-	defaultProjectorMessages                     *Projector
-	defaultProjectorTopics                       *Projector
-	mediafiles                                   *Mediafile
-	pointOfOrderCategorys                        *PointOfOrderCategory
-	tags                                         *Tag
-	pollCountdown                                *ProjectorCountdown
-	defaultProjectorAmendments                   *Projector
-	defaultProjectorCurrentListOfSpeakerss       *Projector
+	pollDefaultGroups                            []Group
+	votes                                        []Vote
 	logoWebHeader                                *MeetingMediafile
-	defaultProjectorAssignments                  *Projector
-	isActiveInOrganization                       *Organization
-	motions                                      *Motion
-	logoProjectorHeader                          *MeetingMediafile
-	motionChangeRecommendations                  *MotionChangeRecommendation
-	motionStatuteParagraphs                      *MotionStatuteParagraph
-	motionsDefaultAmendmentWorkflow              *MotionWorkflow
-	defaultProjectorAssignmentPolls              *Projector
-	motionComments                               *MotionComment
-	motionSubmitters                             *MotionSubmitter
-	polls                                        *Poll
-	defaultProjectorCountdowns                   *Projector
-	committee                                    *Committee
-	fontMonospace                                *MeetingMediafile
-	forwardedMotions                             *Motion
-	presentUsers                                 *User
-	projections                                  *Projection
-	agendaItems                                  *AgendaItem
-	defaultProjectorAgendaItemLists              *Projector
-	defaultProjectorMediafiles                   *Projector
-	speakers                                     *Speaker
+	topics                                       []Topic
+	motionChangeRecommendations                  []MotionChangeRecommendation
+	personalNotes                                []PersonalNote
+	pollCountdown                                *ProjectorCountdown
 	fontBold                                     *MeetingMediafile
-	meetingMediafiles                            *MeetingMediafile
-	motionWorkflows                              *MotionWorkflow
-	fontProjectorH2                              *MeetingMediafile
 	logoPdfHeaderL                               *MeetingMediafile
-	defaultProjectorMotions                      *Projector
-	fontBoldItalic                               *MeetingMediafile
+	structureLevels                              []StructureLevel
+	tags                                         []Tag
 	logoPdfHeaderR                               *MeetingMediafile
-	motionCommentSections                        *MotionCommentSection
-	motionPollDefaultGroups                      *Group
-	projectors                                   *Projector
-	pollDefaultGroups                            *Group
-	templateForOrganization                      *Organization
+	pollCandidates                               []PollCandidate
+	presentUsers                                 []User
+	agendaItems                                  []AgendaItem
+	defaultProjectorMessages                     []Projector
+	projectors                                   []Projector
+	defaultProjectorAssignments                  []Projector
+	projections                                  []Projection
+	projectorMessages                            []ProjectorMessage
+	defaultProjectorAmendments                   []Projector
+	listOfSpeakerss                              []ListOfSpeakers
+	meetingUsers                                 []MeetingUser
+	motions                                      []Motion
+	motionComments                               []MotionComment
+	fontProjectorH2                              *MeetingMediafile
 	defaultGroup                                 *Group
-	votes                                        *Vote
-	fontItalic                                   *MeetingMediafile
-	logoProjectorMain                            *MeetingMediafile
-	topics                                       *Topic
-	motionEditors                                *MotionEditor
-	topicPollDefaultGroups                       *Group
-	chatGroups                                   *ChatGroup
-	motionCategorys                              *MotionCategory
-	defaultProjectorMotionBlocks                 *Projector
-	defaultProjectorPolls                        *Projector
+	defaultProjectorTopics                       []Projector
+	defaultProjectorMotionBlocks                 []Projector
+	motionEditors                                []MotionEditor
+	chatGroups                                   []ChatGroup
+	projectorCountdowns                          []ProjectorCountdown
+	mediafiles                                   []Mediafile
+	pollCandidateLists                           []PollCandidateList
+	polls                                        []Poll
+	defaultProjectorPolls                        []Projector
+	motionsDefaultAmendmentWorkflow              *MotionWorkflow
+	isArchivedInOrganization                     *Organization
+	motionCategorys                              []MotionCategory
 	motionsDefaultWorkflow                       *MotionWorkflow
-	projectorCountdowns                          *ProjectorCountdown
-	chatMessages                                 *ChatMessage
+	anonymousGroup                               *Group
+	assignmentCandidates                         []AssignmentCandidate
+	defaultProjectorListOfSpeakerss              []Projector
+	fontRegular                                  *MeetingMediafile
+	motionBlocks                                 []MotionBlock
+	motionSubmitters                             []MotionSubmitter
+	chatMessages                                 []ChatMessage
+	listOfSpeakersCountdown                      *ProjectorCountdown
+	organizationTags                             []OrganizationTag
+	defaultProjectorCurrentListOfSpeakerss       []Projector
+	defaultProjectorCountdowns                   []Projector
+	templateForOrganization                      *Organization
+	meetingMediafiles                            []MeetingMediafile
+	logoPdfBallotPaper                           *MeetingMediafile
+	logoPdfFooterL                               *MeetingMediafile
+	adminGroup                                   *Group
+	defaultProjectorMotionPolls                  []Projector
+	forwardedMotions                             []Motion
+	topicPollDefaultGroups                       []Group
+	defaultProjectorMediafiles                   []Projector
+	defaultProjectorMotions                      []Projector
+	logoPdfFooterR                               *MeetingMediafile
+	motionStatuteParagraphs                      []MotionStatuteParagraph
+	structureLevelListOfSpeakerss                []StructureLevelListOfSpeakers
+	committee                                    *Committee
+	allProjections                               []Projection
+	fontBoldItalic                               *MeetingMediafile
+	speakers                                     []Speaker
+	defaultMeetingForCommittee                   *Committee
+	defaultProjectorAgendaItemLists              []Projector
+	motionCommentSections                        []MotionCommentSection
+	motionWorkflows                              []MotionWorkflow
+	fontMonospace                                *MeetingMediafile
+	isActiveInOrganization                       *Organization
+	motionStates                                 []MotionState
+	logoProjectorHeader                          *MeetingMediafile
+	fontItalic                                   *MeetingMediafile
+	motionPollDefaultGroups                      []Group
+	motionsDefaultStatuteAmendmentWorkflow       *MotionWorkflow
+	assignmentPollDefaultGroups                  []Group
+	defaultProjectorAssignmentPolls              []Projector
+	logoProjectorMain                            *MeetingMediafile
+	referenceProjector                           *Projector
+	fontChyronSpeakerName                        *MeetingMediafile
+	pointOfOrderCategorys                        []PointOfOrderCategory
+	groups                                       []Group
+	options                                      []Option
+	motionWorkingGroupSpeakers                   []MotionWorkingGroupSpeaker
 }
 
 func (m *Meeting) CollectionName() string {
 	return "meeting"
 }
 
-func (m *Meeting) AllProjections() *Projection {
-	if _, ok := m.loadedRelations["all_projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access AllProjections relation of Meeting which was not loaded.")
-	}
-
-	return m.allProjections
-}
-
-func (m *Meeting) PollCandidateLists() *PollCandidateList {
-	if _, ok := m.loadedRelations["poll_candidate_list_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollCandidateLists relation of Meeting which was not loaded.")
-	}
-
-	return m.pollCandidateLists
-}
-
-func (m *Meeting) AdminGroup() *Group {
-	if _, ok := m.loadedRelations["admin_group_id"]; !ok {
-		log.Panic().Msg("Tried to access AdminGroup relation of Meeting which was not loaded.")
-	}
-
-	return m.adminGroup
-}
-
-func (m *Meeting) LogoPdfFooterL() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_footer_l_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfFooterL relation of Meeting which was not loaded.")
-	}
-
-	return m.logoPdfFooterL
-}
-
-func (m *Meeting) MotionWorkingGroupSpeakers() *MotionWorkingGroupSpeaker {
-	if _, ok := m.loadedRelations["motion_working_group_speaker_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionWorkingGroupSpeakers relation of Meeting which was not loaded.")
-	}
-
-	return m.motionWorkingGroupSpeakers
-}
-
-func (m *Meeting) Options() *Option {
-	if _, ok := m.loadedRelations["option_ids"]; !ok {
-		log.Panic().Msg("Tried to access Options relation of Meeting which was not loaded.")
-	}
-
-	return m.options
-}
-
-func (m *Meeting) MeetingUsers() *MeetingUser {
-	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingUsers relation of Meeting which was not loaded.")
-	}
-
-	return m.meetingUsers
-}
-
-func (m *Meeting) MotionStates() *MotionState {
-	if _, ok := m.loadedRelations["motion_state_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionStates relation of Meeting which was not loaded.")
-	}
-
-	return m.motionStates
-}
-
-func (m *Meeting) ProjectorMessages() *ProjectorMessage {
-	if _, ok := m.loadedRelations["projector_message_ids"]; !ok {
-		log.Panic().Msg("Tried to access ProjectorMessages relation of Meeting which was not loaded.")
-	}
-
-	return m.projectorMessages
-}
-
-func (m *Meeting) FontRegular() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_regular_id"]; !ok {
-		log.Panic().Msg("Tried to access FontRegular relation of Meeting which was not loaded.")
-	}
-
-	return m.fontRegular
-}
-
-func (m *Meeting) OrganizationTags() *OrganizationTag {
-	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
-		log.Panic().Msg("Tried to access OrganizationTags relation of Meeting which was not loaded.")
-	}
-
-	return m.organizationTags
-}
-
-func (m *Meeting) PersonalNotes() *PersonalNote {
-	if _, ok := m.loadedRelations["personal_note_ids"]; !ok {
-		log.Panic().Msg("Tried to access PersonalNotes relation of Meeting which was not loaded.")
-	}
-
-	return m.personalNotes
-}
-
-func (m *Meeting) ListOfSpeakerss() *ListOfSpeakers {
-	if _, ok := m.loadedRelations["list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakerss relation of Meeting which was not loaded.")
-	}
-
-	return m.listOfSpeakerss
-}
-
-func (m *Meeting) StructureLevels() *StructureLevel {
-	if _, ok := m.loadedRelations["structure_level_ids"]; !ok {
-		log.Panic().Msg("Tried to access StructureLevels relation of Meeting which was not loaded.")
-	}
-
-	return m.structureLevels
-}
-
-func (m *Meeting) LogoPdfBallotPaper() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_ballot_paper_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfBallotPaper relation of Meeting which was not loaded.")
-	}
-
-	return m.logoPdfBallotPaper
-}
-
-func (m *Meeting) ReferenceProjector() Projector {
-	if _, ok := m.loadedRelations["reference_projector_id"]; !ok {
-		log.Panic().Msg("Tried to access ReferenceProjector relation of Meeting which was not loaded.")
-	}
-
-	return *m.referenceProjector
-}
-
-func (m *Meeting) Assignments() *Assignment {
+func (m *Meeting) Assignments() []Assignment {
 	if _, ok := m.loadedRelations["assignment_ids"]; !ok {
 		log.Panic().Msg("Tried to access Assignments relation of Meeting which was not loaded.")
 	}
 
 	return m.assignments
-}
-
-func (m *Meeting) FontChyronSpeakerName() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_chyron_speaker_name_id"]; !ok {
-		log.Panic().Msg("Tried to access FontChyronSpeakerName relation of Meeting which was not loaded.")
-	}
-
-	return m.fontChyronSpeakerName
-}
-
-func (m *Meeting) ListOfSpeakersCountdown() *ProjectorCountdown {
-	if _, ok := m.loadedRelations["list_of_speakers_countdown_id"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakersCountdown relation of Meeting which was not loaded.")
-	}
-
-	return m.listOfSpeakersCountdown
-}
-
-func (m *Meeting) MotionsDefaultStatuteAmendmentWorkflow() MotionWorkflow {
-	if _, ok := m.loadedRelations["motions_default_statute_amendment_workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access MotionsDefaultStatuteAmendmentWorkflow relation of Meeting which was not loaded.")
-	}
-
-	return *m.motionsDefaultStatuteAmendmentWorkflow
-}
-
-func (m *Meeting) DefaultMeetingForCommittee() *Committee {
-	if _, ok := m.loadedRelations["default_meeting_for_committee_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultMeetingForCommittee relation of Meeting which was not loaded.")
-	}
-
-	return m.defaultMeetingForCommittee
-}
-
-func (m *Meeting) LogoPdfFooterR() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_footer_r_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfFooterR relation of Meeting which was not loaded.")
-	}
-
-	return m.logoPdfFooterR
-}
-
-func (m *Meeting) Groups() *Group {
-	if _, ok := m.loadedRelations["group_ids"]; !ok {
-		log.Panic().Msg("Tried to access Groups relation of Meeting which was not loaded.")
-	}
-
-	return m.groups
-}
-
-func (m *Meeting) AssignmentCandidates() *AssignmentCandidate {
-	if _, ok := m.loadedRelations["assignment_candidate_ids"]; !ok {
-		log.Panic().Msg("Tried to access AssignmentCandidates relation of Meeting which was not loaded.")
-	}
-
-	return m.assignmentCandidates
-}
-
-func (m *Meeting) DefaultProjectorListOfSpeakerss() Projector {
-	if _, ok := m.loadedRelations["default_projector_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorListOfSpeakerss relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorListOfSpeakerss
-}
-
-func (m *Meeting) MotionBlocks() *MotionBlock {
-	if _, ok := m.loadedRelations["motion_block_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionBlocks relation of Meeting which was not loaded.")
-	}
-
-	return m.motionBlocks
 }
 
 func (m *Meeting) FontProjectorH1() *MeetingMediafile {
@@ -558,116 +360,20 @@ func (m *Meeting) FontProjectorH1() *MeetingMediafile {
 	return m.fontProjectorH1
 }
 
-func (m *Meeting) StructureLevelListOfSpeakerss() *StructureLevelListOfSpeakers {
-	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of Meeting which was not loaded.")
+func (m *Meeting) PollDefaultGroups() []Group {
+	if _, ok := m.loadedRelations["poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollDefaultGroups relation of Meeting which was not loaded.")
 	}
 
-	return m.structureLevelListOfSpeakerss
+	return m.pollDefaultGroups
 }
 
-func (m *Meeting) AssignmentPollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["assignment_poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access AssignmentPollDefaultGroups relation of Meeting which was not loaded.")
+func (m *Meeting) Votes() []Vote {
+	if _, ok := m.loadedRelations["vote_ids"]; !ok {
+		log.Panic().Msg("Tried to access Votes relation of Meeting which was not loaded.")
 	}
 
-	return m.assignmentPollDefaultGroups
-}
-
-func (m *Meeting) PollCandidates() *PollCandidate {
-	if _, ok := m.loadedRelations["poll_candidate_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollCandidates relation of Meeting which was not loaded.")
-	}
-
-	return m.pollCandidates
-}
-
-func (m *Meeting) AnonymousGroup() *Group {
-	if _, ok := m.loadedRelations["anonymous_group_id"]; !ok {
-		log.Panic().Msg("Tried to access AnonymousGroup relation of Meeting which was not loaded.")
-	}
-
-	return m.anonymousGroup
-}
-
-func (m *Meeting) DefaultProjectorMotionPolls() Projector {
-	if _, ok := m.loadedRelations["default_projector_motion_poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMotionPolls relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorMotionPolls
-}
-
-func (m *Meeting) IsArchivedInOrganization() *Organization {
-	if _, ok := m.loadedRelations["is_archived_in_organization_id"]; !ok {
-		log.Panic().Msg("Tried to access IsArchivedInOrganization relation of Meeting which was not loaded.")
-	}
-
-	return m.isArchivedInOrganization
-}
-
-func (m *Meeting) DefaultProjectorMessages() Projector {
-	if _, ok := m.loadedRelations["default_projector_message_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMessages relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorMessages
-}
-
-func (m *Meeting) DefaultProjectorTopics() Projector {
-	if _, ok := m.loadedRelations["default_projector_topic_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorTopics relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorTopics
-}
-
-func (m *Meeting) Mediafiles() *Mediafile {
-	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access Mediafiles relation of Meeting which was not loaded.")
-	}
-
-	return m.mediafiles
-}
-
-func (m *Meeting) PointOfOrderCategorys() *PointOfOrderCategory {
-	if _, ok := m.loadedRelations["point_of_order_category_ids"]; !ok {
-		log.Panic().Msg("Tried to access PointOfOrderCategorys relation of Meeting which was not loaded.")
-	}
-
-	return m.pointOfOrderCategorys
-}
-
-func (m *Meeting) Tags() *Tag {
-	if _, ok := m.loadedRelations["tag_ids"]; !ok {
-		log.Panic().Msg("Tried to access Tags relation of Meeting which was not loaded.")
-	}
-
-	return m.tags
-}
-
-func (m *Meeting) PollCountdown() *ProjectorCountdown {
-	if _, ok := m.loadedRelations["poll_countdown_id"]; !ok {
-		log.Panic().Msg("Tried to access PollCountdown relation of Meeting which was not loaded.")
-	}
-
-	return m.pollCountdown
-}
-
-func (m *Meeting) DefaultProjectorAmendments() Projector {
-	if _, ok := m.loadedRelations["default_projector_amendment_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAmendments relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorAmendments
-}
-
-func (m *Meeting) DefaultProjectorCurrentListOfSpeakerss() Projector {
-	if _, ok := m.loadedRelations["default_projector_current_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorCurrentListOfSpeakerss relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorCurrentListOfSpeakerss
+	return m.votes
 }
 
 func (m *Meeting) LogoWebHeader() *MeetingMediafile {
@@ -678,39 +384,15 @@ func (m *Meeting) LogoWebHeader() *MeetingMediafile {
 	return m.logoWebHeader
 }
 
-func (m *Meeting) DefaultProjectorAssignments() Projector {
-	if _, ok := m.loadedRelations["default_projector_assignment_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAssignments relation of Meeting which was not loaded.")
+func (m *Meeting) Topics() []Topic {
+	if _, ok := m.loadedRelations["topic_ids"]; !ok {
+		log.Panic().Msg("Tried to access Topics relation of Meeting which was not loaded.")
 	}
 
-	return *m.defaultProjectorAssignments
+	return m.topics
 }
 
-func (m *Meeting) IsActiveInOrganization() *Organization {
-	if _, ok := m.loadedRelations["is_active_in_organization_id"]; !ok {
-		log.Panic().Msg("Tried to access IsActiveInOrganization relation of Meeting which was not loaded.")
-	}
-
-	return m.isActiveInOrganization
-}
-
-func (m *Meeting) Motions() *Motion {
-	if _, ok := m.loadedRelations["motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access Motions relation of Meeting which was not loaded.")
-	}
-
-	return m.motions
-}
-
-func (m *Meeting) LogoProjectorHeader() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_projector_header_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoProjectorHeader relation of Meeting which was not loaded.")
-	}
-
-	return m.logoProjectorHeader
-}
-
-func (m *Meeting) MotionChangeRecommendations() *MotionChangeRecommendation {
+func (m *Meeting) MotionChangeRecommendations() []MotionChangeRecommendation {
 	if _, ok := m.loadedRelations["motion_change_recommendation_ids"]; !ok {
 		log.Panic().Msg("Tried to access MotionChangeRecommendations relation of Meeting which was not loaded.")
 	}
@@ -718,132 +400,20 @@ func (m *Meeting) MotionChangeRecommendations() *MotionChangeRecommendation {
 	return m.motionChangeRecommendations
 }
 
-func (m *Meeting) MotionStatuteParagraphs() *MotionStatuteParagraph {
-	if _, ok := m.loadedRelations["motion_statute_paragraph_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionStatuteParagraphs relation of Meeting which was not loaded.")
+func (m *Meeting) PersonalNotes() []PersonalNote {
+	if _, ok := m.loadedRelations["personal_note_ids"]; !ok {
+		log.Panic().Msg("Tried to access PersonalNotes relation of Meeting which was not loaded.")
 	}
 
-	return m.motionStatuteParagraphs
+	return m.personalNotes
 }
 
-func (m *Meeting) MotionsDefaultAmendmentWorkflow() MotionWorkflow {
-	if _, ok := m.loadedRelations["motions_default_amendment_workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access MotionsDefaultAmendmentWorkflow relation of Meeting which was not loaded.")
+func (m *Meeting) PollCountdown() *ProjectorCountdown {
+	if _, ok := m.loadedRelations["poll_countdown_id"]; !ok {
+		log.Panic().Msg("Tried to access PollCountdown relation of Meeting which was not loaded.")
 	}
 
-	return *m.motionsDefaultAmendmentWorkflow
-}
-
-func (m *Meeting) DefaultProjectorAssignmentPolls() Projector {
-	if _, ok := m.loadedRelations["default_projector_assignment_poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAssignmentPolls relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorAssignmentPolls
-}
-
-func (m *Meeting) MotionComments() *MotionComment {
-	if _, ok := m.loadedRelations["motion_comment_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionComments relation of Meeting which was not loaded.")
-	}
-
-	return m.motionComments
-}
-
-func (m *Meeting) MotionSubmitters() *MotionSubmitter {
-	if _, ok := m.loadedRelations["motion_submitter_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionSubmitters relation of Meeting which was not loaded.")
-	}
-
-	return m.motionSubmitters
-}
-
-func (m *Meeting) Polls() *Poll {
-	if _, ok := m.loadedRelations["poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access Polls relation of Meeting which was not loaded.")
-	}
-
-	return m.polls
-}
-
-func (m *Meeting) DefaultProjectorCountdowns() Projector {
-	if _, ok := m.loadedRelations["default_projector_countdown_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorCountdowns relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorCountdowns
-}
-
-func (m *Meeting) Committee() Committee {
-	if _, ok := m.loadedRelations["committee_id"]; !ok {
-		log.Panic().Msg("Tried to access Committee relation of Meeting which was not loaded.")
-	}
-
-	return *m.committee
-}
-
-func (m *Meeting) FontMonospace() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_monospace_id"]; !ok {
-		log.Panic().Msg("Tried to access FontMonospace relation of Meeting which was not loaded.")
-	}
-
-	return m.fontMonospace
-}
-
-func (m *Meeting) ForwardedMotions() *Motion {
-	if _, ok := m.loadedRelations["forwarded_motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access ForwardedMotions relation of Meeting which was not loaded.")
-	}
-
-	return m.forwardedMotions
-}
-
-func (m *Meeting) PresentUsers() *User {
-	if _, ok := m.loadedRelations["present_user_ids"]; !ok {
-		log.Panic().Msg("Tried to access PresentUsers relation of Meeting which was not loaded.")
-	}
-
-	return m.presentUsers
-}
-
-func (m *Meeting) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of Meeting which was not loaded.")
-	}
-
-	return m.projections
-}
-
-func (m *Meeting) AgendaItems() *AgendaItem {
-	if _, ok := m.loadedRelations["agenda_item_ids"]; !ok {
-		log.Panic().Msg("Tried to access AgendaItems relation of Meeting which was not loaded.")
-	}
-
-	return m.agendaItems
-}
-
-func (m *Meeting) DefaultProjectorAgendaItemLists() Projector {
-	if _, ok := m.loadedRelations["default_projector_agenda_item_list_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAgendaItemLists relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorAgendaItemLists
-}
-
-func (m *Meeting) DefaultProjectorMediafiles() Projector {
-	if _, ok := m.loadedRelations["default_projector_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMediafiles relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorMediafiles
-}
-
-func (m *Meeting) Speakers() *Speaker {
-	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
-		log.Panic().Msg("Tried to access Speakers relation of Meeting which was not loaded.")
-	}
-
-	return m.speakers
+	return m.pollCountdown
 }
 
 func (m *Meeting) FontBold() *MeetingMediafile {
@@ -854,30 +424,6 @@ func (m *Meeting) FontBold() *MeetingMediafile {
 	return m.fontBold
 }
 
-func (m *Meeting) MeetingMediafiles() *MeetingMediafile {
-	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingMediafiles relation of Meeting which was not loaded.")
-	}
-
-	return m.meetingMediafiles
-}
-
-func (m *Meeting) MotionWorkflows() *MotionWorkflow {
-	if _, ok := m.loadedRelations["motion_workflow_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionWorkflows relation of Meeting which was not loaded.")
-	}
-
-	return m.motionWorkflows
-}
-
-func (m *Meeting) FontProjectorH2() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_projector_h2_id"]; !ok {
-		log.Panic().Msg("Tried to access FontProjectorH2 relation of Meeting which was not loaded.")
-	}
-
-	return m.fontProjectorH2
-}
-
 func (m *Meeting) LogoPdfHeaderL() *MeetingMediafile {
 	if _, ok := m.loadedRelations["logo_pdf_header_l_id"]; !ok {
 		log.Panic().Msg("Tried to access LogoPdfHeaderL relation of Meeting which was not loaded.")
@@ -886,20 +432,20 @@ func (m *Meeting) LogoPdfHeaderL() *MeetingMediafile {
 	return m.logoPdfHeaderL
 }
 
-func (m *Meeting) DefaultProjectorMotions() Projector {
-	if _, ok := m.loadedRelations["default_projector_motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMotions relation of Meeting which was not loaded.")
+func (m *Meeting) StructureLevels() []StructureLevel {
+	if _, ok := m.loadedRelations["structure_level_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevels relation of Meeting which was not loaded.")
 	}
 
-	return *m.defaultProjectorMotions
+	return m.structureLevels
 }
 
-func (m *Meeting) FontBoldItalic() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_bold_italic_id"]; !ok {
-		log.Panic().Msg("Tried to access FontBoldItalic relation of Meeting which was not loaded.")
+func (m *Meeting) Tags() []Tag {
+	if _, ok := m.loadedRelations["tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access Tags relation of Meeting which was not loaded.")
 	}
 
-	return m.fontBoldItalic
+	return m.tags
 }
 
 func (m *Meeting) LogoPdfHeaderR() *MeetingMediafile {
@@ -910,23 +456,39 @@ func (m *Meeting) LogoPdfHeaderR() *MeetingMediafile {
 	return m.logoPdfHeaderR
 }
 
-func (m *Meeting) MotionCommentSections() *MotionCommentSection {
-	if _, ok := m.loadedRelations["motion_comment_section_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionCommentSections relation of Meeting which was not loaded.")
+func (m *Meeting) PollCandidates() []PollCandidate {
+	if _, ok := m.loadedRelations["poll_candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollCandidates relation of Meeting which was not loaded.")
 	}
 
-	return m.motionCommentSections
+	return m.pollCandidates
 }
 
-func (m *Meeting) MotionPollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["motion_poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionPollDefaultGroups relation of Meeting which was not loaded.")
+func (m *Meeting) PresentUsers() []User {
+	if _, ok := m.loadedRelations["present_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access PresentUsers relation of Meeting which was not loaded.")
 	}
 
-	return m.motionPollDefaultGroups
+	return m.presentUsers
 }
 
-func (m *Meeting) Projectors() *Projector {
+func (m *Meeting) AgendaItems() []AgendaItem {
+	if _, ok := m.loadedRelations["agenda_item_ids"]; !ok {
+		log.Panic().Msg("Tried to access AgendaItems relation of Meeting which was not loaded.")
+	}
+
+	return m.agendaItems
+}
+
+func (m *Meeting) DefaultProjectorMessages() []Projector {
+	if _, ok := m.loadedRelations["default_projector_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMessages relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorMessages
+}
+
+func (m *Meeting) Projectors() []Projector {
 	if _, ok := m.loadedRelations["projector_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projectors relation of Meeting which was not loaded.")
 	}
@@ -934,20 +496,76 @@ func (m *Meeting) Projectors() *Projector {
 	return m.projectors
 }
 
-func (m *Meeting) PollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollDefaultGroups relation of Meeting which was not loaded.")
+func (m *Meeting) DefaultProjectorAssignments() []Projector {
+	if _, ok := m.loadedRelations["default_projector_assignment_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAssignments relation of Meeting which was not loaded.")
 	}
 
-	return m.pollDefaultGroups
+	return m.defaultProjectorAssignments
 }
 
-func (m *Meeting) TemplateForOrganization() *Organization {
-	if _, ok := m.loadedRelations["template_for_organization_id"]; !ok {
-		log.Panic().Msg("Tried to access TemplateForOrganization relation of Meeting which was not loaded.")
+func (m *Meeting) Projections() []Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Meeting which was not loaded.")
 	}
 
-	return m.templateForOrganization
+	return m.projections
+}
+
+func (m *Meeting) ProjectorMessages() []ProjectorMessage {
+	if _, ok := m.loadedRelations["projector_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access ProjectorMessages relation of Meeting which was not loaded.")
+	}
+
+	return m.projectorMessages
+}
+
+func (m *Meeting) DefaultProjectorAmendments() []Projector {
+	if _, ok := m.loadedRelations["default_projector_amendment_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAmendments relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorAmendments
+}
+
+func (m *Meeting) ListOfSpeakerss() []ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return m.listOfSpeakerss
+}
+
+func (m *Meeting) MeetingUsers() []MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUsers relation of Meeting which was not loaded.")
+	}
+
+	return m.meetingUsers
+}
+
+func (m *Meeting) Motions() []Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of Meeting which was not loaded.")
+	}
+
+	return m.motions
+}
+
+func (m *Meeting) MotionComments() []MotionComment {
+	if _, ok := m.loadedRelations["motion_comment_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionComments relation of Meeting which was not loaded.")
+	}
+
+	return m.motionComments
+}
+
+func (m *Meeting) FontProjectorH2() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_projector_h2_id"]; !ok {
+		log.Panic().Msg("Tried to access FontProjectorH2 relation of Meeting which was not loaded.")
+	}
+
+	return m.fontProjectorH2
 }
 
 func (m *Meeting) DefaultGroup() Group {
@@ -958,39 +576,23 @@ func (m *Meeting) DefaultGroup() Group {
 	return *m.defaultGroup
 }
 
-func (m *Meeting) Votes() *Vote {
-	if _, ok := m.loadedRelations["vote_ids"]; !ok {
-		log.Panic().Msg("Tried to access Votes relation of Meeting which was not loaded.")
+func (m *Meeting) DefaultProjectorTopics() []Projector {
+	if _, ok := m.loadedRelations["default_projector_topic_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorTopics relation of Meeting which was not loaded.")
 	}
 
-	return m.votes
+	return m.defaultProjectorTopics
 }
 
-func (m *Meeting) FontItalic() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_italic_id"]; !ok {
-		log.Panic().Msg("Tried to access FontItalic relation of Meeting which was not loaded.")
+func (m *Meeting) DefaultProjectorMotionBlocks() []Projector {
+	if _, ok := m.loadedRelations["default_projector_motion_block_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMotionBlocks relation of Meeting which was not loaded.")
 	}
 
-	return m.fontItalic
+	return m.defaultProjectorMotionBlocks
 }
 
-func (m *Meeting) LogoProjectorMain() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_projector_main_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoProjectorMain relation of Meeting which was not loaded.")
-	}
-
-	return m.logoProjectorMain
-}
-
-func (m *Meeting) Topics() *Topic {
-	if _, ok := m.loadedRelations["topic_ids"]; !ok {
-		log.Panic().Msg("Tried to access Topics relation of Meeting which was not loaded.")
-	}
-
-	return m.topics
-}
-
-func (m *Meeting) MotionEditors() *MotionEditor {
+func (m *Meeting) MotionEditors() []MotionEditor {
 	if _, ok := m.loadedRelations["motion_editor_ids"]; !ok {
 		log.Panic().Msg("Tried to access MotionEditors relation of Meeting which was not loaded.")
 	}
@@ -998,15 +600,7 @@ func (m *Meeting) MotionEditors() *MotionEditor {
 	return m.motionEditors
 }
 
-func (m *Meeting) TopicPollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["topic_poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access TopicPollDefaultGroups relation of Meeting which was not loaded.")
-	}
-
-	return m.topicPollDefaultGroups
-}
-
-func (m *Meeting) ChatGroups() *ChatGroup {
+func (m *Meeting) ChatGroups() []ChatGroup {
 	if _, ok := m.loadedRelations["chat_group_ids"]; !ok {
 		log.Panic().Msg("Tried to access ChatGroups relation of Meeting which was not loaded.")
 	}
@@ -1014,28 +608,68 @@ func (m *Meeting) ChatGroups() *ChatGroup {
 	return m.chatGroups
 }
 
-func (m *Meeting) MotionCategorys() *MotionCategory {
+func (m *Meeting) ProjectorCountdowns() []ProjectorCountdown {
+	if _, ok := m.loadedRelations["projector_countdown_ids"]; !ok {
+		log.Panic().Msg("Tried to access ProjectorCountdowns relation of Meeting which was not loaded.")
+	}
+
+	return m.projectorCountdowns
+}
+
+func (m *Meeting) Mediafiles() []Mediafile {
+	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access Mediafiles relation of Meeting which was not loaded.")
+	}
+
+	return m.mediafiles
+}
+
+func (m *Meeting) PollCandidateLists() []PollCandidateList {
+	if _, ok := m.loadedRelations["poll_candidate_list_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollCandidateLists relation of Meeting which was not loaded.")
+	}
+
+	return m.pollCandidateLists
+}
+
+func (m *Meeting) Polls() []Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Meeting which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Meeting) DefaultProjectorPolls() []Projector {
+	if _, ok := m.loadedRelations["default_projector_poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorPolls relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorPolls
+}
+
+func (m *Meeting) MotionsDefaultAmendmentWorkflow() MotionWorkflow {
+	if _, ok := m.loadedRelations["motions_default_amendment_workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access MotionsDefaultAmendmentWorkflow relation of Meeting which was not loaded.")
+	}
+
+	return *m.motionsDefaultAmendmentWorkflow
+}
+
+func (m *Meeting) IsArchivedInOrganization() *Organization {
+	if _, ok := m.loadedRelations["is_archived_in_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access IsArchivedInOrganization relation of Meeting which was not loaded.")
+	}
+
+	return m.isArchivedInOrganization
+}
+
+func (m *Meeting) MotionCategorys() []MotionCategory {
 	if _, ok := m.loadedRelations["motion_category_ids"]; !ok {
 		log.Panic().Msg("Tried to access MotionCategorys relation of Meeting which was not loaded.")
 	}
 
 	return m.motionCategorys
-}
-
-func (m *Meeting) DefaultProjectorMotionBlocks() Projector {
-	if _, ok := m.loadedRelations["default_projector_motion_block_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMotionBlocks relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorMotionBlocks
-}
-
-func (m *Meeting) DefaultProjectorPolls() Projector {
-	if _, ok := m.loadedRelations["default_projector_poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorPolls relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorPolls
 }
 
 func (m *Meeting) MotionsDefaultWorkflow() MotionWorkflow {
@@ -1046,20 +680,1045 @@ func (m *Meeting) MotionsDefaultWorkflow() MotionWorkflow {
 	return *m.motionsDefaultWorkflow
 }
 
-func (m *Meeting) ProjectorCountdowns() *ProjectorCountdown {
-	if _, ok := m.loadedRelations["projector_countdown_ids"]; !ok {
-		log.Panic().Msg("Tried to access ProjectorCountdowns relation of Meeting which was not loaded.")
+func (m *Meeting) AnonymousGroup() *Group {
+	if _, ok := m.loadedRelations["anonymous_group_id"]; !ok {
+		log.Panic().Msg("Tried to access AnonymousGroup relation of Meeting which was not loaded.")
 	}
 
-	return m.projectorCountdowns
+	return m.anonymousGroup
 }
 
-func (m *Meeting) ChatMessages() *ChatMessage {
+func (m *Meeting) AssignmentCandidates() []AssignmentCandidate {
+	if _, ok := m.loadedRelations["assignment_candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access AssignmentCandidates relation of Meeting which was not loaded.")
+	}
+
+	return m.assignmentCandidates
+}
+
+func (m *Meeting) DefaultProjectorListOfSpeakerss() []Projector {
+	if _, ok := m.loadedRelations["default_projector_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorListOfSpeakerss
+}
+
+func (m *Meeting) FontRegular() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_regular_id"]; !ok {
+		log.Panic().Msg("Tried to access FontRegular relation of Meeting which was not loaded.")
+	}
+
+	return m.fontRegular
+}
+
+func (m *Meeting) MotionBlocks() []MotionBlock {
+	if _, ok := m.loadedRelations["motion_block_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionBlocks relation of Meeting which was not loaded.")
+	}
+
+	return m.motionBlocks
+}
+
+func (m *Meeting) MotionSubmitters() []MotionSubmitter {
+	if _, ok := m.loadedRelations["motion_submitter_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionSubmitters relation of Meeting which was not loaded.")
+	}
+
+	return m.motionSubmitters
+}
+
+func (m *Meeting) ChatMessages() []ChatMessage {
 	if _, ok := m.loadedRelations["chat_message_ids"]; !ok {
 		log.Panic().Msg("Tried to access ChatMessages relation of Meeting which was not loaded.")
 	}
 
 	return m.chatMessages
+}
+
+func (m *Meeting) ListOfSpeakersCountdown() *ProjectorCountdown {
+	if _, ok := m.loadedRelations["list_of_speakers_countdown_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakersCountdown relation of Meeting which was not loaded.")
+	}
+
+	return m.listOfSpeakersCountdown
+}
+
+func (m *Meeting) OrganizationTags() []OrganizationTag {
+	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access OrganizationTags relation of Meeting which was not loaded.")
+	}
+
+	return m.organizationTags
+}
+
+func (m *Meeting) DefaultProjectorCurrentListOfSpeakerss() []Projector {
+	if _, ok := m.loadedRelations["default_projector_current_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorCurrentListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorCurrentListOfSpeakerss
+}
+
+func (m *Meeting) DefaultProjectorCountdowns() []Projector {
+	if _, ok := m.loadedRelations["default_projector_countdown_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorCountdowns relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorCountdowns
+}
+
+func (m *Meeting) TemplateForOrganization() *Organization {
+	if _, ok := m.loadedRelations["template_for_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access TemplateForOrganization relation of Meeting which was not loaded.")
+	}
+
+	return m.templateForOrganization
+}
+
+func (m *Meeting) MeetingMediafiles() []MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafiles relation of Meeting which was not loaded.")
+	}
+
+	return m.meetingMediafiles
+}
+
+func (m *Meeting) LogoPdfBallotPaper() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_ballot_paper_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfBallotPaper relation of Meeting which was not loaded.")
+	}
+
+	return m.logoPdfBallotPaper
+}
+
+func (m *Meeting) LogoPdfFooterL() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_footer_l_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfFooterL relation of Meeting which was not loaded.")
+	}
+
+	return m.logoPdfFooterL
+}
+
+func (m *Meeting) AdminGroup() *Group {
+	if _, ok := m.loadedRelations["admin_group_id"]; !ok {
+		log.Panic().Msg("Tried to access AdminGroup relation of Meeting which was not loaded.")
+	}
+
+	return m.adminGroup
+}
+
+func (m *Meeting) DefaultProjectorMotionPolls() []Projector {
+	if _, ok := m.loadedRelations["default_projector_motion_poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMotionPolls relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorMotionPolls
+}
+
+func (m *Meeting) ForwardedMotions() []Motion {
+	if _, ok := m.loadedRelations["forwarded_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access ForwardedMotions relation of Meeting which was not loaded.")
+	}
+
+	return m.forwardedMotions
+}
+
+func (m *Meeting) TopicPollDefaultGroups() []Group {
+	if _, ok := m.loadedRelations["topic_poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access TopicPollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.topicPollDefaultGroups
+}
+
+func (m *Meeting) DefaultProjectorMediafiles() []Projector {
+	if _, ok := m.loadedRelations["default_projector_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMediafiles relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorMediafiles
+}
+
+func (m *Meeting) DefaultProjectorMotions() []Projector {
+	if _, ok := m.loadedRelations["default_projector_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMotions relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorMotions
+}
+
+func (m *Meeting) LogoPdfFooterR() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_footer_r_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfFooterR relation of Meeting which was not loaded.")
+	}
+
+	return m.logoPdfFooterR
+}
+
+func (m *Meeting) MotionStatuteParagraphs() []MotionStatuteParagraph {
+	if _, ok := m.loadedRelations["motion_statute_paragraph_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionStatuteParagraphs relation of Meeting which was not loaded.")
+	}
+
+	return m.motionStatuteParagraphs
+}
+
+func (m *Meeting) StructureLevelListOfSpeakerss() []StructureLevelListOfSpeakers {
+	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return m.structureLevelListOfSpeakerss
+}
+
+func (m *Meeting) Committee() Committee {
+	if _, ok := m.loadedRelations["committee_id"]; !ok {
+		log.Panic().Msg("Tried to access Committee relation of Meeting which was not loaded.")
+	}
+
+	return *m.committee
+}
+
+func (m *Meeting) AllProjections() []Projection {
+	if _, ok := m.loadedRelations["all_projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access AllProjections relation of Meeting which was not loaded.")
+	}
+
+	return m.allProjections
+}
+
+func (m *Meeting) FontBoldItalic() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_bold_italic_id"]; !ok {
+		log.Panic().Msg("Tried to access FontBoldItalic relation of Meeting which was not loaded.")
+	}
+
+	return m.fontBoldItalic
+}
+
+func (m *Meeting) Speakers() []Speaker {
+	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access Speakers relation of Meeting which was not loaded.")
+	}
+
+	return m.speakers
+}
+
+func (m *Meeting) DefaultMeetingForCommittee() *Committee {
+	if _, ok := m.loadedRelations["default_meeting_for_committee_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultMeetingForCommittee relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultMeetingForCommittee
+}
+
+func (m *Meeting) DefaultProjectorAgendaItemLists() []Projector {
+	if _, ok := m.loadedRelations["default_projector_agenda_item_list_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAgendaItemLists relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorAgendaItemLists
+}
+
+func (m *Meeting) MotionCommentSections() []MotionCommentSection {
+	if _, ok := m.loadedRelations["motion_comment_section_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionCommentSections relation of Meeting which was not loaded.")
+	}
+
+	return m.motionCommentSections
+}
+
+func (m *Meeting) MotionWorkflows() []MotionWorkflow {
+	if _, ok := m.loadedRelations["motion_workflow_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionWorkflows relation of Meeting which was not loaded.")
+	}
+
+	return m.motionWorkflows
+}
+
+func (m *Meeting) FontMonospace() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_monospace_id"]; !ok {
+		log.Panic().Msg("Tried to access FontMonospace relation of Meeting which was not loaded.")
+	}
+
+	return m.fontMonospace
+}
+
+func (m *Meeting) IsActiveInOrganization() *Organization {
+	if _, ok := m.loadedRelations["is_active_in_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access IsActiveInOrganization relation of Meeting which was not loaded.")
+	}
+
+	return m.isActiveInOrganization
+}
+
+func (m *Meeting) MotionStates() []MotionState {
+	if _, ok := m.loadedRelations["motion_state_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionStates relation of Meeting which was not loaded.")
+	}
+
+	return m.motionStates
+}
+
+func (m *Meeting) LogoProjectorHeader() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_projector_header_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoProjectorHeader relation of Meeting which was not loaded.")
+	}
+
+	return m.logoProjectorHeader
+}
+
+func (m *Meeting) FontItalic() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_italic_id"]; !ok {
+		log.Panic().Msg("Tried to access FontItalic relation of Meeting which was not loaded.")
+	}
+
+	return m.fontItalic
+}
+
+func (m *Meeting) MotionPollDefaultGroups() []Group {
+	if _, ok := m.loadedRelations["motion_poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionPollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.motionPollDefaultGroups
+}
+
+func (m *Meeting) MotionsDefaultStatuteAmendmentWorkflow() MotionWorkflow {
+	if _, ok := m.loadedRelations["motions_default_statute_amendment_workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access MotionsDefaultStatuteAmendmentWorkflow relation of Meeting which was not loaded.")
+	}
+
+	return *m.motionsDefaultStatuteAmendmentWorkflow
+}
+
+func (m *Meeting) AssignmentPollDefaultGroups() []Group {
+	if _, ok := m.loadedRelations["assignment_poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access AssignmentPollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.assignmentPollDefaultGroups
+}
+
+func (m *Meeting) DefaultProjectorAssignmentPolls() []Projector {
+	if _, ok := m.loadedRelations["default_projector_assignment_poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAssignmentPolls relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultProjectorAssignmentPolls
+}
+
+func (m *Meeting) LogoProjectorMain() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_projector_main_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoProjectorMain relation of Meeting which was not loaded.")
+	}
+
+	return m.logoProjectorMain
+}
+
+func (m *Meeting) ReferenceProjector() Projector {
+	if _, ok := m.loadedRelations["reference_projector_id"]; !ok {
+		log.Panic().Msg("Tried to access ReferenceProjector relation of Meeting which was not loaded.")
+	}
+
+	return *m.referenceProjector
+}
+
+func (m *Meeting) FontChyronSpeakerName() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_chyron_speaker_name_id"]; !ok {
+		log.Panic().Msg("Tried to access FontChyronSpeakerName relation of Meeting which was not loaded.")
+	}
+
+	return m.fontChyronSpeakerName
+}
+
+func (m *Meeting) PointOfOrderCategorys() []PointOfOrderCategory {
+	if _, ok := m.loadedRelations["point_of_order_category_ids"]; !ok {
+		log.Panic().Msg("Tried to access PointOfOrderCategorys relation of Meeting which was not loaded.")
+	}
+
+	return m.pointOfOrderCategorys
+}
+
+func (m *Meeting) Groups() []Group {
+	if _, ok := m.loadedRelations["group_ids"]; !ok {
+		log.Panic().Msg("Tried to access Groups relation of Meeting which was not loaded.")
+	}
+
+	return m.groups
+}
+
+func (m *Meeting) Options() []Option {
+	if _, ok := m.loadedRelations["option_ids"]; !ok {
+		log.Panic().Msg("Tried to access Options relation of Meeting which was not loaded.")
+	}
+
+	return m.options
+}
+
+func (m *Meeting) MotionWorkingGroupSpeakers() []MotionWorkingGroupSpeaker {
+	if _, ok := m.loadedRelations["motion_working_group_speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionWorkingGroupSpeakers relation of Meeting which was not loaded.")
+	}
+
+	return m.motionWorkingGroupSpeakers
+}
+
+func (m *Meeting) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "assignment_ids":
+			m.assignments = content.([]Assignment)
+		case "font_projector_h1_id":
+			m.fontProjectorH1 = content.(*MeetingMediafile)
+		case "poll_default_group_ids":
+			m.pollDefaultGroups = content.([]Group)
+		case "vote_ids":
+			m.votes = content.([]Vote)
+		case "logo_web_header_id":
+			m.logoWebHeader = content.(*MeetingMediafile)
+		case "topic_ids":
+			m.topics = content.([]Topic)
+		case "motion_change_recommendation_ids":
+			m.motionChangeRecommendations = content.([]MotionChangeRecommendation)
+		case "personal_note_ids":
+			m.personalNotes = content.([]PersonalNote)
+		case "poll_countdown_id":
+			m.pollCountdown = content.(*ProjectorCountdown)
+		case "font_bold_id":
+			m.fontBold = content.(*MeetingMediafile)
+		case "logo_pdf_header_l_id":
+			m.logoPdfHeaderL = content.(*MeetingMediafile)
+		case "structure_level_ids":
+			m.structureLevels = content.([]StructureLevel)
+		case "tag_ids":
+			m.tags = content.([]Tag)
+		case "logo_pdf_header_r_id":
+			m.logoPdfHeaderR = content.(*MeetingMediafile)
+		case "poll_candidate_ids":
+			m.pollCandidates = content.([]PollCandidate)
+		case "present_user_ids":
+			m.presentUsers = content.([]User)
+		case "agenda_item_ids":
+			m.agendaItems = content.([]AgendaItem)
+		case "default_projector_message_ids":
+			m.defaultProjectorMessages = content.([]Projector)
+		case "projector_ids":
+			m.projectors = content.([]Projector)
+		case "default_projector_assignment_ids":
+			m.defaultProjectorAssignments = content.([]Projector)
+		case "projection_ids":
+			m.projections = content.([]Projection)
+		case "projector_message_ids":
+			m.projectorMessages = content.([]ProjectorMessage)
+		case "default_projector_amendment_ids":
+			m.defaultProjectorAmendments = content.([]Projector)
+		case "list_of_speakers_ids":
+			m.listOfSpeakerss = content.([]ListOfSpeakers)
+		case "meeting_user_ids":
+			m.meetingUsers = content.([]MeetingUser)
+		case "motion_ids":
+			m.motions = content.([]Motion)
+		case "motion_comment_ids":
+			m.motionComments = content.([]MotionComment)
+		case "font_projector_h2_id":
+			m.fontProjectorH2 = content.(*MeetingMediafile)
+		case "default_group_id":
+			m.defaultGroup = content.(*Group)
+		case "default_projector_topic_ids":
+			m.defaultProjectorTopics = content.([]Projector)
+		case "default_projector_motion_block_ids":
+			m.defaultProjectorMotionBlocks = content.([]Projector)
+		case "motion_editor_ids":
+			m.motionEditors = content.([]MotionEditor)
+		case "chat_group_ids":
+			m.chatGroups = content.([]ChatGroup)
+		case "projector_countdown_ids":
+			m.projectorCountdowns = content.([]ProjectorCountdown)
+		case "mediafile_ids":
+			m.mediafiles = content.([]Mediafile)
+		case "poll_candidate_list_ids":
+			m.pollCandidateLists = content.([]PollCandidateList)
+		case "poll_ids":
+			m.polls = content.([]Poll)
+		case "default_projector_poll_ids":
+			m.defaultProjectorPolls = content.([]Projector)
+		case "motions_default_amendment_workflow_id":
+			m.motionsDefaultAmendmentWorkflow = content.(*MotionWorkflow)
+		case "is_archived_in_organization_id":
+			m.isArchivedInOrganization = content.(*Organization)
+		case "motion_category_ids":
+			m.motionCategorys = content.([]MotionCategory)
+		case "motions_default_workflow_id":
+			m.motionsDefaultWorkflow = content.(*MotionWorkflow)
+		case "anonymous_group_id":
+			m.anonymousGroup = content.(*Group)
+		case "assignment_candidate_ids":
+			m.assignmentCandidates = content.([]AssignmentCandidate)
+		case "default_projector_list_of_speakers_ids":
+			m.defaultProjectorListOfSpeakerss = content.([]Projector)
+		case "font_regular_id":
+			m.fontRegular = content.(*MeetingMediafile)
+		case "motion_block_ids":
+			m.motionBlocks = content.([]MotionBlock)
+		case "motion_submitter_ids":
+			m.motionSubmitters = content.([]MotionSubmitter)
+		case "chat_message_ids":
+			m.chatMessages = content.([]ChatMessage)
+		case "list_of_speakers_countdown_id":
+			m.listOfSpeakersCountdown = content.(*ProjectorCountdown)
+		case "organization_tag_ids":
+			m.organizationTags = content.([]OrganizationTag)
+		case "default_projector_current_list_of_speakers_ids":
+			m.defaultProjectorCurrentListOfSpeakerss = content.([]Projector)
+		case "default_projector_countdown_ids":
+			m.defaultProjectorCountdowns = content.([]Projector)
+		case "template_for_organization_id":
+			m.templateForOrganization = content.(*Organization)
+		case "meeting_mediafile_ids":
+			m.meetingMediafiles = content.([]MeetingMediafile)
+		case "logo_pdf_ballot_paper_id":
+			m.logoPdfBallotPaper = content.(*MeetingMediafile)
+		case "logo_pdf_footer_l_id":
+			m.logoPdfFooterL = content.(*MeetingMediafile)
+		case "admin_group_id":
+			m.adminGroup = content.(*Group)
+		case "default_projector_motion_poll_ids":
+			m.defaultProjectorMotionPolls = content.([]Projector)
+		case "forwarded_motion_ids":
+			m.forwardedMotions = content.([]Motion)
+		case "topic_poll_default_group_ids":
+			m.topicPollDefaultGroups = content.([]Group)
+		case "default_projector_mediafile_ids":
+			m.defaultProjectorMediafiles = content.([]Projector)
+		case "default_projector_motion_ids":
+			m.defaultProjectorMotions = content.([]Projector)
+		case "logo_pdf_footer_r_id":
+			m.logoPdfFooterR = content.(*MeetingMediafile)
+		case "motion_statute_paragraph_ids":
+			m.motionStatuteParagraphs = content.([]MotionStatuteParagraph)
+		case "structure_level_list_of_speakers_ids":
+			m.structureLevelListOfSpeakerss = content.([]StructureLevelListOfSpeakers)
+		case "committee_id":
+			m.committee = content.(*Committee)
+		case "all_projection_ids":
+			m.allProjections = content.([]Projection)
+		case "font_bold_italic_id":
+			m.fontBoldItalic = content.(*MeetingMediafile)
+		case "speaker_ids":
+			m.speakers = content.([]Speaker)
+		case "default_meeting_for_committee_id":
+			m.defaultMeetingForCommittee = content.(*Committee)
+		case "default_projector_agenda_item_list_ids":
+			m.defaultProjectorAgendaItemLists = content.([]Projector)
+		case "motion_comment_section_ids":
+			m.motionCommentSections = content.([]MotionCommentSection)
+		case "motion_workflow_ids":
+			m.motionWorkflows = content.([]MotionWorkflow)
+		case "font_monospace_id":
+			m.fontMonospace = content.(*MeetingMediafile)
+		case "is_active_in_organization_id":
+			m.isActiveInOrganization = content.(*Organization)
+		case "motion_state_ids":
+			m.motionStates = content.([]MotionState)
+		case "logo_projector_header_id":
+			m.logoProjectorHeader = content.(*MeetingMediafile)
+		case "font_italic_id":
+			m.fontItalic = content.(*MeetingMediafile)
+		case "motion_poll_default_group_ids":
+			m.motionPollDefaultGroups = content.([]Group)
+		case "motions_default_statute_amendment_workflow_id":
+			m.motionsDefaultStatuteAmendmentWorkflow = content.(*MotionWorkflow)
+		case "assignment_poll_default_group_ids":
+			m.assignmentPollDefaultGroups = content.([]Group)
+		case "default_projector_assignment_poll_ids":
+			m.defaultProjectorAssignmentPolls = content.([]Projector)
+		case "logo_projector_main_id":
+			m.logoProjectorMain = content.(*MeetingMediafile)
+		case "reference_projector_id":
+			m.referenceProjector = content.(*Projector)
+		case "font_chyron_speaker_name_id":
+			m.fontChyronSpeakerName = content.(*MeetingMediafile)
+		case "point_of_order_category_ids":
+			m.pointOfOrderCategorys = content.([]PointOfOrderCategory)
+		case "group_ids":
+			m.groups = content.([]Group)
+		case "option_ids":
+			m.options = content.([]Option)
+		case "motion_working_group_speaker_ids":
+			m.motionWorkingGroupSpeakers = content.([]MotionWorkingGroupSpeaker)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Meeting) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "assignment_ids":
+		err := json.Unmarshal(content, &m.assignments)
+		if err != nil {
+			return err
+		}
+	case "font_projector_h1_id":
+		err := json.Unmarshal(content, &m.fontProjectorH1)
+		if err != nil {
+			return err
+		}
+	case "poll_default_group_ids":
+		err := json.Unmarshal(content, &m.pollDefaultGroups)
+		if err != nil {
+			return err
+		}
+	case "vote_ids":
+		err := json.Unmarshal(content, &m.votes)
+		if err != nil {
+			return err
+		}
+	case "logo_web_header_id":
+		err := json.Unmarshal(content, &m.logoWebHeader)
+		if err != nil {
+			return err
+		}
+	case "topic_ids":
+		err := json.Unmarshal(content, &m.topics)
+		if err != nil {
+			return err
+		}
+	case "motion_change_recommendation_ids":
+		err := json.Unmarshal(content, &m.motionChangeRecommendations)
+		if err != nil {
+			return err
+		}
+	case "personal_note_ids":
+		err := json.Unmarshal(content, &m.personalNotes)
+		if err != nil {
+			return err
+		}
+	case "poll_countdown_id":
+		err := json.Unmarshal(content, &m.pollCountdown)
+		if err != nil {
+			return err
+		}
+	case "font_bold_id":
+		err := json.Unmarshal(content, &m.fontBold)
+		if err != nil {
+			return err
+		}
+	case "logo_pdf_header_l_id":
+		err := json.Unmarshal(content, &m.logoPdfHeaderL)
+		if err != nil {
+			return err
+		}
+	case "structure_level_ids":
+		err := json.Unmarshal(content, &m.structureLevels)
+		if err != nil {
+			return err
+		}
+	case "tag_ids":
+		err := json.Unmarshal(content, &m.tags)
+		if err != nil {
+			return err
+		}
+	case "logo_pdf_header_r_id":
+		err := json.Unmarshal(content, &m.logoPdfHeaderR)
+		if err != nil {
+			return err
+		}
+	case "poll_candidate_ids":
+		err := json.Unmarshal(content, &m.pollCandidates)
+		if err != nil {
+			return err
+		}
+	case "present_user_ids":
+		err := json.Unmarshal(content, &m.presentUsers)
+		if err != nil {
+			return err
+		}
+	case "agenda_item_ids":
+		err := json.Unmarshal(content, &m.agendaItems)
+		if err != nil {
+			return err
+		}
+	case "default_projector_message_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorMessages)
+		if err != nil {
+			return err
+		}
+	case "projector_ids":
+		err := json.Unmarshal(content, &m.projectors)
+		if err != nil {
+			return err
+		}
+	case "default_projector_assignment_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorAssignments)
+		if err != nil {
+			return err
+		}
+	case "projection_ids":
+		err := json.Unmarshal(content, &m.projections)
+		if err != nil {
+			return err
+		}
+	case "projector_message_ids":
+		err := json.Unmarshal(content, &m.projectorMessages)
+		if err != nil {
+			return err
+		}
+	case "default_projector_amendment_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorAmendments)
+		if err != nil {
+			return err
+		}
+	case "list_of_speakers_ids":
+		err := json.Unmarshal(content, &m.listOfSpeakerss)
+		if err != nil {
+			return err
+		}
+	case "meeting_user_ids":
+		err := json.Unmarshal(content, &m.meetingUsers)
+		if err != nil {
+			return err
+		}
+	case "motion_ids":
+		err := json.Unmarshal(content, &m.motions)
+		if err != nil {
+			return err
+		}
+	case "motion_comment_ids":
+		err := json.Unmarshal(content, &m.motionComments)
+		if err != nil {
+			return err
+		}
+	case "font_projector_h2_id":
+		err := json.Unmarshal(content, &m.fontProjectorH2)
+		if err != nil {
+			return err
+		}
+	case "default_group_id":
+		err := json.Unmarshal(content, &m.defaultGroup)
+		if err != nil {
+			return err
+		}
+	case "default_projector_topic_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorTopics)
+		if err != nil {
+			return err
+		}
+	case "default_projector_motion_block_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorMotionBlocks)
+		if err != nil {
+			return err
+		}
+	case "motion_editor_ids":
+		err := json.Unmarshal(content, &m.motionEditors)
+		if err != nil {
+			return err
+		}
+	case "chat_group_ids":
+		err := json.Unmarshal(content, &m.chatGroups)
+		if err != nil {
+			return err
+		}
+	case "projector_countdown_ids":
+		err := json.Unmarshal(content, &m.projectorCountdowns)
+		if err != nil {
+			return err
+		}
+	case "mediafile_ids":
+		err := json.Unmarshal(content, &m.mediafiles)
+		if err != nil {
+			return err
+		}
+	case "poll_candidate_list_ids":
+		err := json.Unmarshal(content, &m.pollCandidateLists)
+		if err != nil {
+			return err
+		}
+	case "poll_ids":
+		err := json.Unmarshal(content, &m.polls)
+		if err != nil {
+			return err
+		}
+	case "default_projector_poll_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorPolls)
+		if err != nil {
+			return err
+		}
+	case "motions_default_amendment_workflow_id":
+		err := json.Unmarshal(content, &m.motionsDefaultAmendmentWorkflow)
+		if err != nil {
+			return err
+		}
+	case "is_archived_in_organization_id":
+		err := json.Unmarshal(content, &m.isArchivedInOrganization)
+		if err != nil {
+			return err
+		}
+	case "motion_category_ids":
+		err := json.Unmarshal(content, &m.motionCategorys)
+		if err != nil {
+			return err
+		}
+	case "motions_default_workflow_id":
+		err := json.Unmarshal(content, &m.motionsDefaultWorkflow)
+		if err != nil {
+			return err
+		}
+	case "anonymous_group_id":
+		err := json.Unmarshal(content, &m.anonymousGroup)
+		if err != nil {
+			return err
+		}
+	case "assignment_candidate_ids":
+		err := json.Unmarshal(content, &m.assignmentCandidates)
+		if err != nil {
+			return err
+		}
+	case "default_projector_list_of_speakers_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorListOfSpeakerss)
+		if err != nil {
+			return err
+		}
+	case "font_regular_id":
+		err := json.Unmarshal(content, &m.fontRegular)
+		if err != nil {
+			return err
+		}
+	case "motion_block_ids":
+		err := json.Unmarshal(content, &m.motionBlocks)
+		if err != nil {
+			return err
+		}
+	case "motion_submitter_ids":
+		err := json.Unmarshal(content, &m.motionSubmitters)
+		if err != nil {
+			return err
+		}
+	case "chat_message_ids":
+		err := json.Unmarshal(content, &m.chatMessages)
+		if err != nil {
+			return err
+		}
+	case "list_of_speakers_countdown_id":
+		err := json.Unmarshal(content, &m.listOfSpeakersCountdown)
+		if err != nil {
+			return err
+		}
+	case "organization_tag_ids":
+		err := json.Unmarshal(content, &m.organizationTags)
+		if err != nil {
+			return err
+		}
+	case "default_projector_current_list_of_speakers_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorCurrentListOfSpeakerss)
+		if err != nil {
+			return err
+		}
+	case "default_projector_countdown_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorCountdowns)
+		if err != nil {
+			return err
+		}
+	case "template_for_organization_id":
+		err := json.Unmarshal(content, &m.templateForOrganization)
+		if err != nil {
+			return err
+		}
+	case "meeting_mediafile_ids":
+		err := json.Unmarshal(content, &m.meetingMediafiles)
+		if err != nil {
+			return err
+		}
+	case "logo_pdf_ballot_paper_id":
+		err := json.Unmarshal(content, &m.logoPdfBallotPaper)
+		if err != nil {
+			return err
+		}
+	case "logo_pdf_footer_l_id":
+		err := json.Unmarshal(content, &m.logoPdfFooterL)
+		if err != nil {
+			return err
+		}
+	case "admin_group_id":
+		err := json.Unmarshal(content, &m.adminGroup)
+		if err != nil {
+			return err
+		}
+	case "default_projector_motion_poll_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorMotionPolls)
+		if err != nil {
+			return err
+		}
+	case "forwarded_motion_ids":
+		err := json.Unmarshal(content, &m.forwardedMotions)
+		if err != nil {
+			return err
+		}
+	case "topic_poll_default_group_ids":
+		err := json.Unmarshal(content, &m.topicPollDefaultGroups)
+		if err != nil {
+			return err
+		}
+	case "default_projector_mediafile_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorMediafiles)
+		if err != nil {
+			return err
+		}
+	case "default_projector_motion_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorMotions)
+		if err != nil {
+			return err
+		}
+	case "logo_pdf_footer_r_id":
+		err := json.Unmarshal(content, &m.logoPdfFooterR)
+		if err != nil {
+			return err
+		}
+	case "motion_statute_paragraph_ids":
+		err := json.Unmarshal(content, &m.motionStatuteParagraphs)
+		if err != nil {
+			return err
+		}
+	case "structure_level_list_of_speakers_ids":
+		err := json.Unmarshal(content, &m.structureLevelListOfSpeakerss)
+		if err != nil {
+			return err
+		}
+	case "committee_id":
+		err := json.Unmarshal(content, &m.committee)
+		if err != nil {
+			return err
+		}
+	case "all_projection_ids":
+		err := json.Unmarshal(content, &m.allProjections)
+		if err != nil {
+			return err
+		}
+	case "font_bold_italic_id":
+		err := json.Unmarshal(content, &m.fontBoldItalic)
+		if err != nil {
+			return err
+		}
+	case "speaker_ids":
+		err := json.Unmarshal(content, &m.speakers)
+		if err != nil {
+			return err
+		}
+	case "default_meeting_for_committee_id":
+		err := json.Unmarshal(content, &m.defaultMeetingForCommittee)
+		if err != nil {
+			return err
+		}
+	case "default_projector_agenda_item_list_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorAgendaItemLists)
+		if err != nil {
+			return err
+		}
+	case "motion_comment_section_ids":
+		err := json.Unmarshal(content, &m.motionCommentSections)
+		if err != nil {
+			return err
+		}
+	case "motion_workflow_ids":
+		err := json.Unmarshal(content, &m.motionWorkflows)
+		if err != nil {
+			return err
+		}
+	case "font_monospace_id":
+		err := json.Unmarshal(content, &m.fontMonospace)
+		if err != nil {
+			return err
+		}
+	case "is_active_in_organization_id":
+		err := json.Unmarshal(content, &m.isActiveInOrganization)
+		if err != nil {
+			return err
+		}
+	case "motion_state_ids":
+		err := json.Unmarshal(content, &m.motionStates)
+		if err != nil {
+			return err
+		}
+	case "logo_projector_header_id":
+		err := json.Unmarshal(content, &m.logoProjectorHeader)
+		if err != nil {
+			return err
+		}
+	case "font_italic_id":
+		err := json.Unmarshal(content, &m.fontItalic)
+		if err != nil {
+			return err
+		}
+	case "motion_poll_default_group_ids":
+		err := json.Unmarshal(content, &m.motionPollDefaultGroups)
+		if err != nil {
+			return err
+		}
+	case "motions_default_statute_amendment_workflow_id":
+		err := json.Unmarshal(content, &m.motionsDefaultStatuteAmendmentWorkflow)
+		if err != nil {
+			return err
+		}
+	case "assignment_poll_default_group_ids":
+		err := json.Unmarshal(content, &m.assignmentPollDefaultGroups)
+		if err != nil {
+			return err
+		}
+	case "default_projector_assignment_poll_ids":
+		err := json.Unmarshal(content, &m.defaultProjectorAssignmentPolls)
+		if err != nil {
+			return err
+		}
+	case "logo_projector_main_id":
+		err := json.Unmarshal(content, &m.logoProjectorMain)
+		if err != nil {
+			return err
+		}
+	case "reference_projector_id":
+		err := json.Unmarshal(content, &m.referenceProjector)
+		if err != nil {
+			return err
+		}
+	case "font_chyron_speaker_name_id":
+		err := json.Unmarshal(content, &m.fontChyronSpeakerName)
+		if err != nil {
+			return err
+		}
+	case "point_of_order_category_ids":
+		err := json.Unmarshal(content, &m.pointOfOrderCategorys)
+		if err != nil {
+			return err
+		}
+	case "group_ids":
+		err := json.Unmarshal(content, &m.groups)
+		if err != nil {
+			return err
+		}
+	case "option_ids":
+		err := json.Unmarshal(content, &m.options)
+		if err != nil {
+			return err
+		}
+	case "motion_working_group_speaker_ids":
+		err := json.Unmarshal(content, &m.motionWorkingGroupSpeakers)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Meeting) Get(field string) interface{} {
@@ -1543,6 +2202,569 @@ func (m *Meeting) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Meeting) GetFqids(field string) []string {
+	switch field {
+	case "assignment_ids":
+		r := make([]string, len(m.AssignmentIDs))
+		for i, id := range m.AssignmentIDs {
+			r[i] = "assignment/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "font_projector_h1_id":
+		if m.FontProjectorH1ID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontProjectorH1ID)}
+		}
+
+	case "poll_default_group_ids":
+		r := make([]string, len(m.PollDefaultGroupIDs))
+		for i, id := range m.PollDefaultGroupIDs {
+			r[i] = "group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "vote_ids":
+		r := make([]string, len(m.VoteIDs))
+		for i, id := range m.VoteIDs {
+			r[i] = "vote/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "logo_web_header_id":
+		if m.LogoWebHeaderID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoWebHeaderID)}
+		}
+
+	case "topic_ids":
+		r := make([]string, len(m.TopicIDs))
+		for i, id := range m.TopicIDs {
+			r[i] = "topic/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_change_recommendation_ids":
+		r := make([]string, len(m.MotionChangeRecommendationIDs))
+		for i, id := range m.MotionChangeRecommendationIDs {
+			r[i] = "motion_change_recommendation/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "personal_note_ids":
+		r := make([]string, len(m.PersonalNoteIDs))
+		for i, id := range m.PersonalNoteIDs {
+			r[i] = "personal_note/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "poll_countdown_id":
+		if m.PollCountdownID != nil {
+			return []string{"projector_countdown/" + strconv.Itoa(*m.PollCountdownID)}
+		}
+
+	case "font_bold_id":
+		if m.FontBoldID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontBoldID)}
+		}
+
+	case "logo_pdf_header_l_id":
+		if m.LogoPdfHeaderLID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoPdfHeaderLID)}
+		}
+
+	case "structure_level_ids":
+		r := make([]string, len(m.StructureLevelIDs))
+		for i, id := range m.StructureLevelIDs {
+			r[i] = "structure_level/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "tag_ids":
+		r := make([]string, len(m.TagIDs))
+		for i, id := range m.TagIDs {
+			r[i] = "tag/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "logo_pdf_header_r_id":
+		if m.LogoPdfHeaderRID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoPdfHeaderRID)}
+		}
+
+	case "poll_candidate_ids":
+		r := make([]string, len(m.PollCandidateIDs))
+		for i, id := range m.PollCandidateIDs {
+			r[i] = "poll_candidate/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "present_user_ids":
+		r := make([]string, len(m.PresentUserIDs))
+		for i, id := range m.PresentUserIDs {
+			r[i] = "user/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "agenda_item_ids":
+		r := make([]string, len(m.AgendaItemIDs))
+		for i, id := range m.AgendaItemIDs {
+			r[i] = "agenda_item/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_message_ids":
+		r := make([]string, len(m.DefaultProjectorMessageIDs))
+		for i, id := range m.DefaultProjectorMessageIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "projector_ids":
+		r := make([]string, len(m.ProjectorIDs))
+		for i, id := range m.ProjectorIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_assignment_ids":
+		r := make([]string, len(m.DefaultProjectorAssignmentIDs))
+		for i, id := range m.DefaultProjectorAssignmentIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "projector_message_ids":
+		r := make([]string, len(m.ProjectorMessageIDs))
+		for i, id := range m.ProjectorMessageIDs {
+			r[i] = "projector_message/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_amendment_ids":
+		r := make([]string, len(m.DefaultProjectorAmendmentIDs))
+		for i, id := range m.DefaultProjectorAmendmentIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "list_of_speakers_ids":
+		r := make([]string, len(m.ListOfSpeakersIDs))
+		for i, id := range m.ListOfSpeakersIDs {
+			r[i] = "list_of_speakers/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "meeting_user_ids":
+		r := make([]string, len(m.MeetingUserIDs))
+		for i, id := range m.MeetingUserIDs {
+			r[i] = "meeting_user/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_ids":
+		r := make([]string, len(m.MotionIDs))
+		for i, id := range m.MotionIDs {
+			r[i] = "motion/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_comment_ids":
+		r := make([]string, len(m.MotionCommentIDs))
+		for i, id := range m.MotionCommentIDs {
+			r[i] = "motion_comment/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "font_projector_h2_id":
+		if m.FontProjectorH2ID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontProjectorH2ID)}
+		}
+
+	case "default_group_id":
+		return []string{"group/" + strconv.Itoa(m.DefaultGroupID)}
+
+	case "default_projector_topic_ids":
+		r := make([]string, len(m.DefaultProjectorTopicIDs))
+		for i, id := range m.DefaultProjectorTopicIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_motion_block_ids":
+		r := make([]string, len(m.DefaultProjectorMotionBlockIDs))
+		for i, id := range m.DefaultProjectorMotionBlockIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_editor_ids":
+		r := make([]string, len(m.MotionEditorIDs))
+		for i, id := range m.MotionEditorIDs {
+			r[i] = "motion_editor/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "chat_group_ids":
+		r := make([]string, len(m.ChatGroupIDs))
+		for i, id := range m.ChatGroupIDs {
+			r[i] = "chat_group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "projector_countdown_ids":
+		r := make([]string, len(m.ProjectorCountdownIDs))
+		for i, id := range m.ProjectorCountdownIDs {
+			r[i] = "projector_countdown/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "mediafile_ids":
+		r := make([]string, len(m.MediafileIDs))
+		for i, id := range m.MediafileIDs {
+			r[i] = "mediafile/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "poll_candidate_list_ids":
+		r := make([]string, len(m.PollCandidateListIDs))
+		for i, id := range m.PollCandidateListIDs {
+			r[i] = "poll_candidate_list/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "poll_ids":
+		r := make([]string, len(m.PollIDs))
+		for i, id := range m.PollIDs {
+			r[i] = "poll/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_poll_ids":
+		r := make([]string, len(m.DefaultProjectorPollIDs))
+		for i, id := range m.DefaultProjectorPollIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motions_default_amendment_workflow_id":
+		return []string{"motion_workflow/" + strconv.Itoa(m.MotionsDefaultAmendmentWorkflowID)}
+
+	case "is_archived_in_organization_id":
+		if m.IsArchivedInOrganizationID != nil {
+			return []string{"organization/" + strconv.Itoa(*m.IsArchivedInOrganizationID)}
+		}
+
+	case "motion_category_ids":
+		r := make([]string, len(m.MotionCategoryIDs))
+		for i, id := range m.MotionCategoryIDs {
+			r[i] = "motion_category/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motions_default_workflow_id":
+		return []string{"motion_workflow/" + strconv.Itoa(m.MotionsDefaultWorkflowID)}
+
+	case "anonymous_group_id":
+		if m.AnonymousGroupID != nil {
+			return []string{"group/" + strconv.Itoa(*m.AnonymousGroupID)}
+		}
+
+	case "assignment_candidate_ids":
+		r := make([]string, len(m.AssignmentCandidateIDs))
+		for i, id := range m.AssignmentCandidateIDs {
+			r[i] = "assignment_candidate/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_list_of_speakers_ids":
+		r := make([]string, len(m.DefaultProjectorListOfSpeakersIDs))
+		for i, id := range m.DefaultProjectorListOfSpeakersIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "font_regular_id":
+		if m.FontRegularID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontRegularID)}
+		}
+
+	case "motion_block_ids":
+		r := make([]string, len(m.MotionBlockIDs))
+		for i, id := range m.MotionBlockIDs {
+			r[i] = "motion_block/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_submitter_ids":
+		r := make([]string, len(m.MotionSubmitterIDs))
+		for i, id := range m.MotionSubmitterIDs {
+			r[i] = "motion_submitter/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "chat_message_ids":
+		r := make([]string, len(m.ChatMessageIDs))
+		for i, id := range m.ChatMessageIDs {
+			r[i] = "chat_message/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "list_of_speakers_countdown_id":
+		if m.ListOfSpeakersCountdownID != nil {
+			return []string{"projector_countdown/" + strconv.Itoa(*m.ListOfSpeakersCountdownID)}
+		}
+
+	case "organization_tag_ids":
+		r := make([]string, len(m.OrganizationTagIDs))
+		for i, id := range m.OrganizationTagIDs {
+			r[i] = "organization_tag/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_current_list_of_speakers_ids":
+		r := make([]string, len(m.DefaultProjectorCurrentListOfSpeakersIDs))
+		for i, id := range m.DefaultProjectorCurrentListOfSpeakersIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_countdown_ids":
+		r := make([]string, len(m.DefaultProjectorCountdownIDs))
+		for i, id := range m.DefaultProjectorCountdownIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "template_for_organization_id":
+		if m.TemplateForOrganizationID != nil {
+			return []string{"organization/" + strconv.Itoa(*m.TemplateForOrganizationID)}
+		}
+
+	case "meeting_mediafile_ids":
+		r := make([]string, len(m.MeetingMediafileIDs))
+		for i, id := range m.MeetingMediafileIDs {
+			r[i] = "meeting_mediafile/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "logo_pdf_ballot_paper_id":
+		if m.LogoPdfBallotPaperID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoPdfBallotPaperID)}
+		}
+
+	case "logo_pdf_footer_l_id":
+		if m.LogoPdfFooterLID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoPdfFooterLID)}
+		}
+
+	case "admin_group_id":
+		if m.AdminGroupID != nil {
+			return []string{"group/" + strconv.Itoa(*m.AdminGroupID)}
+		}
+
+	case "default_projector_motion_poll_ids":
+		r := make([]string, len(m.DefaultProjectorMotionPollIDs))
+		for i, id := range m.DefaultProjectorMotionPollIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "forwarded_motion_ids":
+		r := make([]string, len(m.ForwardedMotionIDs))
+		for i, id := range m.ForwardedMotionIDs {
+			r[i] = "motion/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "topic_poll_default_group_ids":
+		r := make([]string, len(m.TopicPollDefaultGroupIDs))
+		for i, id := range m.TopicPollDefaultGroupIDs {
+			r[i] = "group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_mediafile_ids":
+		r := make([]string, len(m.DefaultProjectorMediafileIDs))
+		for i, id := range m.DefaultProjectorMediafileIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_motion_ids":
+		r := make([]string, len(m.DefaultProjectorMotionIDs))
+		for i, id := range m.DefaultProjectorMotionIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "logo_pdf_footer_r_id":
+		if m.LogoPdfFooterRID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoPdfFooterRID)}
+		}
+
+	case "motion_statute_paragraph_ids":
+		r := make([]string, len(m.MotionStatuteParagraphIDs))
+		for i, id := range m.MotionStatuteParagraphIDs {
+			r[i] = "motion_statute_paragraph/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "structure_level_list_of_speakers_ids":
+		r := make([]string, len(m.StructureLevelListOfSpeakersIDs))
+		for i, id := range m.StructureLevelListOfSpeakersIDs {
+			r[i] = "structure_level_list_of_speakers/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "committee_id":
+		return []string{"committee/" + strconv.Itoa(m.CommitteeID)}
+
+	case "all_projection_ids":
+		r := make([]string, len(m.AllProjectionIDs))
+		for i, id := range m.AllProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "font_bold_italic_id":
+		if m.FontBoldItalicID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontBoldItalicID)}
+		}
+
+	case "speaker_ids":
+		r := make([]string, len(m.SpeakerIDs))
+		for i, id := range m.SpeakerIDs {
+			r[i] = "speaker/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_meeting_for_committee_id":
+		if m.DefaultMeetingForCommitteeID != nil {
+			return []string{"committee/" + strconv.Itoa(*m.DefaultMeetingForCommitteeID)}
+		}
+
+	case "default_projector_agenda_item_list_ids":
+		r := make([]string, len(m.DefaultProjectorAgendaItemListIDs))
+		for i, id := range m.DefaultProjectorAgendaItemListIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_comment_section_ids":
+		r := make([]string, len(m.MotionCommentSectionIDs))
+		for i, id := range m.MotionCommentSectionIDs {
+			r[i] = "motion_comment_section/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_workflow_ids":
+		r := make([]string, len(m.MotionWorkflowIDs))
+		for i, id := range m.MotionWorkflowIDs {
+			r[i] = "motion_workflow/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "font_monospace_id":
+		if m.FontMonospaceID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontMonospaceID)}
+		}
+
+	case "is_active_in_organization_id":
+		if m.IsActiveInOrganizationID != nil {
+			return []string{"organization/" + strconv.Itoa(*m.IsActiveInOrganizationID)}
+		}
+
+	case "motion_state_ids":
+		r := make([]string, len(m.MotionStateIDs))
+		for i, id := range m.MotionStateIDs {
+			r[i] = "motion_state/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "logo_projector_header_id":
+		if m.LogoProjectorHeaderID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoProjectorHeaderID)}
+		}
+
+	case "font_italic_id":
+		if m.FontItalicID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontItalicID)}
+		}
+
+	case "motion_poll_default_group_ids":
+		r := make([]string, len(m.MotionPollDefaultGroupIDs))
+		for i, id := range m.MotionPollDefaultGroupIDs {
+			r[i] = "group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motions_default_statute_amendment_workflow_id":
+		return []string{"motion_workflow/" + strconv.Itoa(m.MotionsDefaultStatuteAmendmentWorkflowID)}
+
+	case "assignment_poll_default_group_ids":
+		r := make([]string, len(m.AssignmentPollDefaultGroupIDs))
+		for i, id := range m.AssignmentPollDefaultGroupIDs {
+			r[i] = "group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "default_projector_assignment_poll_ids":
+		r := make([]string, len(m.DefaultProjectorAssignmentPollIDs))
+		for i, id := range m.DefaultProjectorAssignmentPollIDs {
+			r[i] = "projector/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "logo_projector_main_id":
+		if m.LogoProjectorMainID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.LogoProjectorMainID)}
+		}
+
+	case "reference_projector_id":
+		return []string{"projector/" + strconv.Itoa(m.ReferenceProjectorID)}
+
+	case "font_chyron_speaker_name_id":
+		if m.FontChyronSpeakerNameID != nil {
+			return []string{"meeting_mediafile/" + strconv.Itoa(*m.FontChyronSpeakerNameID)}
+		}
+
+	case "point_of_order_category_ids":
+		r := make([]string, len(m.PointOfOrderCategoryIDs))
+		for i, id := range m.PointOfOrderCategoryIDs {
+			r[i] = "point_of_order_category/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "group_ids":
+		r := make([]string, len(m.GroupIDs))
+		for i, id := range m.GroupIDs {
+			r[i] = "group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "option_ids":
+		r := make([]string, len(m.OptionIDs))
+		for i, id := range m.OptionIDs {
+			r[i] = "option/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "motion_working_group_speaker_ids":
+		r := make([]string, len(m.MotionWorkingGroupSpeakerIDs))
+		for i, id := range m.MotionWorkingGroupSpeakerIDs {
+			r[i] = "motion_working_group_speaker/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *Meeting) Update(data map[string]string) error {

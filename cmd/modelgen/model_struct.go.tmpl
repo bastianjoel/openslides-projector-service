@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -9,29 +11,81 @@ import (
 type {{.GoName}} struct { {{range .Fields}}
 	{{.GoName}} {{.ValueType}} `json:"{{.FieldName}}"`{{end}}
 	{{if .HasRelations}}loadedRelations map[string]struct{}{{range .Relations}}
-	{{.PropNameLc}} *{{.CollectionName}}{{end}}{{end}}
+	{{.PropNameLc}} {{if .List}}[]{{else}}*{{end}}{{.CollectionName}}{{end}}{{end}}
 }
 
 func (m *{{.GoName}}) CollectionName() string {
 	return "{{.CollectionName}}"
 }
 
-{{range .Relations}}func (m *{{.GoName}}) {{.PropName}}() {{if not .Required}}*{{end}}{{.CollectionName}} {
+{{range .Relations}}func (m *{{.GoName}}) {{.PropName}}() {{if .List}}[]{{else}}{{if not .Required}}*{{end}}{{end}}{{.CollectionName}} {
 	if _, ok := m.loadedRelations["{{.IdField}}"]; !ok {
 		log.Panic().Msg("Tried to access {{.PropName}} relation of {{.GoName}} which was not loaded.")
 	}
 
-	return {{if .Required}}*{{end}}m.{{.PropNameLc}}
+	return {{if not .List}}{{if .Required}}*{{end}}{{end}}m.{{.PropNameLc}}
 }
 
 {{end}}
+func (m *{{.GoName}}) SetRelated(field string, content interface{}) { {{if .HasRelations}}
+	if content != nil {
+		switch field { {{range .Relations}}
+		case "{{.IdField}}":
+	  	m.{{.PropNameLc}} = content.({{if .List}}[]{{else}}*{{end}}{{.CollectionName}}){{end}}
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+{{end}}}
+
+func (m *{{.GoName}}) SetRelatedJSON(field string, content []byte) error { {{if .HasRelations}}
+	switch field { {{range .Relations}}
+	case "{{.IdField}}":
+		err := json.Unmarshal(content, &m.{{.PropNameLc}})
+		if err != nil {
+			return err
+		}{{end}}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}{{end}}
+	return nil
+}
+
 func (m *{{.GoName}}) Get(field string) interface{} {
 	switch field { {{range .Fields}}
 	case "{{.FieldName}}":
-	    return m.{{.GoName}}{{end}}
+	  return m.{{.GoName}}{{end}}
 	}
 
 	return nil
+}
+
+func (m *{{.GoName}}) GetFqids(field string) []string { {{if .HasRelations}}
+	switch field { {{range .Relations}}
+	case "{{.IdField}}":{{if .List}}
+		r := make([]string, len(m.{{.IdFieldGo}}))
+		for i, id := range m.{{.IdFieldGo}} {
+			r[i] = "{{.RelCollection}}/" + strconv.Itoa(id)
+		}
+		return r
+		{{else if .Required}}
+		return []string{"{{.RelCollection}}/" + strconv.Itoa(m.{{.IdFieldGo}})}
+		{{else}}
+		if m.{{.IdFieldGo}} != nil {
+			return []string{"{{.RelCollection}}/" + strconv.Itoa(*m.{{.IdFieldGo}})}
+		}
+	{{end}}{{end}} } {{end}}
+	return []string{}
 }
 
 func (m *{{.GoName}}) Update(data map[string]string) error { {{range .Fields}}

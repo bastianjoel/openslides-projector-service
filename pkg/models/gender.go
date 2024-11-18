@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -12,12 +14,20 @@ type Gender struct {
 	OrganizationID  int    `json:"organization_id"`
 	UserIDs         []int  `json:"user_ids"`
 	loadedRelations map[string]struct{}
+	users           []User
 	organization    *Organization
-	users           *User
 }
 
 func (m *Gender) CollectionName() string {
 	return "gender"
+}
+
+func (m *Gender) Users() []User {
+	if _, ok := m.loadedRelations["user_ids"]; !ok {
+		log.Panic().Msg("Tried to access Users relation of Gender which was not loaded.")
+	}
+
+	return m.users
 }
 
 func (m *Gender) Organization() Organization {
@@ -28,12 +38,45 @@ func (m *Gender) Organization() Organization {
 	return *m.organization
 }
 
-func (m *Gender) Users() *User {
-	if _, ok := m.loadedRelations["user_ids"]; !ok {
-		log.Panic().Msg("Tried to access Users relation of Gender which was not loaded.")
+func (m *Gender) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "user_ids":
+			m.users = content.([]User)
+		case "organization_id":
+			m.organization = content.(*Organization)
+		default:
+			return
+		}
 	}
 
-	return m.users
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Gender) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "user_ids":
+		err := json.Unmarshal(content, &m.users)
+		if err != nil {
+			return err
+		}
+	case "organization_id":
+		err := json.Unmarshal(content, &m.organization)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Gender) Get(field string) interface{} {
@@ -49,6 +92,21 @@ func (m *Gender) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Gender) GetFqids(field string) []string {
+	switch field {
+	case "user_ids":
+		r := make([]string, len(m.UserIDs))
+		for i, id := range m.UserIDs {
+			r[i] = "user/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "organization_id":
+		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
+	}
+	return []string{}
 }
 
 func (m *Gender) Update(data map[string]string) error {

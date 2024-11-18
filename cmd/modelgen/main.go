@@ -115,14 +115,18 @@ func parse(r io.Reader) ([]collection, error) {
 				propNameLc := []rune(propName)
 				propNameLc[0] = unicode.ToLower(propNameLc[0])
 
-				collection := goName(strings.Split(modelField.To, "/")[0])
+				relCollection := strings.Split(modelField.To, "/")[0]
+				relCollectionName := goName(relCollection)
 				relations = append(relations, relation{
 					GoName:         goName(collectionName),
 					PropName:       propName,
 					PropNameLc:     string(propNameLc),
-					CollectionName: collection,
+					RelCollection:  relCollection,
+					CollectionName: relCollectionName,
 					IdField:        fieldName,
+					IdFieldGo:      goName(fieldName),
 					Required:       modelField.Required,
+					List:           modelField.Type == "relation-list",
 				})
 			}
 
@@ -167,9 +171,12 @@ type relation struct {
 	GoName         string
 	PropName       string
 	PropNameLc     string
+	RelCollection  string
 	CollectionName string
 	IdField        string
+	IdFieldGo      string
 	Required       bool
+	List           bool
 }
 
 func goName(name string) string {

@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -16,7 +18,7 @@ type MotionStatuteParagraph struct {
 	Weight           *int    `json:"weight"`
 	loadedRelations  map[string]struct{}
 	meeting          *Meeting
-	motions          *Motion
+	motions          []Motion
 }
 
 func (m *MotionStatuteParagraph) CollectionName() string {
@@ -31,12 +33,53 @@ func (m *MotionStatuteParagraph) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *MotionStatuteParagraph) Motions() *Motion {
+func (m *MotionStatuteParagraph) Motions() []Motion {
 	if _, ok := m.loadedRelations["motion_ids"]; !ok {
 		log.Panic().Msg("Tried to access Motions relation of MotionStatuteParagraph which was not loaded.")
 	}
 
 	return m.motions
+}
+
+func (m *MotionStatuteParagraph) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "motion_ids":
+			m.motions = content.([]Motion)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *MotionStatuteParagraph) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "motion_ids":
+		err := json.Unmarshal(content, &m.motions)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *MotionStatuteParagraph) Get(field string) interface{} {
@@ -58,6 +101,21 @@ func (m *MotionStatuteParagraph) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *MotionStatuteParagraph) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "motion_ids":
+		r := make([]string, len(m.MotionIDs))
+		for i, id := range m.MotionIDs {
+			r[i] = "motion/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *MotionStatuteParagraph) Update(data map[string]string) error {

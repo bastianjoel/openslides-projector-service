@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -28,6 +30,40 @@ func (m *OrganizationTag) Organization() Organization {
 	return *m.organization
 }
 
+func (m *OrganizationTag) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "organization_id":
+			m.organization = content.(*Organization)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *OrganizationTag) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "organization_id":
+		err := json.Unmarshal(content, &m.organization)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
+}
+
 func (m *OrganizationTag) Get(field string) interface{} {
 	switch field {
 	case "color":
@@ -43,6 +79,14 @@ func (m *OrganizationTag) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *OrganizationTag) GetFqids(field string) []string {
+	switch field {
+	case "organization_id":
+		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
+	}
+	return []string{}
 }
 
 func (m *OrganizationTag) Update(data map[string]string) error {

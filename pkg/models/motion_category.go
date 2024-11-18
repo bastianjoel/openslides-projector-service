@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -18,33 +20,17 @@ type MotionCategory struct {
 	SequentialNumber int     `json:"sequential_number"`
 	Weight           *int    `json:"weight"`
 	loadedRelations  map[string]struct{}
-	motions          *Motion
-	parent           *MotionCategory
-	childs           *MotionCategory
+	childs           []MotionCategory
 	meeting          *Meeting
+	parent           *MotionCategory
+	motions          []Motion
 }
 
 func (m *MotionCategory) CollectionName() string {
 	return "motion_category"
 }
 
-func (m *MotionCategory) Motions() *Motion {
-	if _, ok := m.loadedRelations["motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access Motions relation of MotionCategory which was not loaded.")
-	}
-
-	return m.motions
-}
-
-func (m *MotionCategory) Parent() *MotionCategory {
-	if _, ok := m.loadedRelations["parent_id"]; !ok {
-		log.Panic().Msg("Tried to access Parent relation of MotionCategory which was not loaded.")
-	}
-
-	return m.parent
-}
-
-func (m *MotionCategory) Childs() *MotionCategory {
+func (m *MotionCategory) Childs() []MotionCategory {
 	if _, ok := m.loadedRelations["child_ids"]; !ok {
 		log.Panic().Msg("Tried to access Childs relation of MotionCategory which was not loaded.")
 	}
@@ -58,6 +44,77 @@ func (m *MotionCategory) Meeting() Meeting {
 	}
 
 	return *m.meeting
+}
+
+func (m *MotionCategory) Parent() *MotionCategory {
+	if _, ok := m.loadedRelations["parent_id"]; !ok {
+		log.Panic().Msg("Tried to access Parent relation of MotionCategory which was not loaded.")
+	}
+
+	return m.parent
+}
+
+func (m *MotionCategory) Motions() []Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of MotionCategory which was not loaded.")
+	}
+
+	return m.motions
+}
+
+func (m *MotionCategory) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "child_ids":
+			m.childs = content.([]MotionCategory)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "parent_id":
+			m.parent = content.(*MotionCategory)
+		case "motion_ids":
+			m.motions = content.([]Motion)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *MotionCategory) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "child_ids":
+		err := json.Unmarshal(content, &m.childs)
+		if err != nil {
+			return err
+		}
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "parent_id":
+		err := json.Unmarshal(content, &m.parent)
+		if err != nil {
+			return err
+		}
+	case "motion_ids":
+		err := json.Unmarshal(content, &m.motions)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *MotionCategory) Get(field string) interface{} {
@@ -85,6 +142,33 @@ func (m *MotionCategory) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *MotionCategory) GetFqids(field string) []string {
+	switch field {
+	case "child_ids":
+		r := make([]string, len(m.ChildIDs))
+		for i, id := range m.ChildIDs {
+			r[i] = "motion_category/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "parent_id":
+		if m.ParentID != nil {
+			return []string{"motion_category/" + strconv.Itoa(*m.ParentID)}
+		}
+
+	case "motion_ids":
+		r := make([]string, len(m.MotionIDs))
+		for i, id := range m.MotionIDs {
+			r[i] = "motion/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *MotionCategory) Update(data map[string]string) error {

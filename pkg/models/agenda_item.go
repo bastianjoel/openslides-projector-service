@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -25,23 +27,15 @@ type AgendaItem struct {
 	Type            *string `json:"type"`
 	Weight          *int    `json:"weight"`
 	loadedRelations map[string]struct{}
-	childs          *AgendaItem
 	meeting         *Meeting
 	parent          *AgendaItem
-	projections     *Projection
-	tags            *Tag
+	projections     []Projection
+	tags            []Tag
+	childs          []AgendaItem
 }
 
 func (m *AgendaItem) CollectionName() string {
 	return "agenda_item"
-}
-
-func (m *AgendaItem) Childs() *AgendaItem {
-	if _, ok := m.loadedRelations["child_ids"]; !ok {
-		log.Panic().Msg("Tried to access Childs relation of AgendaItem which was not loaded.")
-	}
-
-	return m.childs
 }
 
 func (m *AgendaItem) Meeting() Meeting {
@@ -60,7 +54,7 @@ func (m *AgendaItem) Parent() *AgendaItem {
 	return m.parent
 }
 
-func (m *AgendaItem) Projections() *Projection {
+func (m *AgendaItem) Projections() []Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of AgendaItem which was not loaded.")
 	}
@@ -68,12 +62,82 @@ func (m *AgendaItem) Projections() *Projection {
 	return m.projections
 }
 
-func (m *AgendaItem) Tags() *Tag {
+func (m *AgendaItem) Tags() []Tag {
 	if _, ok := m.loadedRelations["tag_ids"]; !ok {
 		log.Panic().Msg("Tried to access Tags relation of AgendaItem which was not loaded.")
 	}
 
 	return m.tags
+}
+
+func (m *AgendaItem) Childs() []AgendaItem {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of AgendaItem which was not loaded.")
+	}
+
+	return m.childs
+}
+
+func (m *AgendaItem) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "parent_id":
+			m.parent = content.(*AgendaItem)
+		case "projection_ids":
+			m.projections = content.([]Projection)
+		case "tag_ids":
+			m.tags = content.([]Tag)
+		case "child_ids":
+			m.childs = content.([]AgendaItem)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *AgendaItem) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "parent_id":
+		err := json.Unmarshal(content, &m.parent)
+		if err != nil {
+			return err
+		}
+	case "projection_ids":
+		err := json.Unmarshal(content, &m.projections)
+		if err != nil {
+			return err
+		}
+	case "tag_ids":
+		err := json.Unmarshal(content, &m.tags)
+		if err != nil {
+			return err
+		}
+	case "child_ids":
+		err := json.Unmarshal(content, &m.childs)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *AgendaItem) Get(field string) interface{} {
@@ -115,6 +179,40 @@ func (m *AgendaItem) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *AgendaItem) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "parent_id":
+		if m.ParentID != nil {
+			return []string{"agenda_item/" + strconv.Itoa(*m.ParentID)}
+		}
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "tag_ids":
+		r := make([]string, len(m.TagIDs))
+		for i, id := range m.TagIDs {
+			r[i] = "tag/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "child_ids":
+		r := make([]string, len(m.ChildIDs))
+		for i, id := range m.ChildIDs {
+			r[i] = "agenda_item/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *AgendaItem) Update(data map[string]string) error {

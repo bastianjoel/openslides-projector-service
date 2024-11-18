@@ -8,18 +8,42 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-type baseModel[T any] interface {
+type baseModel interface {
 	CollectionName() string
 	Get(field string) interface{}
+	GetFqids(field string) []string
 	Update(data map[string]string) error
+	SetRelated(string, interface{})
+	SetRelatedJSON(string, []byte) error
+}
+
+type baseModelPtr[T any] interface {
+	baseModel
 	*T
 }
 
-type query[T any, PT baseModel[T]] struct {
+type recursiveSubqueryList struct {
+	subquerys map[string]*recursiveSubqueryList
+	Fields    []string
+}
+
+func (q *recursiveSubqueryList) With(idField string, fields []string) *recursiveSubqueryList {
+	sq, ok := q.subquerys[idField]
+	if !ok {
+		sq = &recursiveSubqueryList{}
+	}
+	sq.Fields = fields
+	q.subquerys[idField] = sq
+
+	return sq
+}
+
+type query[T any, PT baseModelPtr[T]] struct {
 	collection PT
 	datastore  *Datastore
 	Fields     []string
 	fqids      []string
+	subquerys  map[string]*recursiveSubqueryList
 }
 
 func (q *query[T, PT]) SetFqids(ids ...string) *query[T, PT] {
@@ -28,10 +52,25 @@ func (q *query[T, PT]) SetFqids(ids ...string) *query[T, PT] {
 	return q
 }
 
-func (q *query[T, PT]) With(idField string) *query[T, PT] {
-	// TODO: Add relations to query
+func (q *query[T, PT]) With(idField string, fields []string) *query[T, PT] {
+	sq, ok := q.subquerys[idField]
+	if !ok {
+		sq = &recursiveSubqueryList{}
+	}
+	sq.Fields = fields
+
+	q.subquerys[idField] = sq
 
 	return q
+}
+
+func (q *query[T, PT]) GetSubquery(idField string) *recursiveSubqueryList {
+	sq, ok := q.subquerys[idField]
+	if !ok {
+		sq = &recursiveSubqueryList{}
+	}
+
+	return sq
 }
 
 // Sets the fqids of the query by plain ids
@@ -111,10 +150,27 @@ func (q *query[T, PT]) resultStructs() (map[string]PT, error) {
 
 	results := map[string]PT{}
 	for fqid, dsResult := range dsResults {
-		el := new(T)
-		err := json.Unmarshal(dsResult, el)
+		var el PT
+		err := json.Unmarshal(dsResult, &el)
 		if err != nil {
 			return nil, err
+		}
+		for field := range q.subquerys {
+			subDsResult, err := q.datastore.getFull(el.GetFqids(field))
+			if err != nil {
+				return nil, err
+			}
+
+			if len(subDsResult) == 0 {
+				el.SetRelated(field, nil)
+			} else {
+				for _, dsResult := range subDsResult {
+					err := el.SetRelatedJSON(field, dsResult)
+					if err != nil {
+						return nil, err
+					}
+				}
+			}
 		}
 		results[fqid] = el
 	}

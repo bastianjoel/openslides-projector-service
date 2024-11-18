@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -19,22 +21,22 @@ type Projection struct {
 	Type               *string         `json:"type"`
 	Weight             *int            `json:"weight"`
 	loadedRelations    map[string]struct{}
-	meeting            *Meeting
+	previewProjector   *Projector
 	currentProjector   *Projector
 	historyProjector   *Projector
-	previewProjector   *Projector
+	meeting            *Meeting
 }
 
 func (m *Projection) CollectionName() string {
 	return "projection"
 }
 
-func (m *Projection) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Projection which was not loaded.")
+func (m *Projection) PreviewProjector() *Projector {
+	if _, ok := m.loadedRelations["preview_projector_id"]; !ok {
+		log.Panic().Msg("Tried to access PreviewProjector relation of Projection which was not loaded.")
 	}
 
-	return *m.meeting
+	return m.previewProjector
 }
 
 func (m *Projection) CurrentProjector() *Projector {
@@ -53,12 +55,67 @@ func (m *Projection) HistoryProjector() *Projector {
 	return m.historyProjector
 }
 
-func (m *Projection) PreviewProjector() *Projector {
-	if _, ok := m.loadedRelations["preview_projector_id"]; !ok {
-		log.Panic().Msg("Tried to access PreviewProjector relation of Projection which was not loaded.")
+func (m *Projection) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Projection which was not loaded.")
 	}
 
-	return m.previewProjector
+	return *m.meeting
+}
+
+func (m *Projection) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "preview_projector_id":
+			m.previewProjector = content.(*Projector)
+		case "current_projector_id":
+			m.currentProjector = content.(*Projector)
+		case "history_projector_id":
+			m.historyProjector = content.(*Projector)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Projection) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "preview_projector_id":
+		err := json.Unmarshal(content, &m.previewProjector)
+		if err != nil {
+			return err
+		}
+	case "current_projector_id":
+		err := json.Unmarshal(content, &m.currentProjector)
+		if err != nil {
+			return err
+		}
+	case "history_projector_id":
+		err := json.Unmarshal(content, &m.historyProjector)
+		if err != nil {
+			return err
+		}
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Projection) Get(field string) interface{} {
@@ -88,6 +145,29 @@ func (m *Projection) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Projection) GetFqids(field string) []string {
+	switch field {
+	case "preview_projector_id":
+		if m.PreviewProjectorID != nil {
+			return []string{"projector/" + strconv.Itoa(*m.PreviewProjectorID)}
+		}
+
+	case "current_projector_id":
+		if m.CurrentProjectorID != nil {
+			return []string{"projector/" + strconv.Itoa(*m.CurrentProjectorID)}
+		}
+
+	case "history_projector_id":
+		if m.HistoryProjectorID != nil {
+			return []string{"projector/" + strconv.Itoa(*m.HistoryProjectorID)}
+		}
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+	}
+	return []string{}
 }
 
 func (m *Projection) Update(data map[string]string) error {

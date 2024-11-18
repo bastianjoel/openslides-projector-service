@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -13,7 +15,7 @@ type ProjectorMessage struct {
 	ProjectionIDs   []int   `json:"projection_ids"`
 	loadedRelations map[string]struct{}
 	meeting         *Meeting
-	projections     *Projection
+	projections     []Projection
 }
 
 func (m *ProjectorMessage) CollectionName() string {
@@ -28,12 +30,53 @@ func (m *ProjectorMessage) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *ProjectorMessage) Projections() *Projection {
+func (m *ProjectorMessage) Projections() []Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of ProjectorMessage which was not loaded.")
 	}
 
 	return m.projections
+}
+
+func (m *ProjectorMessage) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "projection_ids":
+			m.projections = content.([]Projection)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *ProjectorMessage) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "projection_ids":
+		err := json.Unmarshal(content, &m.projections)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *ProjectorMessage) Get(field string) interface{} {
@@ -49,6 +92,21 @@ func (m *ProjectorMessage) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *ProjectorMessage) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *ProjectorMessage) Update(data map[string]string) error {

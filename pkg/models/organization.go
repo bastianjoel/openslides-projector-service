@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -45,29 +47,77 @@ type Organization struct {
 	UsersEmailSubject          *string         `json:"users_email_subject"`
 	VoteDecryptPublicMainKey   *string         `json:"vote_decrypt_public_main_key"`
 	loadedRelations            map[string]struct{}
-	archivedMeetings           *Meeting
+	genders                    []Gender
+	themes                     []Theme
+	users                      []User
+	activeMeetings             []Meeting
+	committees                 []Committee
+	mediafiles                 []Mediafile
+	templateMeetings           []Meeting
 	theme                      *Theme
-	organizationTags           *OrganizationTag
-	publishedMediafiles        *Mediafile
-	users                      *User
-	templateMeetings           *Meeting
-	themes                     *Theme
-	committees                 *Committee
-	mediafiles                 *Mediafile
-	activeMeetings             *Meeting
-	genders                    *Gender
+	archivedMeetings           []Meeting
+	organizationTags           []OrganizationTag
+	publishedMediafiles        []Mediafile
 }
 
 func (m *Organization) CollectionName() string {
 	return "organization"
 }
 
-func (m *Organization) ArchivedMeetings() *Meeting {
-	if _, ok := m.loadedRelations["archived_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access ArchivedMeetings relation of Organization which was not loaded.")
+func (m *Organization) Genders() []Gender {
+	if _, ok := m.loadedRelations["gender_ids"]; !ok {
+		log.Panic().Msg("Tried to access Genders relation of Organization which was not loaded.")
 	}
 
-	return m.archivedMeetings
+	return m.genders
+}
+
+func (m *Organization) Themes() []Theme {
+	if _, ok := m.loadedRelations["theme_ids"]; !ok {
+		log.Panic().Msg("Tried to access Themes relation of Organization which was not loaded.")
+	}
+
+	return m.themes
+}
+
+func (m *Organization) Users() []User {
+	if _, ok := m.loadedRelations["user_ids"]; !ok {
+		log.Panic().Msg("Tried to access Users relation of Organization which was not loaded.")
+	}
+
+	return m.users
+}
+
+func (m *Organization) ActiveMeetings() []Meeting {
+	if _, ok := m.loadedRelations["active_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access ActiveMeetings relation of Organization which was not loaded.")
+	}
+
+	return m.activeMeetings
+}
+
+func (m *Organization) Committees() []Committee {
+	if _, ok := m.loadedRelations["committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access Committees relation of Organization which was not loaded.")
+	}
+
+	return m.committees
+}
+
+func (m *Organization) Mediafiles() []Mediafile {
+	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access Mediafiles relation of Organization which was not loaded.")
+	}
+
+	return m.mediafiles
+}
+
+func (m *Organization) TemplateMeetings() []Meeting {
+	if _, ok := m.loadedRelations["template_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access TemplateMeetings relation of Organization which was not loaded.")
+	}
+
+	return m.templateMeetings
 }
 
 func (m *Organization) Theme() Theme {
@@ -78,7 +128,15 @@ func (m *Organization) Theme() Theme {
 	return *m.theme
 }
 
-func (m *Organization) OrganizationTags() *OrganizationTag {
+func (m *Organization) ArchivedMeetings() []Meeting {
+	if _, ok := m.loadedRelations["archived_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access ArchivedMeetings relation of Organization which was not loaded.")
+	}
+
+	return m.archivedMeetings
+}
+
+func (m *Organization) OrganizationTags() []OrganizationTag {
 	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
 		log.Panic().Msg("Tried to access OrganizationTags relation of Organization which was not loaded.")
 	}
@@ -86,7 +144,7 @@ func (m *Organization) OrganizationTags() *OrganizationTag {
 	return m.organizationTags
 }
 
-func (m *Organization) PublishedMediafiles() *Mediafile {
+func (m *Organization) PublishedMediafiles() []Mediafile {
 	if _, ok := m.loadedRelations["published_mediafile_ids"]; !ok {
 		log.Panic().Msg("Tried to access PublishedMediafiles relation of Organization which was not loaded.")
 	}
@@ -94,60 +152,108 @@ func (m *Organization) PublishedMediafiles() *Mediafile {
 	return m.publishedMediafiles
 }
 
-func (m *Organization) Users() *User {
-	if _, ok := m.loadedRelations["user_ids"]; !ok {
-		log.Panic().Msg("Tried to access Users relation of Organization which was not loaded.")
+func (m *Organization) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "gender_ids":
+			m.genders = content.([]Gender)
+		case "theme_ids":
+			m.themes = content.([]Theme)
+		case "user_ids":
+			m.users = content.([]User)
+		case "active_meeting_ids":
+			m.activeMeetings = content.([]Meeting)
+		case "committee_ids":
+			m.committees = content.([]Committee)
+		case "mediafile_ids":
+			m.mediafiles = content.([]Mediafile)
+		case "template_meeting_ids":
+			m.templateMeetings = content.([]Meeting)
+		case "theme_id":
+			m.theme = content.(*Theme)
+		case "archived_meeting_ids":
+			m.archivedMeetings = content.([]Meeting)
+		case "organization_tag_ids":
+			m.organizationTags = content.([]OrganizationTag)
+		case "published_mediafile_ids":
+			m.publishedMediafiles = content.([]Mediafile)
+		default:
+			return
+		}
 	}
 
-	return m.users
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Organization) TemplateMeetings() *Meeting {
-	if _, ok := m.loadedRelations["template_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access TemplateMeetings relation of Organization which was not loaded.")
+func (m *Organization) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "gender_ids":
+		err := json.Unmarshal(content, &m.genders)
+		if err != nil {
+			return err
+		}
+	case "theme_ids":
+		err := json.Unmarshal(content, &m.themes)
+		if err != nil {
+			return err
+		}
+	case "user_ids":
+		err := json.Unmarshal(content, &m.users)
+		if err != nil {
+			return err
+		}
+	case "active_meeting_ids":
+		err := json.Unmarshal(content, &m.activeMeetings)
+		if err != nil {
+			return err
+		}
+	case "committee_ids":
+		err := json.Unmarshal(content, &m.committees)
+		if err != nil {
+			return err
+		}
+	case "mediafile_ids":
+		err := json.Unmarshal(content, &m.mediafiles)
+		if err != nil {
+			return err
+		}
+	case "template_meeting_ids":
+		err := json.Unmarshal(content, &m.templateMeetings)
+		if err != nil {
+			return err
+		}
+	case "theme_id":
+		err := json.Unmarshal(content, &m.theme)
+		if err != nil {
+			return err
+		}
+	case "archived_meeting_ids":
+		err := json.Unmarshal(content, &m.archivedMeetings)
+		if err != nil {
+			return err
+		}
+	case "organization_tag_ids":
+		err := json.Unmarshal(content, &m.organizationTags)
+		if err != nil {
+			return err
+		}
+	case "published_mediafile_ids":
+		err := json.Unmarshal(content, &m.publishedMediafiles)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
 	}
 
-	return m.templateMeetings
-}
-
-func (m *Organization) Themes() *Theme {
-	if _, ok := m.loadedRelations["theme_ids"]; !ok {
-		log.Panic().Msg("Tried to access Themes relation of Organization which was not loaded.")
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
 	}
-
-	return m.themes
-}
-
-func (m *Organization) Committees() *Committee {
-	if _, ok := m.loadedRelations["committee_ids"]; !ok {
-		log.Panic().Msg("Tried to access Committees relation of Organization which was not loaded.")
-	}
-
-	return m.committees
-}
-
-func (m *Organization) Mediafiles() *Mediafile {
-	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access Mediafiles relation of Organization which was not loaded.")
-	}
-
-	return m.mediafiles
-}
-
-func (m *Organization) ActiveMeetings() *Meeting {
-	if _, ok := m.loadedRelations["active_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access ActiveMeetings relation of Organization which was not loaded.")
-	}
-
-	return m.activeMeetings
-}
-
-func (m *Organization) Genders() *Gender {
-	if _, ok := m.loadedRelations["gender_ids"]; !ok {
-		log.Panic().Msg("Tried to access Genders relation of Organization which was not loaded.")
-	}
-
-	return m.genders
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Organization) Get(field string) interface{} {
@@ -229,6 +335,84 @@ func (m *Organization) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Organization) GetFqids(field string) []string {
+	switch field {
+	case "gender_ids":
+		r := make([]string, len(m.GenderIDs))
+		for i, id := range m.GenderIDs {
+			r[i] = "gender/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "theme_ids":
+		r := make([]string, len(m.ThemeIDs))
+		for i, id := range m.ThemeIDs {
+			r[i] = "theme/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "user_ids":
+		r := make([]string, len(m.UserIDs))
+		for i, id := range m.UserIDs {
+			r[i] = "user/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "active_meeting_ids":
+		r := make([]string, len(m.ActiveMeetingIDs))
+		for i, id := range m.ActiveMeetingIDs {
+			r[i] = "meeting/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "committee_ids":
+		r := make([]string, len(m.CommitteeIDs))
+		for i, id := range m.CommitteeIDs {
+			r[i] = "committee/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "mediafile_ids":
+		r := make([]string, len(m.MediafileIDs))
+		for i, id := range m.MediafileIDs {
+			r[i] = "mediafile/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "template_meeting_ids":
+		r := make([]string, len(m.TemplateMeetingIDs))
+		for i, id := range m.TemplateMeetingIDs {
+			r[i] = "meeting/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "theme_id":
+		return []string{"theme/" + strconv.Itoa(m.ThemeID)}
+
+	case "archived_meeting_ids":
+		r := make([]string, len(m.ArchivedMeetingIDs))
+		for i, id := range m.ArchivedMeetingIDs {
+			r[i] = "meeting/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "organization_tag_ids":
+		r := make([]string, len(m.OrganizationTagIDs))
+		for i, id := range m.OrganizationTagIDs {
+			r[i] = "organization_tag/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "published_mediafile_ids":
+		r := make([]string, len(m.PublishedMediafileIDs))
+		for i, id := range m.PublishedMediafileIDs {
+			r[i] = "mediafile/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *Organization) Update(data map[string]string) error {

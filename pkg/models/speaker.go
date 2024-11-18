@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -23,39 +25,15 @@ type Speaker struct {
 	UnpauseTime                    *int    `json:"unpause_time"`
 	Weight                         *int    `json:"weight"`
 	loadedRelations                map[string]struct{}
-	meeting                        *Meeting
-	listOfSpeakers                 *ListOfSpeakers
-	meetingUser                    *MeetingUser
 	pointOfOrderCategory           *PointOfOrderCategory
+	listOfSpeakers                 *ListOfSpeakers
+	meeting                        *Meeting
+	meetingUser                    *MeetingUser
 	structureLevelListOfSpeakers   *StructureLevelListOfSpeakers
 }
 
 func (m *Speaker) CollectionName() string {
 	return "speaker"
-}
-
-func (m *Speaker) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Speaker which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *Speaker) ListOfSpeakers() ListOfSpeakers {
-	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakers relation of Speaker which was not loaded.")
-	}
-
-	return *m.listOfSpeakers
-}
-
-func (m *Speaker) MeetingUser() *MeetingUser {
-	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
-		log.Panic().Msg("Tried to access MeetingUser relation of Speaker which was not loaded.")
-	}
-
-	return m.meetingUser
 }
 
 func (m *Speaker) PointOfOrderCategory() *PointOfOrderCategory {
@@ -66,12 +44,98 @@ func (m *Speaker) PointOfOrderCategory() *PointOfOrderCategory {
 	return m.pointOfOrderCategory
 }
 
+func (m *Speaker) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of Speaker which was not loaded.")
+	}
+
+	return *m.listOfSpeakers
+}
+
+func (m *Speaker) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Speaker which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Speaker) MeetingUser() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUser relation of Speaker which was not loaded.")
+	}
+
+	return m.meetingUser
+}
+
 func (m *Speaker) StructureLevelListOfSpeakers() *StructureLevelListOfSpeakers {
 	if _, ok := m.loadedRelations["structure_level_list_of_speakers_id"]; !ok {
 		log.Panic().Msg("Tried to access StructureLevelListOfSpeakers relation of Speaker which was not loaded.")
 	}
 
 	return m.structureLevelListOfSpeakers
+}
+
+func (m *Speaker) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "point_of_order_category_id":
+			m.pointOfOrderCategory = content.(*PointOfOrderCategory)
+		case "list_of_speakers_id":
+			m.listOfSpeakers = content.(*ListOfSpeakers)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "meeting_user_id":
+			m.meetingUser = content.(*MeetingUser)
+		case "structure_level_list_of_speakers_id":
+			m.structureLevelListOfSpeakers = content.(*StructureLevelListOfSpeakers)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Speaker) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "point_of_order_category_id":
+		err := json.Unmarshal(content, &m.pointOfOrderCategory)
+		if err != nil {
+			return err
+		}
+	case "list_of_speakers_id":
+		err := json.Unmarshal(content, &m.listOfSpeakers)
+		if err != nil {
+			return err
+		}
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "meeting_user_id":
+		err := json.Unmarshal(content, &m.meetingUser)
+		if err != nil {
+			return err
+		}
+	case "structure_level_list_of_speakers_id":
+		err := json.Unmarshal(content, &m.structureLevelListOfSpeakers)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Speaker) Get(field string) interface{} {
@@ -109,6 +173,32 @@ func (m *Speaker) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Speaker) GetFqids(field string) []string {
+	switch field {
+	case "point_of_order_category_id":
+		if m.PointOfOrderCategoryID != nil {
+			return []string{"point_of_order_category/" + strconv.Itoa(*m.PointOfOrderCategoryID)}
+		}
+
+	case "list_of_speakers_id":
+		return []string{"list_of_speakers/" + strconv.Itoa(m.ListOfSpeakersID)}
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "meeting_user_id":
+		if m.MeetingUserID != nil {
+			return []string{"meeting_user/" + strconv.Itoa(*m.MeetingUserID)}
+		}
+
+	case "structure_level_list_of_speakers_id":
+		if m.StructureLevelListOfSpeakersID != nil {
+			return []string{"structure_level_list_of_speakers/" + strconv.Itoa(*m.StructureLevelListOfSpeakersID)}
+		}
+	}
+	return []string{}
 }
 
 func (m *Speaker) Update(data map[string]string) error {

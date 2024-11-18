@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -16,30 +18,14 @@ type ListOfSpeakers struct {
 	SpeakerIDs                      []int  `json:"speaker_ids"`
 	StructureLevelListOfSpeakersIDs []int  `json:"structure_level_list_of_speakers_ids"`
 	loadedRelations                 map[string]struct{}
-	speakers                        *Speaker
-	structureLevelListOfSpeakerss   *StructureLevelListOfSpeakers
 	meeting                         *Meeting
-	projections                     *Projection
+	projections                     []Projection
+	speakers                        []Speaker
+	structureLevelListOfSpeakerss   []StructureLevelListOfSpeakers
 }
 
 func (m *ListOfSpeakers) CollectionName() string {
 	return "list_of_speakers"
-}
-
-func (m *ListOfSpeakers) Speakers() *Speaker {
-	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
-		log.Panic().Msg("Tried to access Speakers relation of ListOfSpeakers which was not loaded.")
-	}
-
-	return m.speakers
-}
-
-func (m *ListOfSpeakers) StructureLevelListOfSpeakerss() *StructureLevelListOfSpeakers {
-	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of ListOfSpeakers which was not loaded.")
-	}
-
-	return m.structureLevelListOfSpeakerss
 }
 
 func (m *ListOfSpeakers) Meeting() Meeting {
@@ -50,12 +36,83 @@ func (m *ListOfSpeakers) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *ListOfSpeakers) Projections() *Projection {
+func (m *ListOfSpeakers) Projections() []Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of ListOfSpeakers which was not loaded.")
 	}
 
 	return m.projections
+}
+
+func (m *ListOfSpeakers) Speakers() []Speaker {
+	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access Speakers relation of ListOfSpeakers which was not loaded.")
+	}
+
+	return m.speakers
+}
+
+func (m *ListOfSpeakers) StructureLevelListOfSpeakerss() []StructureLevelListOfSpeakers {
+	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of ListOfSpeakers which was not loaded.")
+	}
+
+	return m.structureLevelListOfSpeakerss
+}
+
+func (m *ListOfSpeakers) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "projection_ids":
+			m.projections = content.([]Projection)
+		case "speaker_ids":
+			m.speakers = content.([]Speaker)
+		case "structure_level_list_of_speakers_ids":
+			m.structureLevelListOfSpeakerss = content.([]StructureLevelListOfSpeakers)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *ListOfSpeakers) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "projection_ids":
+		err := json.Unmarshal(content, &m.projections)
+		if err != nil {
+			return err
+		}
+	case "speaker_ids":
+		err := json.Unmarshal(content, &m.speakers)
+		if err != nil {
+			return err
+		}
+	case "structure_level_list_of_speakers_ids":
+		err := json.Unmarshal(content, &m.structureLevelListOfSpeakerss)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *ListOfSpeakers) Get(field string) interface{} {
@@ -79,6 +136,35 @@ func (m *ListOfSpeakers) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *ListOfSpeakers) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "speaker_ids":
+		r := make([]string, len(m.SpeakerIDs))
+		for i, id := range m.SpeakerIDs {
+			r[i] = "speaker/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "structure_level_list_of_speakers_ids":
+		r := make([]string, len(m.StructureLevelListOfSpeakersIDs))
+		for i, id := range m.StructureLevelListOfSpeakersIDs {
+			r[i] = "structure_level_list_of_speakers/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *ListOfSpeakers) Update(data map[string]string) error {

@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -19,12 +21,20 @@ type MotionChangeRecommendation struct {
 	Text             *string `json:"text"`
 	Type             *string `json:"type"`
 	loadedRelations  map[string]struct{}
-	motion           *Motion
 	meeting          *Meeting
+	motion           *Motion
 }
 
 func (m *MotionChangeRecommendation) CollectionName() string {
 	return "motion_change_recommendation"
+}
+
+func (m *MotionChangeRecommendation) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionChangeRecommendation which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m *MotionChangeRecommendation) Motion() Motion {
@@ -35,12 +45,45 @@ func (m *MotionChangeRecommendation) Motion() Motion {
 	return *m.motion
 }
 
-func (m *MotionChangeRecommendation) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionChangeRecommendation which was not loaded.")
+func (m *MotionChangeRecommendation) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "motion_id":
+			m.motion = content.(*Motion)
+		default:
+			return
+		}
 	}
 
-	return *m.meeting
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *MotionChangeRecommendation) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "motion_id":
+		err := json.Unmarshal(content, &m.motion)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *MotionChangeRecommendation) Get(field string) interface{} {
@@ -70,6 +113,17 @@ func (m *MotionChangeRecommendation) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *MotionChangeRecommendation) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "motion_id":
+		return []string{"motion/" + strconv.Itoa(m.MotionID)}
+	}
+	return []string{}
 }
 
 func (m *MotionChangeRecommendation) Update(data map[string]string) error {

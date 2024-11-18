@@ -39,9 +39,10 @@ func New(addr string, redisAddr string) (*Datastore, error) {
 	return &ds, nil
 }
 
-func Collection[T any, PT baseModel[T]](ds *Datastore, coll *T) *query[T, PT] {
+func Collection[T any, PT baseModelPtr[T]](ds *Datastore, coll *T) *query[T, PT] {
 	return &query[T, PT]{
 		collection: coll,
 		datastore:  ds,
+		subquerys:  map[string]*recursiveSubqueryList{},
 	}
 }

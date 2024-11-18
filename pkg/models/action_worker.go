@@ -17,6 +17,12 @@ func (m *ActionWorker) CollectionName() string {
 	return "action_worker"
 }
 
+func (m *ActionWorker) SetRelated(field string, content interface{}) {}
+
+func (m *ActionWorker) SetRelatedJSON(field string, content []byte) error {
+	return nil
+}
+
 func (m *ActionWorker) Get(field string) interface{} {
 	switch field {
 	case "created":
@@ -34,6 +40,10 @@ func (m *ActionWorker) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *ActionWorker) GetFqids(field string) []string {
+	return []string{}
 }
 
 func (m *ActionWorker) Update(data map[string]string) error {

@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -40,48 +42,16 @@ type Poll struct {
 	Votesinvalid          *string         `json:"votesinvalid"`
 	Votesvalid            *string         `json:"votesvalid"`
 	loadedRelations       map[string]struct{}
-	globalOption          *Option
-	entitledGroups        *Group
-	options               *Option
-	voteds                *User
 	meeting               *Meeting
-	projections           *Projection
+	projections           []Projection
+	options               []Option
+	entitledGroups        []Group
+	voteds                []User
+	globalOption          *Option
 }
 
 func (m *Poll) CollectionName() string {
 	return "poll"
-}
-
-func (m *Poll) GlobalOption() *Option {
-	if _, ok := m.loadedRelations["global_option_id"]; !ok {
-		log.Panic().Msg("Tried to access GlobalOption relation of Poll which was not loaded.")
-	}
-
-	return m.globalOption
-}
-
-func (m *Poll) EntitledGroups() *Group {
-	if _, ok := m.loadedRelations["entitled_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access EntitledGroups relation of Poll which was not loaded.")
-	}
-
-	return m.entitledGroups
-}
-
-func (m *Poll) Options() *Option {
-	if _, ok := m.loadedRelations["option_ids"]; !ok {
-		log.Panic().Msg("Tried to access Options relation of Poll which was not loaded.")
-	}
-
-	return m.options
-}
-
-func (m *Poll) Voteds() *User {
-	if _, ok := m.loadedRelations["voted_ids"]; !ok {
-		log.Panic().Msg("Tried to access Voteds relation of Poll which was not loaded.")
-	}
-
-	return m.voteds
 }
 
 func (m *Poll) Meeting() Meeting {
@@ -92,12 +62,113 @@ func (m *Poll) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *Poll) Projections() *Projection {
+func (m *Poll) Projections() []Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of Poll which was not loaded.")
 	}
 
 	return m.projections
+}
+
+func (m *Poll) Options() []Option {
+	if _, ok := m.loadedRelations["option_ids"]; !ok {
+		log.Panic().Msg("Tried to access Options relation of Poll which was not loaded.")
+	}
+
+	return m.options
+}
+
+func (m *Poll) EntitledGroups() []Group {
+	if _, ok := m.loadedRelations["entitled_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access EntitledGroups relation of Poll which was not loaded.")
+	}
+
+	return m.entitledGroups
+}
+
+func (m *Poll) Voteds() []User {
+	if _, ok := m.loadedRelations["voted_ids"]; !ok {
+		log.Panic().Msg("Tried to access Voteds relation of Poll which was not loaded.")
+	}
+
+	return m.voteds
+}
+
+func (m *Poll) GlobalOption() *Option {
+	if _, ok := m.loadedRelations["global_option_id"]; !ok {
+		log.Panic().Msg("Tried to access GlobalOption relation of Poll which was not loaded.")
+	}
+
+	return m.globalOption
+}
+
+func (m *Poll) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "projection_ids":
+			m.projections = content.([]Projection)
+		case "option_ids":
+			m.options = content.([]Option)
+		case "entitled_group_ids":
+			m.entitledGroups = content.([]Group)
+		case "voted_ids":
+			m.voteds = content.([]User)
+		case "global_option_id":
+			m.globalOption = content.(*Option)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Poll) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "projection_ids":
+		err := json.Unmarshal(content, &m.projections)
+		if err != nil {
+			return err
+		}
+	case "option_ids":
+		err := json.Unmarshal(content, &m.options)
+		if err != nil {
+			return err
+		}
+	case "entitled_group_ids":
+		err := json.Unmarshal(content, &m.entitledGroups)
+		if err != nil {
+			return err
+		}
+	case "voted_ids":
+		err := json.Unmarshal(content, &m.voteds)
+		if err != nil {
+			return err
+		}
+	case "global_option_id":
+		err := json.Unmarshal(content, &m.globalOption)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Poll) Get(field string) interface{} {
@@ -169,6 +240,47 @@ func (m *Poll) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Poll) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "option_ids":
+		r := make([]string, len(m.OptionIDs))
+		for i, id := range m.OptionIDs {
+			r[i] = "option/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "entitled_group_ids":
+		r := make([]string, len(m.EntitledGroupIDs))
+		for i, id := range m.EntitledGroupIDs {
+			r[i] = "group/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "voted_ids":
+		r := make([]string, len(m.VotedIDs))
+		for i, id := range m.VotedIDs {
+			r[i] = "user/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "global_option_id":
+		if m.GlobalOptionID != nil {
+			return []string{"option/" + strconv.Itoa(*m.GlobalOptionID)}
+		}
+	}
+	return []string{}
 }
 
 func (m *Poll) Update(data map[string]string) error {

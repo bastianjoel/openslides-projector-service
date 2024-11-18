@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -80,6 +82,47 @@ func (m *Theme) ThemeForOrganization() *Organization {
 	}
 
 	return m.themeForOrganization
+}
+
+func (m *Theme) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "organization_id":
+			m.organization = content.(*Organization)
+		case "theme_for_organization_id":
+			m.themeForOrganization = content.(*Organization)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Theme) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "organization_id":
+		err := json.Unmarshal(content, &m.organization)
+		if err != nil {
+			return err
+		}
+	case "theme_for_organization_id":
+		err := json.Unmarshal(content, &m.themeForOrganization)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *Theme) Get(field string) interface{} {
@@ -187,6 +230,19 @@ func (m *Theme) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Theme) GetFqids(field string) []string {
+	switch field {
+	case "organization_id":
+		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
+
+	case "theme_for_organization_id":
+		if m.ThemeForOrganizationID != nil {
+			return []string{"organization/" + strconv.Itoa(*m.ThemeForOrganizationID)}
+		}
+	}
+	return []string{}
 }
 
 func (m *Theme) Update(data map[string]string) error {

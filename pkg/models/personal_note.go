@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -38,6 +40,47 @@ func (m *PersonalNote) MeetingUser() MeetingUser {
 	return *m.meetingUser
 }
 
+func (m *PersonalNote) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "meeting_user_id":
+			m.meetingUser = content.(*MeetingUser)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *PersonalNote) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "meeting_user_id":
+		err := json.Unmarshal(content, &m.meetingUser)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
+}
+
 func (m *PersonalNote) Get(field string) interface{} {
 	switch field {
 	case "content_object_id":
@@ -55,6 +98,17 @@ func (m *PersonalNote) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *PersonalNote) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "meeting_user_id":
+		return []string{"meeting_user/" + strconv.Itoa(m.MeetingUserID)}
+	}
+	return []string{}
 }
 
 func (m *PersonalNote) Update(data map[string]string) error {

@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -17,39 +19,31 @@ type MotionBlock struct {
 	SequentialNumber int    `json:"sequential_number"`
 	Title            string `json:"title"`
 	loadedRelations  map[string]struct{}
-	meeting          *Meeting
-	motions          *Motion
-	projections      *Projection
-	agendaItem       *AgendaItem
 	listOfSpeakers   *ListOfSpeakers
+	motions          []Motion
+	agendaItem       *AgendaItem
+	meeting          *Meeting
+	projections      []Projection
 }
 
 func (m *MotionBlock) CollectionName() string {
 	return "motion_block"
 }
 
-func (m *MotionBlock) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionBlock which was not loaded.")
+func (m *MotionBlock) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of MotionBlock which was not loaded.")
 	}
 
-	return *m.meeting
+	return *m.listOfSpeakers
 }
 
-func (m *MotionBlock) Motions() *Motion {
+func (m *MotionBlock) Motions() []Motion {
 	if _, ok := m.loadedRelations["motion_ids"]; !ok {
 		log.Panic().Msg("Tried to access Motions relation of MotionBlock which was not loaded.")
 	}
 
 	return m.motions
-}
-
-func (m *MotionBlock) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
-	}
-
-	return m.projections
 }
 
 func (m *MotionBlock) AgendaItem() *AgendaItem {
@@ -60,12 +54,82 @@ func (m *MotionBlock) AgendaItem() *AgendaItem {
 	return m.agendaItem
 }
 
-func (m *MotionBlock) ListOfSpeakers() ListOfSpeakers {
-	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakers relation of MotionBlock which was not loaded.")
+func (m *MotionBlock) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionBlock which was not loaded.")
 	}
 
-	return *m.listOfSpeakers
+	return *m.meeting
+}
+
+func (m *MotionBlock) Projections() []Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *MotionBlock) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "list_of_speakers_id":
+			m.listOfSpeakers = content.(*ListOfSpeakers)
+		case "motion_ids":
+			m.motions = content.([]Motion)
+		case "agenda_item_id":
+			m.agendaItem = content.(*AgendaItem)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "projection_ids":
+			m.projections = content.([]Projection)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *MotionBlock) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "list_of_speakers_id":
+		err := json.Unmarshal(content, &m.listOfSpeakers)
+		if err != nil {
+			return err
+		}
+	case "motion_ids":
+		err := json.Unmarshal(content, &m.motions)
+		if err != nil {
+			return err
+		}
+	case "agenda_item_id":
+		err := json.Unmarshal(content, &m.agendaItem)
+		if err != nil {
+			return err
+		}
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "projection_ids":
+		err := json.Unmarshal(content, &m.projections)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *MotionBlock) Get(field string) interface{} {
@@ -91,6 +155,36 @@ func (m *MotionBlock) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *MotionBlock) GetFqids(field string) []string {
+	switch field {
+	case "list_of_speakers_id":
+		return []string{"list_of_speakers/" + strconv.Itoa(m.ListOfSpeakersID)}
+
+	case "motion_ids":
+		r := make([]string, len(m.MotionIDs))
+		for i, id := range m.MotionIDs {
+			r[i] = "motion/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "agenda_item_id":
+		if m.AgendaItemID != nil {
+			return []string{"agenda_item/" + strconv.Itoa(*m.AgendaItemID)}
+		}
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *MotionBlock) Update(data map[string]string) error {

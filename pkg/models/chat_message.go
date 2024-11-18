@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -14,13 +16,21 @@ type ChatMessage struct {
 	MeetingID       int    `json:"meeting_id"`
 	MeetingUserID   *int   `json:"meeting_user_id"`
 	loadedRelations map[string]struct{}
+	chatGroup       *ChatGroup
 	meeting         *Meeting
 	meetingUser     *MeetingUser
-	chatGroup       *ChatGroup
 }
 
 func (m *ChatMessage) CollectionName() string {
 	return "chat_message"
+}
+
+func (m *ChatMessage) ChatGroup() ChatGroup {
+	if _, ok := m.loadedRelations["chat_group_id"]; !ok {
+		log.Panic().Msg("Tried to access ChatGroup relation of ChatMessage which was not loaded.")
+	}
+
+	return *m.chatGroup
 }
 
 func (m *ChatMessage) Meeting() Meeting {
@@ -39,12 +49,52 @@ func (m *ChatMessage) MeetingUser() *MeetingUser {
 	return m.meetingUser
 }
 
-func (m *ChatMessage) ChatGroup() ChatGroup {
-	if _, ok := m.loadedRelations["chat_group_id"]; !ok {
-		log.Panic().Msg("Tried to access ChatGroup relation of ChatMessage which was not loaded.")
+func (m *ChatMessage) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "chat_group_id":
+			m.chatGroup = content.(*ChatGroup)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "meeting_user_id":
+			m.meetingUser = content.(*MeetingUser)
+		default:
+			return
+		}
 	}
 
-	return *m.chatGroup
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *ChatMessage) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "chat_group_id":
+		err := json.Unmarshal(content, &m.chatGroup)
+		if err != nil {
+			return err
+		}
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "meeting_user_id":
+		err := json.Unmarshal(content, &m.meetingUser)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *ChatMessage) Get(field string) interface{} {
@@ -64,6 +114,22 @@ func (m *ChatMessage) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *ChatMessage) GetFqids(field string) []string {
+	switch field {
+	case "chat_group_id":
+		return []string{"chat_group/" + strconv.Itoa(m.ChatGroupID)}
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "meeting_user_id":
+		if m.MeetingUserID != nil {
+			return []string{"meeting_user/" + strconv.Itoa(*m.MeetingUserID)}
+		}
+	}
+	return []string{}
 }
 
 func (m *ChatMessage) Update(data map[string]string) error {

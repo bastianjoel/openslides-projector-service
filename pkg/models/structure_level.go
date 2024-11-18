@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -15,16 +17,16 @@ type StructureLevel struct {
 	Name                            string  `json:"name"`
 	StructureLevelListOfSpeakersIDs []int   `json:"structure_level_list_of_speakers_ids"`
 	loadedRelations                 map[string]struct{}
-	structureLevelListOfSpeakerss   *StructureLevelListOfSpeakers
+	structureLevelListOfSpeakerss   []StructureLevelListOfSpeakers
 	meeting                         *Meeting
-	meetingUsers                    *MeetingUser
+	meetingUsers                    []MeetingUser
 }
 
 func (m *StructureLevel) CollectionName() string {
 	return "structure_level"
 }
 
-func (m *StructureLevel) StructureLevelListOfSpeakerss() *StructureLevelListOfSpeakers {
+func (m *StructureLevel) StructureLevelListOfSpeakerss() []StructureLevelListOfSpeakers {
 	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
 		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of StructureLevel which was not loaded.")
 	}
@@ -40,12 +42,60 @@ func (m *StructureLevel) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *StructureLevel) MeetingUsers() *MeetingUser {
+func (m *StructureLevel) MeetingUsers() []MeetingUser {
 	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
 		log.Panic().Msg("Tried to access MeetingUsers relation of StructureLevel which was not loaded.")
 	}
 
 	return m.meetingUsers
+}
+
+func (m *StructureLevel) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "structure_level_list_of_speakers_ids":
+			m.structureLevelListOfSpeakerss = content.([]StructureLevelListOfSpeakers)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "meeting_user_ids":
+			m.meetingUsers = content.([]MeetingUser)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *StructureLevel) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "structure_level_list_of_speakers_ids":
+		err := json.Unmarshal(content, &m.structureLevelListOfSpeakerss)
+		if err != nil {
+			return err
+		}
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "meeting_user_ids":
+		err := json.Unmarshal(content, &m.meetingUsers)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
 }
 
 func (m *StructureLevel) Get(field string) interface{} {
@@ -67,6 +117,28 @@ func (m *StructureLevel) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *StructureLevel) GetFqids(field string) []string {
+	switch field {
+	case "structure_level_list_of_speakers_ids":
+		r := make([]string, len(m.StructureLevelListOfSpeakersIDs))
+		for i, id := range m.StructureLevelListOfSpeakersIDs {
+			r[i] = "structure_level_list_of_speakers/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "meeting_user_ids":
+		r := make([]string, len(m.MeetingUserIDs))
+		for i, id := range m.MeetingUserIDs {
+			r[i] = "meeting_user/" + strconv.Itoa(id)
+		}
+		return r
+	}
+	return []string{}
 }
 
 func (m *StructureLevel) Update(data map[string]string) error {

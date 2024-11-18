@@ -16,6 +16,12 @@ func (m *ImportPreview) CollectionName() string {
 	return "import_preview"
 }
 
+func (m *ImportPreview) SetRelated(field string, content interface{}) {}
+
+func (m *ImportPreview) SetRelatedJSON(field string, content []byte) error {
+	return nil
+}
+
 func (m *ImportPreview) Get(field string) interface{} {
 	switch field {
 	case "created":
@@ -31,6 +37,10 @@ func (m *ImportPreview) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *ImportPreview) GetFqids(field string) []string {
+	return []string{}
 }
 
 func (m *ImportPreview) Update(data map[string]string) error {

@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -16,22 +18,14 @@ type Vote struct {
 	Value           *string `json:"value"`
 	Weight          *string `json:"weight"`
 	loadedRelations map[string]struct{}
-	delegatedUser   *User
 	meeting         *Meeting
 	option          *Option
 	user            *User
+	delegatedUser   *User
 }
 
 func (m *Vote) CollectionName() string {
 	return "vote"
-}
-
-func (m *Vote) DelegatedUser() *User {
-	if _, ok := m.loadedRelations["delegated_user_id"]; !ok {
-		log.Panic().Msg("Tried to access DelegatedUser relation of Vote which was not loaded.")
-	}
-
-	return m.delegatedUser
 }
 
 func (m *Vote) Meeting() Meeting {
@@ -58,6 +52,69 @@ func (m *Vote) User() *User {
 	return m.user
 }
 
+func (m *Vote) DelegatedUser() *User {
+	if _, ok := m.loadedRelations["delegated_user_id"]; !ok {
+		log.Panic().Msg("Tried to access DelegatedUser relation of Vote which was not loaded.")
+	}
+
+	return m.delegatedUser
+}
+
+func (m *Vote) SetRelated(field string, content interface{}) {
+	if content != nil {
+		switch field {
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "option_id":
+			m.option = content.(*Option)
+		case "user_id":
+			m.user = content.(*User)
+		case "delegated_user_id":
+			m.delegatedUser = content.(*User)
+		default:
+			return
+		}
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+}
+
+func (m *Vote) SetRelatedJSON(field string, content []byte) error {
+	switch field {
+	case "meeting_id":
+		err := json.Unmarshal(content, &m.meeting)
+		if err != nil {
+			return err
+		}
+	case "option_id":
+		err := json.Unmarshal(content, &m.option)
+		if err != nil {
+			return err
+		}
+	case "user_id":
+		err := json.Unmarshal(content, &m.user)
+		if err != nil {
+			return err
+		}
+	case "delegated_user_id":
+		err := json.Unmarshal(content, &m.delegatedUser)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("set related field json on not existing field")
+	}
+
+	if m.loadedRelations == nil {
+		m.loadedRelations = map[string]struct{}{}
+	}
+	m.loadedRelations[field] = struct{}{}
+	return nil
+}
+
 func (m *Vote) Get(field string) interface{} {
 	switch field {
 	case "delegated_user_id":
@@ -79,6 +136,27 @@ func (m *Vote) Get(field string) interface{} {
 	}
 
 	return nil
+}
+
+func (m *Vote) GetFqids(field string) []string {
+	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "option_id":
+		return []string{"option/" + strconv.Itoa(m.OptionID)}
+
+	case "user_id":
+		if m.UserID != nil {
+			return []string{"user/" + strconv.Itoa(*m.UserID)}
+		}
+
+	case "delegated_user_id":
+		if m.DelegatedUserID != nil {
+			return []string{"user/" + strconv.Itoa(*m.DelegatedUserID)}
+		}
+	}
+	return []string{}
 }
 
 func (m *Vote) Update(data map[string]string) error {
