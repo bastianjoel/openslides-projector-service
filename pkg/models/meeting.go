@@ -246,132 +246,140 @@ type Meeting struct {
 	WelcomeText                                  *string         `json:"welcome_text"`
 	WelcomeTitle                                 *string         `json:"welcome_title"`
 	loadedRelations                              map[string]struct{}
-	defaultProjectorMotionBlocks                 *Projector
-	defaultProjectorMotionPolls                  *Projector
-	groups                                       *Group
-	listOfSpeakerss                              *ListOfSpeakers
+	allProjections                               *Projection
+	pollCandidateLists                           *PollCandidateList
+	adminGroup                                   *Group
+	logoPdfFooterL                               *MeetingMediafile
+	motionWorkingGroupSpeakers                   *MotionWorkingGroupSpeaker
 	options                                      *Option
-	fontProjectorH2                              *MeetingMediafile
-	fontBold                                     *MeetingMediafile
-	isArchivedInOrganization                     *Organization
-	logoPdfFooterR                               *MeetingMediafile
-	motionCommentSections                        *MotionCommentSection
-	defaultProjectorMessages                     *Projector
-	logoProjectorMain                            *MeetingMediafile
-	tags                                         *Tag
-	assignments                                  *Assignment
-	fontProjectorH1                              *MeetingMediafile
-	motionBlocks                                 *MotionBlock
-	defaultProjectorAssignmentPolls              *Projector
-	listOfSpeakersCountdown                      *ProjectorCountdown
-	fontChyronSpeakerName                        *MeetingMediafile
-	motionsDefaultAmendmentWorkflow              *MotionWorkflow
-	defaultProjectorCountdowns                   *Projector
-	motionChangeRecommendations                  *MotionChangeRecommendation
-	presentUsers                                 *User
-	assignmentPollDefaultGroups                  *Group
-	defaultProjectorAmendments                   *Projector
+	meetingUsers                                 *MeetingUser
+	motionStates                                 *MotionState
+	projectorMessages                            *ProjectorMessage
+	fontRegular                                  *MeetingMediafile
+	organizationTags                             *OrganizationTag
+	personalNotes                                *PersonalNote
+	listOfSpeakerss                              *ListOfSpeakers
+	structureLevels                              *StructureLevel
 	logoPdfBallotPaper                           *MeetingMediafile
-	chatGroups                                   *ChatGroup
-	defaultProjectorPolls                        *Projector
-	votes                                        *Vote
-	projections                                  *Projection
+	referenceProjector                           *Projector
+	assignments                                  *Assignment
+	fontChyronSpeakerName                        *MeetingMediafile
+	listOfSpeakersCountdown                      *ProjectorCountdown
+	motionsDefaultStatuteAmendmentWorkflow       *MotionWorkflow
+	defaultMeetingForCommittee                   *Committee
+	logoPdfFooterR                               *MeetingMediafile
+	groups                                       *Group
+	assignmentCandidates                         *AssignmentCandidate
+	defaultProjectorListOfSpeakerss              *Projector
+	motionBlocks                                 *MotionBlock
+	fontProjectorH1                              *MeetingMediafile
+	structureLevelListOfSpeakerss                *StructureLevelListOfSpeakers
+	assignmentPollDefaultGroups                  *Group
+	pollCandidates                               *PollCandidate
+	anonymousGroup                               *Group
+	defaultProjectorMotionPolls                  *Projector
+	isArchivedInOrganization                     *Organization
+	defaultProjectorMessages                     *Projector
+	defaultProjectorTopics                       *Projector
+	mediafiles                                   *Mediafile
+	pointOfOrderCategorys                        *PointOfOrderCategory
+	tags                                         *Tag
+	pollCountdown                                *ProjectorCountdown
+	defaultProjectorAmendments                   *Projector
+	defaultProjectorCurrentListOfSpeakerss       *Projector
+	logoWebHeader                                *MeetingMediafile
 	defaultProjectorAssignments                  *Projector
 	isActiveInOrganization                       *Organization
-	adminGroup                                   *Group
-	fontBoldItalic                               *MeetingMediafile
-	fontRegular                                  *MeetingMediafile
-	topics                                       *Topic
-	defaultProjectorAgendaItemLists              *Projector
-	polls                                        *Poll
-	defaultProjectorTopics                       *Projector
-	defaultMeetingForCommittee                   *Committee
-	defaultProjectorMediafiles                   *Projector
-	motionsDefaultStatuteAmendmentWorkflow       *MotionWorkflow
-	motionCategorys                              *MotionCategory
-	pollCandidateLists                           *PollCandidateList
-	logoPdfHeaderL                               *MeetingMediafile
-	allProjections                               *Projection
-	projectorCountdowns                          *ProjectorCountdown
-	structureLevelListOfSpeakerss                *StructureLevelListOfSpeakers
-	committee                                    *Committee
-	agendaItems                                  *AgendaItem
-	logoWebHeader                                *MeetingMediafile
-	projectorMessages                            *ProjectorMessage
-	fontItalic                                   *MeetingMediafile
-	logoPdfFooterL                               *MeetingMediafile
-	logoPdfHeaderR                               *MeetingMediafile
 	motions                                      *Motion
-	motionSubmitters                             *MotionSubmitter
-	structureLevels                              *StructureLevel
-	chatMessages                                 *ChatMessage
-	motionStates                                 *MotionState
-	organizationTags                             *OrganizationTag
-	motionStatuteParagraphs                      *MotionStatuteParagraph
-	motionWorkingGroupSpeakers                   *MotionWorkingGroupSpeaker
-	personalNotes                                *PersonalNote
-	templateForOrganization                      *Organization
-	speakers                                     *Speaker
-	pollCountdown                                *ProjectorCountdown
-	pollDefaultGroups                            *Group
-	fontMonospace                                *MeetingMediafile
 	logoProjectorHeader                          *MeetingMediafile
-	motionPollDefaultGroups                      *Group
-	meetingUsers                                 *MeetingUser
-	motionsDefaultWorkflow                       *MotionWorkflow
-	pointOfOrderCategorys                        *PointOfOrderCategory
-	defaultGroup                                 *Group
-	defaultProjectorListOfSpeakerss              *Projector
-	meetingMediafiles                            *MeetingMediafile
-	topicPollDefaultGroups                       *Group
-	pollCandidates                               *PollCandidate
-	projectors                                   *Projector
-	anonymousGroup                               *Group
-	defaultProjectorCurrentListOfSpeakerss       *Projector
-	mediafiles                                   *Mediafile
-	referenceProjector                           *Projector
-	forwardedMotions                             *Motion
-	assignmentCandidates                         *AssignmentCandidate
-	defaultProjectorMotions                      *Projector
+	motionChangeRecommendations                  *MotionChangeRecommendation
+	motionStatuteParagraphs                      *MotionStatuteParagraph
+	motionsDefaultAmendmentWorkflow              *MotionWorkflow
+	defaultProjectorAssignmentPolls              *Projector
 	motionComments                               *MotionComment
-	motionEditors                                *MotionEditor
+	motionSubmitters                             *MotionSubmitter
+	polls                                        *Poll
+	defaultProjectorCountdowns                   *Projector
+	committee                                    *Committee
+	fontMonospace                                *MeetingMediafile
+	forwardedMotions                             *Motion
+	presentUsers                                 *User
+	projections                                  *Projection
+	agendaItems                                  *AgendaItem
+	defaultProjectorAgendaItemLists              *Projector
+	defaultProjectorMediafiles                   *Projector
+	speakers                                     *Speaker
+	fontBold                                     *MeetingMediafile
+	meetingMediafiles                            *MeetingMediafile
 	motionWorkflows                              *MotionWorkflow
+	fontProjectorH2                              *MeetingMediafile
+	logoPdfHeaderL                               *MeetingMediafile
+	defaultProjectorMotions                      *Projector
+	fontBoldItalic                               *MeetingMediafile
+	logoPdfHeaderR                               *MeetingMediafile
+	motionCommentSections                        *MotionCommentSection
+	motionPollDefaultGroups                      *Group
+	projectors                                   *Projector
+	pollDefaultGroups                            *Group
+	templateForOrganization                      *Organization
+	defaultGroup                                 *Group
+	votes                                        *Vote
+	fontItalic                                   *MeetingMediafile
+	logoProjectorMain                            *MeetingMediafile
+	topics                                       *Topic
+	motionEditors                                *MotionEditor
+	topicPollDefaultGroups                       *Group
+	chatGroups                                   *ChatGroup
+	motionCategorys                              *MotionCategory
+	defaultProjectorMotionBlocks                 *Projector
+	defaultProjectorPolls                        *Projector
+	motionsDefaultWorkflow                       *MotionWorkflow
+	projectorCountdowns                          *ProjectorCountdown
+	chatMessages                                 *ChatMessage
 }
 
-func (m Meeting) CollectionName() string {
+func (m *Meeting) CollectionName() string {
 	return "meeting"
 }
 
-func (m *Meeting) DefaultProjectorMotionBlocks() Projector {
-	if _, ok := m.loadedRelations["default_projector_motion_block_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMotionBlocks relation of Meeting which was not loaded.")
+func (m *Meeting) AllProjections() *Projection {
+	if _, ok := m.loadedRelations["all_projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access AllProjections relation of Meeting which was not loaded.")
 	}
 
-	return *m.defaultProjectorMotionBlocks
+	return m.allProjections
 }
 
-func (m *Meeting) DefaultProjectorMotionPolls() Projector {
-	if _, ok := m.loadedRelations["default_projector_motion_poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMotionPolls relation of Meeting which was not loaded.")
+func (m *Meeting) PollCandidateLists() *PollCandidateList {
+	if _, ok := m.loadedRelations["poll_candidate_list_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollCandidateLists relation of Meeting which was not loaded.")
 	}
 
-	return *m.defaultProjectorMotionPolls
+	return m.pollCandidateLists
 }
 
-func (m *Meeting) Groups() *Group {
-	if _, ok := m.loadedRelations["group_ids"]; !ok {
-		log.Panic().Msg("Tried to access Groups relation of Meeting which was not loaded.")
+func (m *Meeting) AdminGroup() *Group {
+	if _, ok := m.loadedRelations["admin_group_id"]; !ok {
+		log.Panic().Msg("Tried to access AdminGroup relation of Meeting which was not loaded.")
 	}
 
-	return m.groups
+	return m.adminGroup
 }
 
-func (m *Meeting) ListOfSpeakerss() *ListOfSpeakers {
-	if _, ok := m.loadedRelations["list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakerss relation of Meeting which was not loaded.")
+func (m *Meeting) LogoPdfFooterL() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_footer_l_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfFooterL relation of Meeting which was not loaded.")
 	}
 
-	return m.listOfSpeakerss
+	return m.logoPdfFooterL
+}
+
+func (m *Meeting) MotionWorkingGroupSpeakers() *MotionWorkingGroupSpeaker {
+	if _, ok := m.loadedRelations["motion_working_group_speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionWorkingGroupSpeakers relation of Meeting which was not loaded.")
+	}
+
+	return m.motionWorkingGroupSpeakers
 }
 
 func (m *Meeting) Options() *Option {
@@ -382,164 +390,68 @@ func (m *Meeting) Options() *Option {
 	return m.options
 }
 
-func (m *Meeting) FontProjectorH2() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_projector_h2_id"]; !ok {
-		log.Panic().Msg("Tried to access FontProjectorH2 relation of Meeting which was not loaded.")
+func (m *Meeting) MeetingUsers() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUsers relation of Meeting which was not loaded.")
 	}
 
-	return m.fontProjectorH2
+	return m.meetingUsers
 }
 
-func (m *Meeting) FontBold() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_bold_id"]; !ok {
-		log.Panic().Msg("Tried to access FontBold relation of Meeting which was not loaded.")
+func (m *Meeting) MotionStates() *MotionState {
+	if _, ok := m.loadedRelations["motion_state_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionStates relation of Meeting which was not loaded.")
 	}
 
-	return m.fontBold
+	return m.motionStates
 }
 
-func (m *Meeting) IsArchivedInOrganization() *Organization {
-	if _, ok := m.loadedRelations["is_archived_in_organization_id"]; !ok {
-		log.Panic().Msg("Tried to access IsArchivedInOrganization relation of Meeting which was not loaded.")
+func (m *Meeting) ProjectorMessages() *ProjectorMessage {
+	if _, ok := m.loadedRelations["projector_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access ProjectorMessages relation of Meeting which was not loaded.")
 	}
 
-	return m.isArchivedInOrganization
+	return m.projectorMessages
 }
 
-func (m *Meeting) LogoPdfFooterR() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_footer_r_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfFooterR relation of Meeting which was not loaded.")
+func (m *Meeting) FontRegular() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_regular_id"]; !ok {
+		log.Panic().Msg("Tried to access FontRegular relation of Meeting which was not loaded.")
 	}
 
-	return m.logoPdfFooterR
+	return m.fontRegular
 }
 
-func (m *Meeting) MotionCommentSections() *MotionCommentSection {
-	if _, ok := m.loadedRelations["motion_comment_section_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionCommentSections relation of Meeting which was not loaded.")
+func (m *Meeting) OrganizationTags() *OrganizationTag {
+	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access OrganizationTags relation of Meeting which was not loaded.")
 	}
 
-	return m.motionCommentSections
+	return m.organizationTags
 }
 
-func (m *Meeting) DefaultProjectorMessages() Projector {
-	if _, ok := m.loadedRelations["default_projector_message_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMessages relation of Meeting which was not loaded.")
+func (m *Meeting) PersonalNotes() *PersonalNote {
+	if _, ok := m.loadedRelations["personal_note_ids"]; !ok {
+		log.Panic().Msg("Tried to access PersonalNotes relation of Meeting which was not loaded.")
 	}
 
-	return *m.defaultProjectorMessages
+	return m.personalNotes
 }
 
-func (m *Meeting) LogoProjectorMain() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_projector_main_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoProjectorMain relation of Meeting which was not loaded.")
+func (m *Meeting) ListOfSpeakerss() *ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakerss relation of Meeting which was not loaded.")
 	}
 
-	return m.logoProjectorMain
+	return m.listOfSpeakerss
 }
 
-func (m *Meeting) Tags() *Tag {
-	if _, ok := m.loadedRelations["tag_ids"]; !ok {
-		log.Panic().Msg("Tried to access Tags relation of Meeting which was not loaded.")
+func (m *Meeting) StructureLevels() *StructureLevel {
+	if _, ok := m.loadedRelations["structure_level_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevels relation of Meeting which was not loaded.")
 	}
 
-	return m.tags
-}
-
-func (m *Meeting) Assignments() *Assignment {
-	if _, ok := m.loadedRelations["assignment_ids"]; !ok {
-		log.Panic().Msg("Tried to access Assignments relation of Meeting which was not loaded.")
-	}
-
-	return m.assignments
-}
-
-func (m *Meeting) FontProjectorH1() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_projector_h1_id"]; !ok {
-		log.Panic().Msg("Tried to access FontProjectorH1 relation of Meeting which was not loaded.")
-	}
-
-	return m.fontProjectorH1
-}
-
-func (m *Meeting) MotionBlocks() *MotionBlock {
-	if _, ok := m.loadedRelations["motion_block_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionBlocks relation of Meeting which was not loaded.")
-	}
-
-	return m.motionBlocks
-}
-
-func (m *Meeting) DefaultProjectorAssignmentPolls() Projector {
-	if _, ok := m.loadedRelations["default_projector_assignment_poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAssignmentPolls relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorAssignmentPolls
-}
-
-func (m *Meeting) ListOfSpeakersCountdown() *ProjectorCountdown {
-	if _, ok := m.loadedRelations["list_of_speakers_countdown_id"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakersCountdown relation of Meeting which was not loaded.")
-	}
-
-	return m.listOfSpeakersCountdown
-}
-
-func (m *Meeting) FontChyronSpeakerName() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_chyron_speaker_name_id"]; !ok {
-		log.Panic().Msg("Tried to access FontChyronSpeakerName relation of Meeting which was not loaded.")
-	}
-
-	return m.fontChyronSpeakerName
-}
-
-func (m *Meeting) MotionsDefaultAmendmentWorkflow() MotionWorkflow {
-	if _, ok := m.loadedRelations["motions_default_amendment_workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access MotionsDefaultAmendmentWorkflow relation of Meeting which was not loaded.")
-	}
-
-	return *m.motionsDefaultAmendmentWorkflow
-}
-
-func (m *Meeting) DefaultProjectorCountdowns() Projector {
-	if _, ok := m.loadedRelations["default_projector_countdown_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorCountdowns relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorCountdowns
-}
-
-func (m *Meeting) MotionChangeRecommendations() *MotionChangeRecommendation {
-	if _, ok := m.loadedRelations["motion_change_recommendation_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionChangeRecommendations relation of Meeting which was not loaded.")
-	}
-
-	return m.motionChangeRecommendations
-}
-
-func (m *Meeting) PresentUsers() *User {
-	if _, ok := m.loadedRelations["present_user_ids"]; !ok {
-		log.Panic().Msg("Tried to access PresentUsers relation of Meeting which was not loaded.")
-	}
-
-	return m.presentUsers
-}
-
-func (m *Meeting) AssignmentPollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["assignment_poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access AssignmentPollDefaultGroups relation of Meeting which was not loaded.")
-	}
-
-	return m.assignmentPollDefaultGroups
-}
-
-func (m *Meeting) DefaultProjectorAmendments() Projector {
-	if _, ok := m.loadedRelations["default_projector_amendment_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAmendments relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorAmendments
+	return m.structureLevels
 }
 
 func (m *Meeting) LogoPdfBallotPaper() *MeetingMediafile {
@@ -550,36 +462,220 @@ func (m *Meeting) LogoPdfBallotPaper() *MeetingMediafile {
 	return m.logoPdfBallotPaper
 }
 
-func (m *Meeting) ChatGroups() *ChatGroup {
-	if _, ok := m.loadedRelations["chat_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access ChatGroups relation of Meeting which was not loaded.")
+func (m *Meeting) ReferenceProjector() Projector {
+	if _, ok := m.loadedRelations["reference_projector_id"]; !ok {
+		log.Panic().Msg("Tried to access ReferenceProjector relation of Meeting which was not loaded.")
 	}
 
-	return m.chatGroups
+	return *m.referenceProjector
 }
 
-func (m *Meeting) DefaultProjectorPolls() Projector {
-	if _, ok := m.loadedRelations["default_projector_poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorPolls relation of Meeting which was not loaded.")
+func (m *Meeting) Assignments() *Assignment {
+	if _, ok := m.loadedRelations["assignment_ids"]; !ok {
+		log.Panic().Msg("Tried to access Assignments relation of Meeting which was not loaded.")
 	}
 
-	return *m.defaultProjectorPolls
+	return m.assignments
 }
 
-func (m *Meeting) Votes() *Vote {
-	if _, ok := m.loadedRelations["vote_ids"]; !ok {
-		log.Panic().Msg("Tried to access Votes relation of Meeting which was not loaded.")
+func (m *Meeting) FontChyronSpeakerName() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_chyron_speaker_name_id"]; !ok {
+		log.Panic().Msg("Tried to access FontChyronSpeakerName relation of Meeting which was not loaded.")
 	}
 
-	return m.votes
+	return m.fontChyronSpeakerName
 }
 
-func (m *Meeting) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of Meeting which was not loaded.")
+func (m *Meeting) ListOfSpeakersCountdown() *ProjectorCountdown {
+	if _, ok := m.loadedRelations["list_of_speakers_countdown_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakersCountdown relation of Meeting which was not loaded.")
 	}
 
-	return m.projections
+	return m.listOfSpeakersCountdown
+}
+
+func (m *Meeting) MotionsDefaultStatuteAmendmentWorkflow() MotionWorkflow {
+	if _, ok := m.loadedRelations["motions_default_statute_amendment_workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access MotionsDefaultStatuteAmendmentWorkflow relation of Meeting which was not loaded.")
+	}
+
+	return *m.motionsDefaultStatuteAmendmentWorkflow
+}
+
+func (m *Meeting) DefaultMeetingForCommittee() *Committee {
+	if _, ok := m.loadedRelations["default_meeting_for_committee_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultMeetingForCommittee relation of Meeting which was not loaded.")
+	}
+
+	return m.defaultMeetingForCommittee
+}
+
+func (m *Meeting) LogoPdfFooterR() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_footer_r_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfFooterR relation of Meeting which was not loaded.")
+	}
+
+	return m.logoPdfFooterR
+}
+
+func (m *Meeting) Groups() *Group {
+	if _, ok := m.loadedRelations["group_ids"]; !ok {
+		log.Panic().Msg("Tried to access Groups relation of Meeting which was not loaded.")
+	}
+
+	return m.groups
+}
+
+func (m *Meeting) AssignmentCandidates() *AssignmentCandidate {
+	if _, ok := m.loadedRelations["assignment_candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access AssignmentCandidates relation of Meeting which was not loaded.")
+	}
+
+	return m.assignmentCandidates
+}
+
+func (m *Meeting) DefaultProjectorListOfSpeakerss() Projector {
+	if _, ok := m.loadedRelations["default_projector_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorListOfSpeakerss
+}
+
+func (m *Meeting) MotionBlocks() *MotionBlock {
+	if _, ok := m.loadedRelations["motion_block_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionBlocks relation of Meeting which was not loaded.")
+	}
+
+	return m.motionBlocks
+}
+
+func (m *Meeting) FontProjectorH1() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_projector_h1_id"]; !ok {
+		log.Panic().Msg("Tried to access FontProjectorH1 relation of Meeting which was not loaded.")
+	}
+
+	return m.fontProjectorH1
+}
+
+func (m *Meeting) StructureLevelListOfSpeakerss() *StructureLevelListOfSpeakers {
+	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return m.structureLevelListOfSpeakerss
+}
+
+func (m *Meeting) AssignmentPollDefaultGroups() *Group {
+	if _, ok := m.loadedRelations["assignment_poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access AssignmentPollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.assignmentPollDefaultGroups
+}
+
+func (m *Meeting) PollCandidates() *PollCandidate {
+	if _, ok := m.loadedRelations["poll_candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollCandidates relation of Meeting which was not loaded.")
+	}
+
+	return m.pollCandidates
+}
+
+func (m *Meeting) AnonymousGroup() *Group {
+	if _, ok := m.loadedRelations["anonymous_group_id"]; !ok {
+		log.Panic().Msg("Tried to access AnonymousGroup relation of Meeting which was not loaded.")
+	}
+
+	return m.anonymousGroup
+}
+
+func (m *Meeting) DefaultProjectorMotionPolls() Projector {
+	if _, ok := m.loadedRelations["default_projector_motion_poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMotionPolls relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorMotionPolls
+}
+
+func (m *Meeting) IsArchivedInOrganization() *Organization {
+	if _, ok := m.loadedRelations["is_archived_in_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access IsArchivedInOrganization relation of Meeting which was not loaded.")
+	}
+
+	return m.isArchivedInOrganization
+}
+
+func (m *Meeting) DefaultProjectorMessages() Projector {
+	if _, ok := m.loadedRelations["default_projector_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMessages relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorMessages
+}
+
+func (m *Meeting) DefaultProjectorTopics() Projector {
+	if _, ok := m.loadedRelations["default_projector_topic_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorTopics relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorTopics
+}
+
+func (m *Meeting) Mediafiles() *Mediafile {
+	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access Mediafiles relation of Meeting which was not loaded.")
+	}
+
+	return m.mediafiles
+}
+
+func (m *Meeting) PointOfOrderCategorys() *PointOfOrderCategory {
+	if _, ok := m.loadedRelations["point_of_order_category_ids"]; !ok {
+		log.Panic().Msg("Tried to access PointOfOrderCategorys relation of Meeting which was not loaded.")
+	}
+
+	return m.pointOfOrderCategorys
+}
+
+func (m *Meeting) Tags() *Tag {
+	if _, ok := m.loadedRelations["tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access Tags relation of Meeting which was not loaded.")
+	}
+
+	return m.tags
+}
+
+func (m *Meeting) PollCountdown() *ProjectorCountdown {
+	if _, ok := m.loadedRelations["poll_countdown_id"]; !ok {
+		log.Panic().Msg("Tried to access PollCountdown relation of Meeting which was not loaded.")
+	}
+
+	return m.pollCountdown
+}
+
+func (m *Meeting) DefaultProjectorAmendments() Projector {
+	if _, ok := m.loadedRelations["default_projector_amendment_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAmendments relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorAmendments
+}
+
+func (m *Meeting) DefaultProjectorCurrentListOfSpeakerss() Projector {
+	if _, ok := m.loadedRelations["default_projector_current_list_of_speakers_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorCurrentListOfSpeakerss relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorCurrentListOfSpeakerss
+}
+
+func (m *Meeting) LogoWebHeader() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_web_header_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoWebHeader relation of Meeting which was not loaded.")
+	}
+
+	return m.logoWebHeader
 }
 
 func (m *Meeting) DefaultProjectorAssignments() Projector {
@@ -598,300 +694,12 @@ func (m *Meeting) IsActiveInOrganization() *Organization {
 	return m.isActiveInOrganization
 }
 
-func (m *Meeting) AdminGroup() *Group {
-	if _, ok := m.loadedRelations["admin_group_id"]; !ok {
-		log.Panic().Msg("Tried to access AdminGroup relation of Meeting which was not loaded.")
-	}
-
-	return m.adminGroup
-}
-
-func (m *Meeting) FontBoldItalic() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_bold_italic_id"]; !ok {
-		log.Panic().Msg("Tried to access FontBoldItalic relation of Meeting which was not loaded.")
-	}
-
-	return m.fontBoldItalic
-}
-
-func (m *Meeting) FontRegular() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_regular_id"]; !ok {
-		log.Panic().Msg("Tried to access FontRegular relation of Meeting which was not loaded.")
-	}
-
-	return m.fontRegular
-}
-
-func (m *Meeting) Topics() *Topic {
-	if _, ok := m.loadedRelations["topic_ids"]; !ok {
-		log.Panic().Msg("Tried to access Topics relation of Meeting which was not loaded.")
-	}
-
-	return m.topics
-}
-
-func (m *Meeting) DefaultProjectorAgendaItemLists() Projector {
-	if _, ok := m.loadedRelations["default_projector_agenda_item_list_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorAgendaItemLists relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorAgendaItemLists
-}
-
-func (m *Meeting) Polls() *Poll {
-	if _, ok := m.loadedRelations["poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access Polls relation of Meeting which was not loaded.")
-	}
-
-	return m.polls
-}
-
-func (m *Meeting) DefaultProjectorTopics() Projector {
-	if _, ok := m.loadedRelations["default_projector_topic_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorTopics relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorTopics
-}
-
-func (m *Meeting) DefaultMeetingForCommittee() *Committee {
-	if _, ok := m.loadedRelations["default_meeting_for_committee_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultMeetingForCommittee relation of Meeting which was not loaded.")
-	}
-
-	return m.defaultMeetingForCommittee
-}
-
-func (m *Meeting) DefaultProjectorMediafiles() Projector {
-	if _, ok := m.loadedRelations["default_projector_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMediafiles relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorMediafiles
-}
-
-func (m *Meeting) MotionsDefaultStatuteAmendmentWorkflow() MotionWorkflow {
-	if _, ok := m.loadedRelations["motions_default_statute_amendment_workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access MotionsDefaultStatuteAmendmentWorkflow relation of Meeting which was not loaded.")
-	}
-
-	return *m.motionsDefaultStatuteAmendmentWorkflow
-}
-
-func (m *Meeting) MotionCategorys() *MotionCategory {
-	if _, ok := m.loadedRelations["motion_category_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionCategorys relation of Meeting which was not loaded.")
-	}
-
-	return m.motionCategorys
-}
-
-func (m *Meeting) PollCandidateLists() *PollCandidateList {
-	if _, ok := m.loadedRelations["poll_candidate_list_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollCandidateLists relation of Meeting which was not loaded.")
-	}
-
-	return m.pollCandidateLists
-}
-
-func (m *Meeting) LogoPdfHeaderL() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_header_l_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfHeaderL relation of Meeting which was not loaded.")
-	}
-
-	return m.logoPdfHeaderL
-}
-
-func (m *Meeting) AllProjections() *Projection {
-	if _, ok := m.loadedRelations["all_projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access AllProjections relation of Meeting which was not loaded.")
-	}
-
-	return m.allProjections
-}
-
-func (m *Meeting) ProjectorCountdowns() *ProjectorCountdown {
-	if _, ok := m.loadedRelations["projector_countdown_ids"]; !ok {
-		log.Panic().Msg("Tried to access ProjectorCountdowns relation of Meeting which was not loaded.")
-	}
-
-	return m.projectorCountdowns
-}
-
-func (m *Meeting) StructureLevelListOfSpeakerss() *StructureLevelListOfSpeakers {
-	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of Meeting which was not loaded.")
-	}
-
-	return m.structureLevelListOfSpeakerss
-}
-
-func (m *Meeting) Committee() Committee {
-	if _, ok := m.loadedRelations["committee_id"]; !ok {
-		log.Panic().Msg("Tried to access Committee relation of Meeting which was not loaded.")
-	}
-
-	return *m.committee
-}
-
-func (m *Meeting) AgendaItems() *AgendaItem {
-	if _, ok := m.loadedRelations["agenda_item_ids"]; !ok {
-		log.Panic().Msg("Tried to access AgendaItems relation of Meeting which was not loaded.")
-	}
-
-	return m.agendaItems
-}
-
-func (m *Meeting) LogoWebHeader() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_web_header_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoWebHeader relation of Meeting which was not loaded.")
-	}
-
-	return m.logoWebHeader
-}
-
-func (m *Meeting) ProjectorMessages() *ProjectorMessage {
-	if _, ok := m.loadedRelations["projector_message_ids"]; !ok {
-		log.Panic().Msg("Tried to access ProjectorMessages relation of Meeting which was not loaded.")
-	}
-
-	return m.projectorMessages
-}
-
-func (m *Meeting) FontItalic() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_italic_id"]; !ok {
-		log.Panic().Msg("Tried to access FontItalic relation of Meeting which was not loaded.")
-	}
-
-	return m.fontItalic
-}
-
-func (m *Meeting) LogoPdfFooterL() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_footer_l_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfFooterL relation of Meeting which was not loaded.")
-	}
-
-	return m.logoPdfFooterL
-}
-
-func (m *Meeting) LogoPdfHeaderR() *MeetingMediafile {
-	if _, ok := m.loadedRelations["logo_pdf_header_r_id"]; !ok {
-		log.Panic().Msg("Tried to access LogoPdfHeaderR relation of Meeting which was not loaded.")
-	}
-
-	return m.logoPdfHeaderR
-}
-
 func (m *Meeting) Motions() *Motion {
 	if _, ok := m.loadedRelations["motion_ids"]; !ok {
 		log.Panic().Msg("Tried to access Motions relation of Meeting which was not loaded.")
 	}
 
 	return m.motions
-}
-
-func (m *Meeting) MotionSubmitters() *MotionSubmitter {
-	if _, ok := m.loadedRelations["motion_submitter_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionSubmitters relation of Meeting which was not loaded.")
-	}
-
-	return m.motionSubmitters
-}
-
-func (m *Meeting) StructureLevels() *StructureLevel {
-	if _, ok := m.loadedRelations["structure_level_ids"]; !ok {
-		log.Panic().Msg("Tried to access StructureLevels relation of Meeting which was not loaded.")
-	}
-
-	return m.structureLevels
-}
-
-func (m *Meeting) ChatMessages() *ChatMessage {
-	if _, ok := m.loadedRelations["chat_message_ids"]; !ok {
-		log.Panic().Msg("Tried to access ChatMessages relation of Meeting which was not loaded.")
-	}
-
-	return m.chatMessages
-}
-
-func (m *Meeting) MotionStates() *MotionState {
-	if _, ok := m.loadedRelations["motion_state_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionStates relation of Meeting which was not loaded.")
-	}
-
-	return m.motionStates
-}
-
-func (m *Meeting) OrganizationTags() *OrganizationTag {
-	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
-		log.Panic().Msg("Tried to access OrganizationTags relation of Meeting which was not loaded.")
-	}
-
-	return m.organizationTags
-}
-
-func (m *Meeting) MotionStatuteParagraphs() *MotionStatuteParagraph {
-	if _, ok := m.loadedRelations["motion_statute_paragraph_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionStatuteParagraphs relation of Meeting which was not loaded.")
-	}
-
-	return m.motionStatuteParagraphs
-}
-
-func (m *Meeting) MotionWorkingGroupSpeakers() *MotionWorkingGroupSpeaker {
-	if _, ok := m.loadedRelations["motion_working_group_speaker_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionWorkingGroupSpeakers relation of Meeting which was not loaded.")
-	}
-
-	return m.motionWorkingGroupSpeakers
-}
-
-func (m *Meeting) PersonalNotes() *PersonalNote {
-	if _, ok := m.loadedRelations["personal_note_ids"]; !ok {
-		log.Panic().Msg("Tried to access PersonalNotes relation of Meeting which was not loaded.")
-	}
-
-	return m.personalNotes
-}
-
-func (m *Meeting) TemplateForOrganization() *Organization {
-	if _, ok := m.loadedRelations["template_for_organization_id"]; !ok {
-		log.Panic().Msg("Tried to access TemplateForOrganization relation of Meeting which was not loaded.")
-	}
-
-	return m.templateForOrganization
-}
-
-func (m *Meeting) Speakers() *Speaker {
-	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
-		log.Panic().Msg("Tried to access Speakers relation of Meeting which was not loaded.")
-	}
-
-	return m.speakers
-}
-
-func (m *Meeting) PollCountdown() *ProjectorCountdown {
-	if _, ok := m.loadedRelations["poll_countdown_id"]; !ok {
-		log.Panic().Msg("Tried to access PollCountdown relation of Meeting which was not loaded.")
-	}
-
-	return m.pollCountdown
-}
-
-func (m *Meeting) PollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollDefaultGroups relation of Meeting which was not loaded.")
-	}
-
-	return m.pollDefaultGroups
-}
-
-func (m *Meeting) FontMonospace() *MeetingMediafile {
-	if _, ok := m.loadedRelations["font_monospace_id"]; !ok {
-		log.Panic().Msg("Tried to access FontMonospace relation of Meeting which was not loaded.")
-	}
-
-	return m.fontMonospace
 }
 
 func (m *Meeting) LogoProjectorHeader() *MeetingMediafile {
@@ -902,140 +710,36 @@ func (m *Meeting) LogoProjectorHeader() *MeetingMediafile {
 	return m.logoProjectorHeader
 }
 
-func (m *Meeting) MotionPollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["motion_poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionPollDefaultGroups relation of Meeting which was not loaded.")
+func (m *Meeting) MotionChangeRecommendations() *MotionChangeRecommendation {
+	if _, ok := m.loadedRelations["motion_change_recommendation_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionChangeRecommendations relation of Meeting which was not loaded.")
 	}
 
-	return m.motionPollDefaultGroups
+	return m.motionChangeRecommendations
 }
 
-func (m *Meeting) MeetingUsers() *MeetingUser {
-	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingUsers relation of Meeting which was not loaded.")
+func (m *Meeting) MotionStatuteParagraphs() *MotionStatuteParagraph {
+	if _, ok := m.loadedRelations["motion_statute_paragraph_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionStatuteParagraphs relation of Meeting which was not loaded.")
 	}
 
-	return m.meetingUsers
+	return m.motionStatuteParagraphs
 }
 
-func (m *Meeting) MotionsDefaultWorkflow() MotionWorkflow {
-	if _, ok := m.loadedRelations["motions_default_workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access MotionsDefaultWorkflow relation of Meeting which was not loaded.")
+func (m *Meeting) MotionsDefaultAmendmentWorkflow() MotionWorkflow {
+	if _, ok := m.loadedRelations["motions_default_amendment_workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access MotionsDefaultAmendmentWorkflow relation of Meeting which was not loaded.")
 	}
 
-	return *m.motionsDefaultWorkflow
+	return *m.motionsDefaultAmendmentWorkflow
 }
 
-func (m *Meeting) PointOfOrderCategorys() *PointOfOrderCategory {
-	if _, ok := m.loadedRelations["point_of_order_category_ids"]; !ok {
-		log.Panic().Msg("Tried to access PointOfOrderCategorys relation of Meeting which was not loaded.")
+func (m *Meeting) DefaultProjectorAssignmentPolls() Projector {
+	if _, ok := m.loadedRelations["default_projector_assignment_poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAssignmentPolls relation of Meeting which was not loaded.")
 	}
 
-	return m.pointOfOrderCategorys
-}
-
-func (m *Meeting) DefaultGroup() Group {
-	if _, ok := m.loadedRelations["default_group_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultGroup relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultGroup
-}
-
-func (m *Meeting) DefaultProjectorListOfSpeakerss() Projector {
-	if _, ok := m.loadedRelations["default_projector_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorListOfSpeakerss relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorListOfSpeakerss
-}
-
-func (m *Meeting) MeetingMediafiles() *MeetingMediafile {
-	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingMediafiles relation of Meeting which was not loaded.")
-	}
-
-	return m.meetingMediafiles
-}
-
-func (m *Meeting) TopicPollDefaultGroups() *Group {
-	if _, ok := m.loadedRelations["topic_poll_default_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access TopicPollDefaultGroups relation of Meeting which was not loaded.")
-	}
-
-	return m.topicPollDefaultGroups
-}
-
-func (m *Meeting) PollCandidates() *PollCandidate {
-	if _, ok := m.loadedRelations["poll_candidate_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollCandidates relation of Meeting which was not loaded.")
-	}
-
-	return m.pollCandidates
-}
-
-func (m *Meeting) Projectors() *Projector {
-	if _, ok := m.loadedRelations["projector_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projectors relation of Meeting which was not loaded.")
-	}
-
-	return m.projectors
-}
-
-func (m *Meeting) AnonymousGroup() *Group {
-	if _, ok := m.loadedRelations["anonymous_group_id"]; !ok {
-		log.Panic().Msg("Tried to access AnonymousGroup relation of Meeting which was not loaded.")
-	}
-
-	return m.anonymousGroup
-}
-
-func (m *Meeting) DefaultProjectorCurrentListOfSpeakerss() Projector {
-	if _, ok := m.loadedRelations["default_projector_current_list_of_speakers_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorCurrentListOfSpeakerss relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorCurrentListOfSpeakerss
-}
-
-func (m *Meeting) Mediafiles() *Mediafile {
-	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access Mediafiles relation of Meeting which was not loaded.")
-	}
-
-	return m.mediafiles
-}
-
-func (m *Meeting) ReferenceProjector() Projector {
-	if _, ok := m.loadedRelations["reference_projector_id"]; !ok {
-		log.Panic().Msg("Tried to access ReferenceProjector relation of Meeting which was not loaded.")
-	}
-
-	return *m.referenceProjector
-}
-
-func (m *Meeting) ForwardedMotions() *Motion {
-	if _, ok := m.loadedRelations["forwarded_motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access ForwardedMotions relation of Meeting which was not loaded.")
-	}
-
-	return m.forwardedMotions
-}
-
-func (m *Meeting) AssignmentCandidates() *AssignmentCandidate {
-	if _, ok := m.loadedRelations["assignment_candidate_ids"]; !ok {
-		log.Panic().Msg("Tried to access AssignmentCandidates relation of Meeting which was not loaded.")
-	}
-
-	return m.assignmentCandidates
-}
-
-func (m *Meeting) DefaultProjectorMotions() Projector {
-	if _, ok := m.loadedRelations["default_projector_motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access DefaultProjectorMotions relation of Meeting which was not loaded.")
-	}
-
-	return *m.defaultProjectorMotions
+	return *m.defaultProjectorAssignmentPolls
 }
 
 func (m *Meeting) MotionComments() *MotionComment {
@@ -1046,12 +750,116 @@ func (m *Meeting) MotionComments() *MotionComment {
 	return m.motionComments
 }
 
-func (m *Meeting) MotionEditors() *MotionEditor {
-	if _, ok := m.loadedRelations["motion_editor_ids"]; !ok {
-		log.Panic().Msg("Tried to access MotionEditors relation of Meeting which was not loaded.")
+func (m *Meeting) MotionSubmitters() *MotionSubmitter {
+	if _, ok := m.loadedRelations["motion_submitter_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionSubmitters relation of Meeting which was not loaded.")
 	}
 
-	return m.motionEditors
+	return m.motionSubmitters
+}
+
+func (m *Meeting) Polls() *Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Meeting which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Meeting) DefaultProjectorCountdowns() Projector {
+	if _, ok := m.loadedRelations["default_projector_countdown_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorCountdowns relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorCountdowns
+}
+
+func (m *Meeting) Committee() Committee {
+	if _, ok := m.loadedRelations["committee_id"]; !ok {
+		log.Panic().Msg("Tried to access Committee relation of Meeting which was not loaded.")
+	}
+
+	return *m.committee
+}
+
+func (m *Meeting) FontMonospace() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_monospace_id"]; !ok {
+		log.Panic().Msg("Tried to access FontMonospace relation of Meeting which was not loaded.")
+	}
+
+	return m.fontMonospace
+}
+
+func (m *Meeting) ForwardedMotions() *Motion {
+	if _, ok := m.loadedRelations["forwarded_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access ForwardedMotions relation of Meeting which was not loaded.")
+	}
+
+	return m.forwardedMotions
+}
+
+func (m *Meeting) PresentUsers() *User {
+	if _, ok := m.loadedRelations["present_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access PresentUsers relation of Meeting which was not loaded.")
+	}
+
+	return m.presentUsers
+}
+
+func (m *Meeting) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Meeting which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *Meeting) AgendaItems() *AgendaItem {
+	if _, ok := m.loadedRelations["agenda_item_ids"]; !ok {
+		log.Panic().Msg("Tried to access AgendaItems relation of Meeting which was not loaded.")
+	}
+
+	return m.agendaItems
+}
+
+func (m *Meeting) DefaultProjectorAgendaItemLists() Projector {
+	if _, ok := m.loadedRelations["default_projector_agenda_item_list_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorAgendaItemLists relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorAgendaItemLists
+}
+
+func (m *Meeting) DefaultProjectorMediafiles() Projector {
+	if _, ok := m.loadedRelations["default_projector_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMediafiles relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorMediafiles
+}
+
+func (m *Meeting) Speakers() *Speaker {
+	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
+		log.Panic().Msg("Tried to access Speakers relation of Meeting which was not loaded.")
+	}
+
+	return m.speakers
+}
+
+func (m *Meeting) FontBold() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_bold_id"]; !ok {
+		log.Panic().Msg("Tried to access FontBold relation of Meeting which was not loaded.")
+	}
+
+	return m.fontBold
+}
+
+func (m *Meeting) MeetingMediafiles() *MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafiles relation of Meeting which was not loaded.")
+	}
+
+	return m.meetingMediafiles
 }
 
 func (m *Meeting) MotionWorkflows() *MotionWorkflow {
@@ -1062,7 +870,199 @@ func (m *Meeting) MotionWorkflows() *MotionWorkflow {
 	return m.motionWorkflows
 }
 
-func (m Meeting) Get(field string) interface{} {
+func (m *Meeting) FontProjectorH2() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_projector_h2_id"]; !ok {
+		log.Panic().Msg("Tried to access FontProjectorH2 relation of Meeting which was not loaded.")
+	}
+
+	return m.fontProjectorH2
+}
+
+func (m *Meeting) LogoPdfHeaderL() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_header_l_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfHeaderL relation of Meeting which was not loaded.")
+	}
+
+	return m.logoPdfHeaderL
+}
+
+func (m *Meeting) DefaultProjectorMotions() Projector {
+	if _, ok := m.loadedRelations["default_projector_motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMotions relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorMotions
+}
+
+func (m *Meeting) FontBoldItalic() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_bold_italic_id"]; !ok {
+		log.Panic().Msg("Tried to access FontBoldItalic relation of Meeting which was not loaded.")
+	}
+
+	return m.fontBoldItalic
+}
+
+func (m *Meeting) LogoPdfHeaderR() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_pdf_header_r_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoPdfHeaderR relation of Meeting which was not loaded.")
+	}
+
+	return m.logoPdfHeaderR
+}
+
+func (m *Meeting) MotionCommentSections() *MotionCommentSection {
+	if _, ok := m.loadedRelations["motion_comment_section_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionCommentSections relation of Meeting which was not loaded.")
+	}
+
+	return m.motionCommentSections
+}
+
+func (m *Meeting) MotionPollDefaultGroups() *Group {
+	if _, ok := m.loadedRelations["motion_poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionPollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.motionPollDefaultGroups
+}
+
+func (m *Meeting) Projectors() *Projector {
+	if _, ok := m.loadedRelations["projector_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projectors relation of Meeting which was not loaded.")
+	}
+
+	return m.projectors
+}
+
+func (m *Meeting) PollDefaultGroups() *Group {
+	if _, ok := m.loadedRelations["poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.pollDefaultGroups
+}
+
+func (m *Meeting) TemplateForOrganization() *Organization {
+	if _, ok := m.loadedRelations["template_for_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access TemplateForOrganization relation of Meeting which was not loaded.")
+	}
+
+	return m.templateForOrganization
+}
+
+func (m *Meeting) DefaultGroup() Group {
+	if _, ok := m.loadedRelations["default_group_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultGroup relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultGroup
+}
+
+func (m *Meeting) Votes() *Vote {
+	if _, ok := m.loadedRelations["vote_ids"]; !ok {
+		log.Panic().Msg("Tried to access Votes relation of Meeting which was not loaded.")
+	}
+
+	return m.votes
+}
+
+func (m *Meeting) FontItalic() *MeetingMediafile {
+	if _, ok := m.loadedRelations["font_italic_id"]; !ok {
+		log.Panic().Msg("Tried to access FontItalic relation of Meeting which was not loaded.")
+	}
+
+	return m.fontItalic
+}
+
+func (m *Meeting) LogoProjectorMain() *MeetingMediafile {
+	if _, ok := m.loadedRelations["logo_projector_main_id"]; !ok {
+		log.Panic().Msg("Tried to access LogoProjectorMain relation of Meeting which was not loaded.")
+	}
+
+	return m.logoProjectorMain
+}
+
+func (m *Meeting) Topics() *Topic {
+	if _, ok := m.loadedRelations["topic_ids"]; !ok {
+		log.Panic().Msg("Tried to access Topics relation of Meeting which was not loaded.")
+	}
+
+	return m.topics
+}
+
+func (m *Meeting) MotionEditors() *MotionEditor {
+	if _, ok := m.loadedRelations["motion_editor_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionEditors relation of Meeting which was not loaded.")
+	}
+
+	return m.motionEditors
+}
+
+func (m *Meeting) TopicPollDefaultGroups() *Group {
+	if _, ok := m.loadedRelations["topic_poll_default_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access TopicPollDefaultGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.topicPollDefaultGroups
+}
+
+func (m *Meeting) ChatGroups() *ChatGroup {
+	if _, ok := m.loadedRelations["chat_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access ChatGroups relation of Meeting which was not loaded.")
+	}
+
+	return m.chatGroups
+}
+
+func (m *Meeting) MotionCategorys() *MotionCategory {
+	if _, ok := m.loadedRelations["motion_category_ids"]; !ok {
+		log.Panic().Msg("Tried to access MotionCategorys relation of Meeting which was not loaded.")
+	}
+
+	return m.motionCategorys
+}
+
+func (m *Meeting) DefaultProjectorMotionBlocks() Projector {
+	if _, ok := m.loadedRelations["default_projector_motion_block_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorMotionBlocks relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorMotionBlocks
+}
+
+func (m *Meeting) DefaultProjectorPolls() Projector {
+	if _, ok := m.loadedRelations["default_projector_poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access DefaultProjectorPolls relation of Meeting which was not loaded.")
+	}
+
+	return *m.defaultProjectorPolls
+}
+
+func (m *Meeting) MotionsDefaultWorkflow() MotionWorkflow {
+	if _, ok := m.loadedRelations["motions_default_workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access MotionsDefaultWorkflow relation of Meeting which was not loaded.")
+	}
+
+	return *m.motionsDefaultWorkflow
+}
+
+func (m *Meeting) ProjectorCountdowns() *ProjectorCountdown {
+	if _, ok := m.loadedRelations["projector_countdown_ids"]; !ok {
+		log.Panic().Msg("Tried to access ProjectorCountdowns relation of Meeting which was not loaded.")
+	}
+
+	return m.projectorCountdowns
+}
+
+func (m *Meeting) ChatMessages() *ChatMessage {
+	if _, ok := m.loadedRelations["chat_message_ids"]; !ok {
+		log.Panic().Msg("Tried to access ChatMessages relation of Meeting which was not loaded.")
+	}
+
+	return m.chatMessages
+}
+
+func (m *Meeting) Get(field string) interface{} {
 	switch field {
 	case "admin_group_id":
 		return m.AdminGroupID
@@ -1545,7 +1545,7 @@ func (m Meeting) Get(field string) interface{} {
 	return nil
 }
 
-func (m Meeting) Update(data map[string]string) error {
+func (m *Meeting) Update(data map[string]string) error {
 	if val, ok := data["admin_group_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AdminGroupID)
 		if err != nil {

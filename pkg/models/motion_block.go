@@ -19,12 +19,12 @@ type MotionBlock struct {
 	loadedRelations  map[string]struct{}
 	meeting          *Meeting
 	motions          *Motion
+	projections      *Projection
 	agendaItem       *AgendaItem
 	listOfSpeakers   *ListOfSpeakers
-	projections      *Projection
 }
 
-func (m MotionBlock) CollectionName() string {
+func (m *MotionBlock) CollectionName() string {
 	return "motion_block"
 }
 
@@ -44,6 +44,14 @@ func (m *MotionBlock) Motions() *Motion {
 	return m.motions
 }
 
+func (m *MotionBlock) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
+	}
+
+	return m.projections
+}
+
 func (m *MotionBlock) AgendaItem() *AgendaItem {
 	if _, ok := m.loadedRelations["agenda_item_id"]; !ok {
 		log.Panic().Msg("Tried to access AgendaItem relation of MotionBlock which was not loaded.")
@@ -60,15 +68,7 @@ func (m *MotionBlock) ListOfSpeakers() ListOfSpeakers {
 	return *m.listOfSpeakers
 }
 
-func (m *MotionBlock) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
-	}
-
-	return m.projections
-}
-
-func (m MotionBlock) Get(field string) interface{} {
+func (m *MotionBlock) Get(field string) interface{} {
 	switch field {
 	case "agenda_item_id":
 		return m.AgendaItemID
@@ -93,7 +93,7 @@ func (m MotionBlock) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionBlock) Update(data map[string]string) error {
+func (m *MotionBlock) Update(data map[string]string) error {
 	if val, ok := data["agenda_item_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
 		if err != nil {

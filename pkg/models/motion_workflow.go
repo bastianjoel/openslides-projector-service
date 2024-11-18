@@ -17,24 +17,32 @@ type MotionWorkflow struct {
 	SequentialNumber                         int    `json:"sequential_number"`
 	StateIDs                                 []int  `json:"state_ids"`
 	loadedRelations                          map[string]struct{}
-	defaultAmendmentWorkflowMeeting          *Meeting
-	states                                   *MotionState
 	defaultStatuteAmendmentWorkflowMeeting   *Meeting
+	meeting                                  *Meeting
+	states                                   *MotionState
+	defaultAmendmentWorkflowMeeting          *Meeting
 	defaultWorkflowMeeting                   *Meeting
 	firstState                               *MotionState
-	meeting                                  *Meeting
 }
 
-func (m MotionWorkflow) CollectionName() string {
+func (m *MotionWorkflow) CollectionName() string {
 	return "motion_workflow"
 }
 
-func (m *MotionWorkflow) DefaultAmendmentWorkflowMeeting() *Meeting {
-	if _, ok := m.loadedRelations["default_amendment_workflow_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
+func (m *MotionWorkflow) DefaultStatuteAmendmentWorkflowMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_statute_amendment_workflow_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultStatuteAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
 	}
 
-	return m.defaultAmendmentWorkflowMeeting
+	return m.defaultStatuteAmendmentWorkflowMeeting
+}
+
+func (m *MotionWorkflow) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionWorkflow which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m *MotionWorkflow) States() *MotionState {
@@ -45,12 +53,12 @@ func (m *MotionWorkflow) States() *MotionState {
 	return m.states
 }
 
-func (m *MotionWorkflow) DefaultStatuteAmendmentWorkflowMeeting() *Meeting {
-	if _, ok := m.loadedRelations["default_statute_amendment_workflow_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultStatuteAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
+func (m *MotionWorkflow) DefaultAmendmentWorkflowMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_amendment_workflow_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
 	}
 
-	return m.defaultStatuteAmendmentWorkflowMeeting
+	return m.defaultAmendmentWorkflowMeeting
 }
 
 func (m *MotionWorkflow) DefaultWorkflowMeeting() *Meeting {
@@ -69,15 +77,7 @@ func (m *MotionWorkflow) FirstState() MotionState {
 	return *m.firstState
 }
 
-func (m *MotionWorkflow) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionWorkflow which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m MotionWorkflow) Get(field string) interface{} {
+func (m *MotionWorkflow) Get(field string) interface{} {
 	switch field {
 	case "default_amendment_workflow_meeting_id":
 		return m.DefaultAmendmentWorkflowMeetingID
@@ -102,7 +102,7 @@ func (m MotionWorkflow) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionWorkflow) Update(data map[string]string) error {
+func (m *MotionWorkflow) Update(data map[string]string) error {
 	if val, ok := data["default_amendment_workflow_meeting_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.DefaultAmendmentWorkflowMeetingID)
 		if err != nil {

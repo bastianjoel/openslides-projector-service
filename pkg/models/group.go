@@ -29,42 +29,42 @@ type Group struct {
 	WriteChatGroupIDs                       []int    `json:"write_chat_group_ids"`
 	WriteCommentSectionIDs                  []int    `json:"write_comment_section_ids"`
 	loadedRelations                         map[string]struct{}
-	defaultGroupForMeeting                  *Meeting
-	meetingMediafileAccessGroups            *MeetingMediafile
+	anonymousGroupForMeeting                *Meeting
+	meeting                                 *Meeting
 	meetingMediafileInheritedAccessGroups   *MeetingMediafile
 	meetingUsers                            *MeetingUser
-	usedAsMotionPollDefault                 *Meeting
-	writeCommentSections                    *MotionCommentSection
+	readChatGroups                          *ChatGroup
+	usedAsPollDefault                       *Meeting
 	adminGroupForMeeting                    *Meeting
+	defaultGroupForMeeting                  *Meeting
+	meetingMediafileAccessGroups            *MeetingMediafile
+	readCommentSections                     *MotionCommentSection
 	polls                                   *Poll
 	usedAsAssignmentPollDefault             *Meeting
-	writeChatGroups                         *ChatGroup
-	meeting                                 *Meeting
-	readChatGroups                          *ChatGroup
-	readCommentSections                     *MotionCommentSection
-	usedAsPollDefault                       *Meeting
+	usedAsMotionPollDefault                 *Meeting
 	usedAsTopicPollDefault                  *Meeting
-	anonymousGroupForMeeting                *Meeting
+	writeChatGroups                         *ChatGroup
+	writeCommentSections                    *MotionCommentSection
 }
 
-func (m Group) CollectionName() string {
+func (m *Group) CollectionName() string {
 	return "group"
 }
 
-func (m *Group) DefaultGroupForMeeting() *Meeting {
-	if _, ok := m.loadedRelations["default_group_for_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultGroupForMeeting relation of Group which was not loaded.")
+func (m *Group) AnonymousGroupForMeeting() *Meeting {
+	if _, ok := m.loadedRelations["anonymous_group_for_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access AnonymousGroupForMeeting relation of Group which was not loaded.")
 	}
 
-	return m.defaultGroupForMeeting
+	return m.anonymousGroupForMeeting
 }
 
-func (m *Group) MeetingMediafileAccessGroups() *MeetingMediafile {
-	if _, ok := m.loadedRelations["meeting_mediafile_access_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingMediafileAccessGroups relation of Group which was not loaded.")
+func (m *Group) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Group which was not loaded.")
 	}
 
-	return m.meetingMediafileAccessGroups
+	return *m.meeting
 }
 
 func (m *Group) MeetingMediafileInheritedAccessGroups() *MeetingMediafile {
@@ -83,20 +83,20 @@ func (m *Group) MeetingUsers() *MeetingUser {
 	return m.meetingUsers
 }
 
-func (m *Group) UsedAsMotionPollDefault() *Meeting {
-	if _, ok := m.loadedRelations["used_as_motion_poll_default_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsMotionPollDefault relation of Group which was not loaded.")
+func (m *Group) ReadChatGroups() *ChatGroup {
+	if _, ok := m.loadedRelations["read_chat_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadChatGroups relation of Group which was not loaded.")
 	}
 
-	return m.usedAsMotionPollDefault
+	return m.readChatGroups
 }
 
-func (m *Group) WriteCommentSections() *MotionCommentSection {
-	if _, ok := m.loadedRelations["write_comment_section_ids"]; !ok {
-		log.Panic().Msg("Tried to access WriteCommentSections relation of Group which was not loaded.")
+func (m *Group) UsedAsPollDefault() *Meeting {
+	if _, ok := m.loadedRelations["used_as_poll_default_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsPollDefault relation of Group which was not loaded.")
 	}
 
-	return m.writeCommentSections
+	return m.usedAsPollDefault
 }
 
 func (m *Group) AdminGroupForMeeting() *Meeting {
@@ -105,6 +105,30 @@ func (m *Group) AdminGroupForMeeting() *Meeting {
 	}
 
 	return m.adminGroupForMeeting
+}
+
+func (m *Group) DefaultGroupForMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_group_for_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultGroupForMeeting relation of Group which was not loaded.")
+	}
+
+	return m.defaultGroupForMeeting
+}
+
+func (m *Group) MeetingMediafileAccessGroups() *MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_access_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafileAccessGroups relation of Group which was not loaded.")
+	}
+
+	return m.meetingMediafileAccessGroups
+}
+
+func (m *Group) ReadCommentSections() *MotionCommentSection {
+	if _, ok := m.loadedRelations["read_comment_section_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadCommentSections relation of Group which was not loaded.")
+	}
+
+	return m.readCommentSections
 }
 
 func (m *Group) Polls() *Poll {
@@ -123,44 +147,12 @@ func (m *Group) UsedAsAssignmentPollDefault() *Meeting {
 	return m.usedAsAssignmentPollDefault
 }
 
-func (m *Group) WriteChatGroups() *ChatGroup {
-	if _, ok := m.loadedRelations["write_chat_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access WriteChatGroups relation of Group which was not loaded.")
+func (m *Group) UsedAsMotionPollDefault() *Meeting {
+	if _, ok := m.loadedRelations["used_as_motion_poll_default_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsMotionPollDefault relation of Group which was not loaded.")
 	}
 
-	return m.writeChatGroups
-}
-
-func (m *Group) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Group which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *Group) ReadChatGroups() *ChatGroup {
-	if _, ok := m.loadedRelations["read_chat_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access ReadChatGroups relation of Group which was not loaded.")
-	}
-
-	return m.readChatGroups
-}
-
-func (m *Group) ReadCommentSections() *MotionCommentSection {
-	if _, ok := m.loadedRelations["read_comment_section_ids"]; !ok {
-		log.Panic().Msg("Tried to access ReadCommentSections relation of Group which was not loaded.")
-	}
-
-	return m.readCommentSections
-}
-
-func (m *Group) UsedAsPollDefault() *Meeting {
-	if _, ok := m.loadedRelations["used_as_poll_default_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsPollDefault relation of Group which was not loaded.")
-	}
-
-	return m.usedAsPollDefault
+	return m.usedAsMotionPollDefault
 }
 
 func (m *Group) UsedAsTopicPollDefault() *Meeting {
@@ -171,15 +163,23 @@ func (m *Group) UsedAsTopicPollDefault() *Meeting {
 	return m.usedAsTopicPollDefault
 }
 
-func (m *Group) AnonymousGroupForMeeting() *Meeting {
-	if _, ok := m.loadedRelations["anonymous_group_for_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access AnonymousGroupForMeeting relation of Group which was not loaded.")
+func (m *Group) WriteChatGroups() *ChatGroup {
+	if _, ok := m.loadedRelations["write_chat_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteChatGroups relation of Group which was not loaded.")
 	}
 
-	return m.anonymousGroupForMeeting
+	return m.writeChatGroups
 }
 
-func (m Group) Get(field string) interface{} {
+func (m *Group) WriteCommentSections() *MotionCommentSection {
+	if _, ok := m.loadedRelations["write_comment_section_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteCommentSections relation of Group which was not loaded.")
+	}
+
+	return m.writeCommentSections
+}
+
+func (m *Group) Get(field string) interface{} {
 	switch field {
 	case "admin_group_for_meeting_id":
 		return m.AdminGroupForMeetingID
@@ -228,7 +228,7 @@ func (m Group) Get(field string) interface{} {
 	return nil
 }
 
-func (m Group) Update(data map[string]string) error {
+func (m *Group) Update(data map[string]string) error {
 	if val, ok := data["admin_group_for_meeting_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AdminGroupForMeetingID)
 		if err != nil {

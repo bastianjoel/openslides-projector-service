@@ -18,7 +18,7 @@ type PollCandidate struct {
 	user                *User
 }
 
-func (m PollCandidate) CollectionName() string {
+func (m *PollCandidate) CollectionName() string {
 	return "poll_candidate"
 }
 
@@ -46,7 +46,7 @@ func (m *PollCandidate) User() *User {
 	return m.user
 }
 
-func (m PollCandidate) Get(field string) interface{} {
+func (m *PollCandidate) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -63,7 +63,7 @@ func (m PollCandidate) Get(field string) interface{} {
 	return nil
 }
 
-func (m PollCandidate) Update(data map[string]string) error {
+func (m *PollCandidate) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

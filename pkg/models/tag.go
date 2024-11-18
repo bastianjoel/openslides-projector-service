@@ -15,7 +15,7 @@ type Tag struct {
 	meeting         *Meeting
 }
 
-func (m Tag) CollectionName() string {
+func (m *Tag) CollectionName() string {
 	return "tag"
 }
 
@@ -27,7 +27,7 @@ func (m *Tag) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m Tag) Get(field string) interface{} {
+func (m *Tag) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -42,7 +42,7 @@ func (m Tag) Get(field string) interface{} {
 	return nil
 }
 
-func (m Tag) Update(data map[string]string) error {
+func (m *Tag) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

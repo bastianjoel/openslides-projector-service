@@ -20,7 +20,7 @@ type StructureLevel struct {
 	meetingUsers                    *MeetingUser
 }
 
-func (m StructureLevel) CollectionName() string {
+func (m *StructureLevel) CollectionName() string {
 	return "structure_level"
 }
 
@@ -48,7 +48,7 @@ func (m *StructureLevel) MeetingUsers() *MeetingUser {
 	return m.meetingUsers
 }
 
-func (m StructureLevel) Get(field string) interface{} {
+func (m *StructureLevel) Get(field string) interface{} {
 	switch field {
 	case "color":
 		return m.Color
@@ -69,7 +69,7 @@ func (m StructureLevel) Get(field string) interface{} {
 	return nil
 }
 
-func (m StructureLevel) Update(data map[string]string) error {
+func (m *StructureLevel) Update(data map[string]string) error {
 	if val, ok := data["color"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Color)
 		if err != nil {

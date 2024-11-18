@@ -17,7 +17,7 @@ type subscription[V any] struct {
 	Unsubscribe   func()
 }
 
-func (q *query[T]) Subscribe() *subscription[<-chan map[string]map[string]interface{}] {
+func (q *query[T, PT]) Subscribe() *subscription[<-chan map[string]map[string]interface{}] {
 	notifyChannel := make(chan map[string]map[string]interface{})
 	updateChannel := make(chan map[string]map[string]string)
 	listener := queryChangeListener{
@@ -57,7 +57,7 @@ func (q *query[T]) Subscribe() *subscription[<-chan map[string]map[string]interf
 	}}
 }
 
-func (q *query[T]) SubscribeOne(model *T) (*subscription[<-chan []string], error) {
+func (q *query[T, PT]) SubscribeOne(model PT) (*subscription[<-chan []string], error) {
 	notifyChannel := make(chan []string)
 	updateChannel := make(chan map[string]map[string]string)
 	listener := queryChangeListener{
@@ -81,7 +81,7 @@ func (q *query[T]) SubscribeOne(model *T) (*subscription[<-chan []string], error
 					break
 				}
 
-				if err := (*model).Update(obj); err != nil {
+				if err := model.Update(obj); err != nil {
 					log.Error().Err(err).Msg("updating subscribed model failed")
 				}
 				notifyChannel <- slices.Collect(maps.Keys(obj))
@@ -96,7 +96,7 @@ func (q *query[T]) SubscribeOne(model *T) (*subscription[<-chan []string], error
 	}}, nil
 }
 
-func (q *query[T]) SubscribeField(field interface{}) (*subscription[<-chan struct{}], error) {
+func (q *query[T, PT]) SubscribeField(field interface{}) (*subscription[<-chan struct{}], error) {
 	notifyChannel := make(chan struct{})
 	updateChannel := make(chan map[string]map[string]string)
 	listener := queryChangeListener{
@@ -118,7 +118,7 @@ func (q *query[T]) SubscribeField(field interface{}) (*subscription[<-chan struc
 
 	go func() {
 		if data != nil {
-			val.Elem().Set(reflect.ValueOf((*data).Get(q.Fields[0])))
+			val.Elem().Set(reflect.ValueOf(data.Get(q.Fields[0])))
 			notifyChannel <- struct{}{}
 		}
 

@@ -40,62 +40,22 @@ type User struct {
 	Username                    string  `json:"username"`
 	VoteIDs                     []int   `json:"vote_ids"`
 	loadedRelations             map[string]struct{}
-	options                     *Option
-	pollVoteds                  *Poll
-	meetingUsers                *MeetingUser
-	committees                  *Committee
-	isPresentInMeetings         *Meeting
 	organization                *Organization
 	pollCandidates              *PollCandidate
-	gender                      *Gender
-	votes                       *Vote
-	committeeManagements        *Committee
+	isPresentInMeetings         *Meeting
+	committees                  *Committee
 	delegatedVotes              *Vote
+	meetingUsers                *MeetingUser
+	options                     *Option
+	votes                       *Vote
+	pollVoteds                  *Poll
+	gender                      *Gender
+	committeeManagements        *Committee
 	forwardingCommittees        *Committee
 }
 
-func (m User) CollectionName() string {
+func (m *User) CollectionName() string {
 	return "user"
-}
-
-func (m *User) Options() *Option {
-	if _, ok := m.loadedRelations["option_ids"]; !ok {
-		log.Panic().Msg("Tried to access Options relation of User which was not loaded.")
-	}
-
-	return m.options
-}
-
-func (m *User) PollVoteds() *Poll {
-	if _, ok := m.loadedRelations["poll_voted_ids"]; !ok {
-		log.Panic().Msg("Tried to access PollVoteds relation of User which was not loaded.")
-	}
-
-	return m.pollVoteds
-}
-
-func (m *User) MeetingUsers() *MeetingUser {
-	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingUsers relation of User which was not loaded.")
-	}
-
-	return m.meetingUsers
-}
-
-func (m *User) Committees() *Committee {
-	if _, ok := m.loadedRelations["committee_ids"]; !ok {
-		log.Panic().Msg("Tried to access Committees relation of User which was not loaded.")
-	}
-
-	return m.committees
-}
-
-func (m *User) IsPresentInMeetings() *Meeting {
-	if _, ok := m.loadedRelations["is_present_in_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access IsPresentInMeetings relation of User which was not loaded.")
-	}
-
-	return m.isPresentInMeetings
 }
 
 func (m *User) Organization() Organization {
@@ -114,28 +74,20 @@ func (m *User) PollCandidates() *PollCandidate {
 	return m.pollCandidates
 }
 
-func (m *User) Gender() *Gender {
-	if _, ok := m.loadedRelations["gender_id"]; !ok {
-		log.Panic().Msg("Tried to access Gender relation of User which was not loaded.")
+func (m *User) IsPresentInMeetings() *Meeting {
+	if _, ok := m.loadedRelations["is_present_in_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access IsPresentInMeetings relation of User which was not loaded.")
 	}
 
-	return m.gender
+	return m.isPresentInMeetings
 }
 
-func (m *User) Votes() *Vote {
-	if _, ok := m.loadedRelations["vote_ids"]; !ok {
-		log.Panic().Msg("Tried to access Votes relation of User which was not loaded.")
+func (m *User) Committees() *Committee {
+	if _, ok := m.loadedRelations["committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access Committees relation of User which was not loaded.")
 	}
 
-	return m.votes
-}
-
-func (m *User) CommitteeManagements() *Committee {
-	if _, ok := m.loadedRelations["committee_management_ids"]; !ok {
-		log.Panic().Msg("Tried to access CommitteeManagements relation of User which was not loaded.")
-	}
-
-	return m.committeeManagements
+	return m.committees
 }
 
 func (m *User) DelegatedVotes() *Vote {
@@ -146,6 +98,54 @@ func (m *User) DelegatedVotes() *Vote {
 	return m.delegatedVotes
 }
 
+func (m *User) MeetingUsers() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUsers relation of User which was not loaded.")
+	}
+
+	return m.meetingUsers
+}
+
+func (m *User) Options() *Option {
+	if _, ok := m.loadedRelations["option_ids"]; !ok {
+		log.Panic().Msg("Tried to access Options relation of User which was not loaded.")
+	}
+
+	return m.options
+}
+
+func (m *User) Votes() *Vote {
+	if _, ok := m.loadedRelations["vote_ids"]; !ok {
+		log.Panic().Msg("Tried to access Votes relation of User which was not loaded.")
+	}
+
+	return m.votes
+}
+
+func (m *User) PollVoteds() *Poll {
+	if _, ok := m.loadedRelations["poll_voted_ids"]; !ok {
+		log.Panic().Msg("Tried to access PollVoteds relation of User which was not loaded.")
+	}
+
+	return m.pollVoteds
+}
+
+func (m *User) Gender() *Gender {
+	if _, ok := m.loadedRelations["gender_id"]; !ok {
+		log.Panic().Msg("Tried to access Gender relation of User which was not loaded.")
+	}
+
+	return m.gender
+}
+
+func (m *User) CommitteeManagements() *Committee {
+	if _, ok := m.loadedRelations["committee_management_ids"]; !ok {
+		log.Panic().Msg("Tried to access CommitteeManagements relation of User which was not loaded.")
+	}
+
+	return m.committeeManagements
+}
+
 func (m *User) ForwardingCommittees() *Committee {
 	if _, ok := m.loadedRelations["forwarding_committee_ids"]; !ok {
 		log.Panic().Msg("Tried to access ForwardingCommittees relation of User which was not loaded.")
@@ -154,7 +154,7 @@ func (m *User) ForwardingCommittees() *Committee {
 	return m.forwardingCommittees
 }
 
-func (m User) Get(field string) interface{} {
+func (m *User) Get(field string) interface{} {
 	switch field {
 	case "can_change_own_password":
 		return m.CanChangeOwnPassword
@@ -225,7 +225,7 @@ func (m User) Get(field string) interface{} {
 	return nil
 }
 
-func (m User) Update(data map[string]string) error {
+func (m *User) Update(data map[string]string) error {
 	if val, ok := data["can_change_own_password"]; ok {
 		err := json.Unmarshal([]byte(val), &m.CanChangeOwnPassword)
 		if err != nil {

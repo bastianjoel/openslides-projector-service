@@ -12,11 +12,11 @@ type ImportPreview struct {
 	State   string          `json:"state"`
 }
 
-func (m ImportPreview) CollectionName() string {
+func (m *ImportPreview) CollectionName() string {
 	return "import_preview"
 }
 
-func (m ImportPreview) Get(field string) interface{} {
+func (m *ImportPreview) Get(field string) interface{} {
 	switch field {
 	case "created":
 		return m.Created
@@ -33,7 +33,7 @@ func (m ImportPreview) Get(field string) interface{} {
 	return nil
 }
 
-func (m ImportPreview) Update(data map[string]string) error {
+func (m *ImportPreview) Update(data map[string]string) error {
 	if val, ok := data["created"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Created)
 		if err != nil {

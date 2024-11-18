@@ -23,12 +23,12 @@ type Mediafile struct {
 	Token                               *string         `json:"token"`
 	loadedRelations                     map[string]struct{}
 	publishedToMeetingsInOrganization   *Organization
-	meetingMediafiles                   *MeetingMediafile
-	parent                              *Mediafile
 	childs                              *Mediafile
+	parent                              *Mediafile
+	meetingMediafiles                   *MeetingMediafile
 }
 
-func (m Mediafile) CollectionName() string {
+func (m *Mediafile) CollectionName() string {
 	return "mediafile"
 }
 
@@ -40,12 +40,12 @@ func (m *Mediafile) PublishedToMeetingsInOrganization() *Organization {
 	return m.publishedToMeetingsInOrganization
 }
 
-func (m *Mediafile) MeetingMediafiles() *MeetingMediafile {
-	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingMediafiles relation of Mediafile which was not loaded.")
+func (m *Mediafile) Childs() *Mediafile {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of Mediafile which was not loaded.")
 	}
 
-	return m.meetingMediafiles
+	return m.childs
 }
 
 func (m *Mediafile) Parent() *Mediafile {
@@ -56,15 +56,15 @@ func (m *Mediafile) Parent() *Mediafile {
 	return m.parent
 }
 
-func (m *Mediafile) Childs() *Mediafile {
-	if _, ok := m.loadedRelations["child_ids"]; !ok {
-		log.Panic().Msg("Tried to access Childs relation of Mediafile which was not loaded.")
+func (m *Mediafile) MeetingMediafiles() *MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafiles relation of Mediafile which was not loaded.")
 	}
 
-	return m.childs
+	return m.meetingMediafiles
 }
 
-func (m Mediafile) Get(field string) interface{} {
+func (m *Mediafile) Get(field string) interface{} {
 	switch field {
 	case "child_ids":
 		return m.ChildIDs
@@ -99,7 +99,7 @@ func (m Mediafile) Get(field string) interface{} {
 	return nil
 }
 
-func (m Mediafile) Update(data map[string]string) error {
+func (m *Mediafile) Update(data map[string]string) error {
 	if val, ok := data["child_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ChildIDs)
 		if err != nil {

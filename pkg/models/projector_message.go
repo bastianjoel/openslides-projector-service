@@ -16,7 +16,7 @@ type ProjectorMessage struct {
 	projections     *Projection
 }
 
-func (m ProjectorMessage) CollectionName() string {
+func (m *ProjectorMessage) CollectionName() string {
 	return "projector_message"
 }
 
@@ -36,7 +36,7 @@ func (m *ProjectorMessage) Projections() *Projection {
 	return m.projections
 }
 
-func (m ProjectorMessage) Get(field string) interface{} {
+func (m *ProjectorMessage) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -51,7 +51,7 @@ func (m ProjectorMessage) Get(field string) interface{} {
 	return nil
 }
 
-func (m ProjectorMessage) Update(data map[string]string) error {
+func (m *ProjectorMessage) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

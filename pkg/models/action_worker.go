@@ -13,11 +13,11 @@ type ActionWorker struct {
 	Timestamp int             `json:"timestamp"`
 }
 
-func (m ActionWorker) CollectionName() string {
+func (m *ActionWorker) CollectionName() string {
 	return "action_worker"
 }
 
-func (m ActionWorker) Get(field string) interface{} {
+func (m *ActionWorker) Get(field string) interface{} {
 	switch field {
 	case "created":
 		return m.Created
@@ -36,7 +36,7 @@ func (m ActionWorker) Get(field string) interface{} {
 	return nil
 }
 
-func (m ActionWorker) Update(data map[string]string) error {
+func (m *ActionWorker) Update(data map[string]string) error {
 	if val, ok := data["created"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Created)
 		if err != nil {

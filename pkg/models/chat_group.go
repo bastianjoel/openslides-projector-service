@@ -15,14 +15,22 @@ type ChatGroup struct {
 	Weight          *int   `json:"weight"`
 	WriteGroupIDs   []int  `json:"write_group_ids"`
 	loadedRelations map[string]struct{}
+	meeting         *Meeting
 	readGroups      *Group
 	writeGroups     *Group
 	chatMessages    *ChatMessage
-	meeting         *Meeting
 }
 
-func (m ChatGroup) CollectionName() string {
+func (m *ChatGroup) CollectionName() string {
 	return "chat_group"
+}
+
+func (m *ChatGroup) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of ChatGroup which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m *ChatGroup) ReadGroups() *Group {
@@ -49,15 +57,7 @@ func (m *ChatGroup) ChatMessages() *ChatMessage {
 	return m.chatMessages
 }
 
-func (m *ChatGroup) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of ChatGroup which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m ChatGroup) Get(field string) interface{} {
+func (m *ChatGroup) Get(field string) interface{} {
 	switch field {
 	case "chat_message_ids":
 		return m.ChatMessageIDs
@@ -78,7 +78,7 @@ func (m ChatGroup) Get(field string) interface{} {
 	return nil
 }
 
-func (m ChatGroup) Update(data map[string]string) error {
+func (m *ChatGroup) Update(data map[string]string) error {
 	if val, ok := data["chat_message_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ChatMessageIDs)
 		if err != nil {

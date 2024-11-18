@@ -12,7 +12,7 @@ type {{.GoName}} struct { {{range .Fields}}
 	{{.PropNameLc}} *{{.CollectionName}}{{end}}{{end}}
 }
 
-func (m {{.GoName}}) CollectionName() string {
+func (m *{{.GoName}}) CollectionName() string {
 	return "{{.CollectionName}}"
 }
 
@@ -25,7 +25,7 @@ func (m {{.GoName}}) CollectionName() string {
 }
 
 {{end}}
-func (m {{.GoName}}) Get(field string) interface{} {
+func (m *{{.GoName}}) Get(field string) interface{} {
 	switch field { {{range .Fields}}
 	case "{{.FieldName}}":
 	    return m.{{.GoName}}{{end}}
@@ -34,7 +34,7 @@ func (m {{.GoName}}) Get(field string) interface{} {
 	return nil
 }
 
-func (m {{.GoName}}) Update(data map[string]string) error { {{range .Fields}}
+func (m *{{.GoName}}) Update(data map[string]string) error { {{range .Fields}}
 	if val, ok := data["{{.FieldName}}"]; ok {
 		err := json.Unmarshal([]byte(val), &m.{{.GoName}})
 		if err != nil {

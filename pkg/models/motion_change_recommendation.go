@@ -19,20 +19,12 @@ type MotionChangeRecommendation struct {
 	Text             *string `json:"text"`
 	Type             *string `json:"type"`
 	loadedRelations  map[string]struct{}
-	meeting          *Meeting
 	motion           *Motion
+	meeting          *Meeting
 }
 
-func (m MotionChangeRecommendation) CollectionName() string {
+func (m *MotionChangeRecommendation) CollectionName() string {
 	return "motion_change_recommendation"
-}
-
-func (m *MotionChangeRecommendation) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionChangeRecommendation which was not loaded.")
-	}
-
-	return *m.meeting
 }
 
 func (m *MotionChangeRecommendation) Motion() Motion {
@@ -43,7 +35,15 @@ func (m *MotionChangeRecommendation) Motion() Motion {
 	return *m.motion
 }
 
-func (m MotionChangeRecommendation) Get(field string) interface{} {
+func (m *MotionChangeRecommendation) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionChangeRecommendation which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionChangeRecommendation) Get(field string) interface{} {
 	switch field {
 	case "creation_time":
 		return m.CreationTime
@@ -72,7 +72,7 @@ func (m MotionChangeRecommendation) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionChangeRecommendation) Update(data map[string]string) error {
+func (m *MotionChangeRecommendation) Update(data map[string]string) error {
 	if val, ok := data["creation_time"]; ok {
 		err := json.Unmarshal([]byte(val), &m.CreationTime)
 		if err != nil {

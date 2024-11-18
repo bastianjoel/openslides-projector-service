@@ -16,7 +16,7 @@ type Gender struct {
 	users           *User
 }
 
-func (m Gender) CollectionName() string {
+func (m *Gender) CollectionName() string {
 	return "gender"
 }
 
@@ -36,7 +36,7 @@ func (m *Gender) Users() *User {
 	return m.users
 }
 
-func (m Gender) Get(field string) interface{} {
+func (m *Gender) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -51,7 +51,7 @@ func (m Gender) Get(field string) interface{} {
 	return nil
 }
 
-func (m Gender) Update(data map[string]string) error {
+func (m *Gender) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

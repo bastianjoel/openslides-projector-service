@@ -18,7 +18,7 @@ type PersonalNote struct {
 	meetingUser     *MeetingUser
 }
 
-func (m PersonalNote) CollectionName() string {
+func (m *PersonalNote) CollectionName() string {
 	return "personal_note"
 }
 
@@ -38,7 +38,7 @@ func (m *PersonalNote) MeetingUser() MeetingUser {
 	return *m.meetingUser
 }
 
-func (m PersonalNote) Get(field string) interface{} {
+func (m *PersonalNote) Get(field string) interface{} {
 	switch field {
 	case "content_object_id":
 		return m.ContentObjectID
@@ -57,7 +57,7 @@ func (m PersonalNote) Get(field string) interface{} {
 	return nil
 }
 
-func (m PersonalNote) Update(data map[string]string) error {
+func (m *PersonalNote) Update(data map[string]string) error {
 	if val, ok := data["content_object_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ContentObjectID)
 		if err != nil {

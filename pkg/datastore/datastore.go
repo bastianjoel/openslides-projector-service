@@ -39,8 +39,8 @@ func New(addr string, redisAddr string) (*Datastore, error) {
 	return &ds, nil
 }
 
-func Collection[T baseModel](ds *Datastore, coll *T) *query[T] {
-	return &query[T]{
+func Collection[T any, PT baseModel[T]](ds *Datastore, coll *T) *query[T, PT] {
+	return &query[T, PT]{
 		collection: coll,
 		datastore:  ds,
 	}

@@ -18,16 +18,32 @@ type Topic struct {
 	Text                          *string `json:"text"`
 	Title                         string  `json:"title"`
 	loadedRelations               map[string]struct{}
+	agendaItem                    *AgendaItem
+	projections                   *Projection
 	meeting                       *Meeting
 	polls                         *Poll
-	agendaItem                    *AgendaItem
 	attachmentMeetingMediafiles   *MeetingMediafile
 	listOfSpeakers                *ListOfSpeakers
-	projections                   *Projection
 }
 
-func (m Topic) CollectionName() string {
+func (m *Topic) CollectionName() string {
 	return "topic"
+}
+
+func (m *Topic) AgendaItem() AgendaItem {
+	if _, ok := m.loadedRelations["agenda_item_id"]; !ok {
+		log.Panic().Msg("Tried to access AgendaItem relation of Topic which was not loaded.")
+	}
+
+	return *m.agendaItem
+}
+
+func (m *Topic) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Topic which was not loaded.")
+	}
+
+	return m.projections
 }
 
 func (m *Topic) Meeting() Meeting {
@@ -46,14 +62,6 @@ func (m *Topic) Polls() *Poll {
 	return m.polls
 }
 
-func (m *Topic) AgendaItem() AgendaItem {
-	if _, ok := m.loadedRelations["agenda_item_id"]; !ok {
-		log.Panic().Msg("Tried to access AgendaItem relation of Topic which was not loaded.")
-	}
-
-	return *m.agendaItem
-}
-
 func (m *Topic) AttachmentMeetingMediafiles() *MeetingMediafile {
 	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
 		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Topic which was not loaded.")
@@ -70,15 +78,7 @@ func (m *Topic) ListOfSpeakers() ListOfSpeakers {
 	return *m.listOfSpeakers
 }
 
-func (m *Topic) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of Topic which was not loaded.")
-	}
-
-	return m.projections
-}
-
-func (m Topic) Get(field string) interface{} {
+func (m *Topic) Get(field string) interface{} {
 	switch field {
 	case "agenda_item_id":
 		return m.AgendaItemID
@@ -105,7 +105,7 @@ func (m Topic) Get(field string) interface{} {
 	return nil
 }
 
-func (m Topic) Update(data map[string]string) error {
+func (m *Topic) Update(data map[string]string) error {
 	if val, ok := data["agenda_item_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
 		if err != nil {

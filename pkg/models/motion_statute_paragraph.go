@@ -19,7 +19,7 @@ type MotionStatuteParagraph struct {
 	motions          *Motion
 }
 
-func (m MotionStatuteParagraph) CollectionName() string {
+func (m *MotionStatuteParagraph) CollectionName() string {
 	return "motion_statute_paragraph"
 }
 
@@ -39,7 +39,7 @@ func (m *MotionStatuteParagraph) Motions() *Motion {
 	return m.motions
 }
 
-func (m MotionStatuteParagraph) Get(field string) interface{} {
+func (m *MotionStatuteParagraph) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -60,7 +60,7 @@ func (m MotionStatuteParagraph) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionStatuteParagraph) Update(data map[string]string) error {
+func (m *MotionStatuteParagraph) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

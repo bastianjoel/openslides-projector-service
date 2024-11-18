@@ -24,7 +24,7 @@ type ProjectorCountdown struct {
 	usedAsPollCountdownMeeting             *Meeting
 }
 
-func (m ProjectorCountdown) CollectionName() string {
+func (m *ProjectorCountdown) CollectionName() string {
 	return "projector_countdown"
 }
 
@@ -60,7 +60,7 @@ func (m *ProjectorCountdown) UsedAsPollCountdownMeeting() *Meeting {
 	return m.usedAsPollCountdownMeeting
 }
 
-func (m ProjectorCountdown) Get(field string) interface{} {
+func (m *ProjectorCountdown) Get(field string) interface{} {
 	switch field {
 	case "countdown_time":
 		return m.CountdownTime
@@ -87,7 +87,7 @@ func (m ProjectorCountdown) Get(field string) interface{} {
 	return nil
 }
 
-func (m ProjectorCountdown) Update(data map[string]string) error {
+func (m *ProjectorCountdown) Update(data map[string]string) error {
 	if val, ok := data["countdown_time"]; ok {
 		err := json.Unmarshal([]byte(val), &m.CountdownTime)
 		if err != nil {

@@ -24,18 +24,50 @@ type Assignment struct {
 	TagIDs                        []int   `json:"tag_ids"`
 	Title                         string  `json:"title"`
 	loadedRelations               map[string]struct{}
+	candidates                    *AssignmentCandidate
+	polls                         *Poll
+	projections                   *Projection
+	attachmentMeetingMediafiles   *MeetingMediafile
 	tags                          *Tag
 	agendaItem                    *AgendaItem
-	attachmentMeetingMediafiles   *MeetingMediafile
-	listOfSpeakers                *ListOfSpeakers
-	projections                   *Projection
-	polls                         *Poll
-	candidates                    *AssignmentCandidate
 	meeting                       *Meeting
+	listOfSpeakers                *ListOfSpeakers
 }
 
-func (m Assignment) CollectionName() string {
+func (m *Assignment) CollectionName() string {
 	return "assignment"
+}
+
+func (m *Assignment) Candidates() *AssignmentCandidate {
+	if _, ok := m.loadedRelations["candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access Candidates relation of Assignment which was not loaded.")
+	}
+
+	return m.candidates
+}
+
+func (m *Assignment) Polls() *Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Assignment which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Assignment) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Assignment which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *Assignment) AttachmentMeetingMediafiles() *MeetingMediafile {
+	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Assignment which was not loaded.")
+	}
+
+	return m.attachmentMeetingMediafiles
 }
 
 func (m *Assignment) Tags() *Tag {
@@ -54,12 +86,12 @@ func (m *Assignment) AgendaItem() *AgendaItem {
 	return m.agendaItem
 }
 
-func (m *Assignment) AttachmentMeetingMediafiles() *MeetingMediafile {
-	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Assignment which was not loaded.")
+func (m *Assignment) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Assignment which was not loaded.")
 	}
 
-	return m.attachmentMeetingMediafiles
+	return *m.meeting
 }
 
 func (m *Assignment) ListOfSpeakers() ListOfSpeakers {
@@ -70,39 +102,7 @@ func (m *Assignment) ListOfSpeakers() ListOfSpeakers {
 	return *m.listOfSpeakers
 }
 
-func (m *Assignment) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of Assignment which was not loaded.")
-	}
-
-	return m.projections
-}
-
-func (m *Assignment) Polls() *Poll {
-	if _, ok := m.loadedRelations["poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access Polls relation of Assignment which was not loaded.")
-	}
-
-	return m.polls
-}
-
-func (m *Assignment) Candidates() *AssignmentCandidate {
-	if _, ok := m.loadedRelations["candidate_ids"]; !ok {
-		log.Panic().Msg("Tried to access Candidates relation of Assignment which was not loaded.")
-	}
-
-	return m.candidates
-}
-
-func (m *Assignment) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Assignment which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m Assignment) Get(field string) interface{} {
+func (m *Assignment) Get(field string) interface{} {
 	switch field {
 	case "agenda_item_id":
 		return m.AgendaItemID
@@ -141,7 +141,7 @@ func (m Assignment) Get(field string) interface{} {
 	return nil
 }
 
-func (m Assignment) Update(data map[string]string) error {
+func (m *Assignment) Update(data map[string]string) error {
 	if val, ok := data["agenda_item_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AgendaItemID)
 		if err != nil {

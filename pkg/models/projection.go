@@ -19,22 +19,14 @@ type Projection struct {
 	Type               *string         `json:"type"`
 	Weight             *int            `json:"weight"`
 	loadedRelations    map[string]struct{}
-	historyProjector   *Projector
 	meeting            *Meeting
-	previewProjector   *Projector
 	currentProjector   *Projector
+	historyProjector   *Projector
+	previewProjector   *Projector
 }
 
-func (m Projection) CollectionName() string {
+func (m *Projection) CollectionName() string {
 	return "projection"
-}
-
-func (m *Projection) HistoryProjector() *Projector {
-	if _, ok := m.loadedRelations["history_projector_id"]; !ok {
-		log.Panic().Msg("Tried to access HistoryProjector relation of Projection which was not loaded.")
-	}
-
-	return m.historyProjector
 }
 
 func (m *Projection) Meeting() Meeting {
@@ -45,14 +37,6 @@ func (m *Projection) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *Projection) PreviewProjector() *Projector {
-	if _, ok := m.loadedRelations["preview_projector_id"]; !ok {
-		log.Panic().Msg("Tried to access PreviewProjector relation of Projection which was not loaded.")
-	}
-
-	return m.previewProjector
-}
-
 func (m *Projection) CurrentProjector() *Projector {
 	if _, ok := m.loadedRelations["current_projector_id"]; !ok {
 		log.Panic().Msg("Tried to access CurrentProjector relation of Projection which was not loaded.")
@@ -61,7 +45,23 @@ func (m *Projection) CurrentProjector() *Projector {
 	return m.currentProjector
 }
 
-func (m Projection) Get(field string) interface{} {
+func (m *Projection) HistoryProjector() *Projector {
+	if _, ok := m.loadedRelations["history_projector_id"]; !ok {
+		log.Panic().Msg("Tried to access HistoryProjector relation of Projection which was not loaded.")
+	}
+
+	return m.historyProjector
+}
+
+func (m *Projection) PreviewProjector() *Projector {
+	if _, ok := m.loadedRelations["preview_projector_id"]; !ok {
+		log.Panic().Msg("Tried to access PreviewProjector relation of Projection which was not loaded.")
+	}
+
+	return m.previewProjector
+}
+
+func (m *Projection) Get(field string) interface{} {
 	switch field {
 	case "content":
 		return m.Content
@@ -90,7 +90,7 @@ func (m Projection) Get(field string) interface{} {
 	return nil
 }
 
-func (m Projection) Update(data map[string]string) error {
+func (m *Projection) Update(data map[string]string) error {
 	if val, ok := data["content"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Content)
 		if err != nil {

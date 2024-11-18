@@ -18,30 +18,14 @@ type MotionCategory struct {
 	SequentialNumber int     `json:"sequential_number"`
 	Weight           *int    `json:"weight"`
 	loadedRelations  map[string]struct{}
-	childs           *MotionCategory
-	meeting          *Meeting
 	motions          *Motion
 	parent           *MotionCategory
+	childs           *MotionCategory
+	meeting          *Meeting
 }
 
-func (m MotionCategory) CollectionName() string {
+func (m *MotionCategory) CollectionName() string {
 	return "motion_category"
-}
-
-func (m *MotionCategory) Childs() *MotionCategory {
-	if _, ok := m.loadedRelations["child_ids"]; !ok {
-		log.Panic().Msg("Tried to access Childs relation of MotionCategory which was not loaded.")
-	}
-
-	return m.childs
-}
-
-func (m *MotionCategory) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionCategory which was not loaded.")
-	}
-
-	return *m.meeting
 }
 
 func (m *MotionCategory) Motions() *Motion {
@@ -60,7 +44,23 @@ func (m *MotionCategory) Parent() *MotionCategory {
 	return m.parent
 }
 
-func (m MotionCategory) Get(field string) interface{} {
+func (m *MotionCategory) Childs() *MotionCategory {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of MotionCategory which was not loaded.")
+	}
+
+	return m.childs
+}
+
+func (m *MotionCategory) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionCategory which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionCategory) Get(field string) interface{} {
 	switch field {
 	case "child_ids":
 		return m.ChildIDs
@@ -87,7 +87,7 @@ func (m MotionCategory) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionCategory) Update(data map[string]string) error {
+func (m *MotionCategory) Update(data map[string]string) error {
 	if val, ok := data["child_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ChildIDs)
 		if err != nil {

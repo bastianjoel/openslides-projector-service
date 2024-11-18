@@ -17,7 +17,7 @@ type PointOfOrderCategory struct {
 	speakers        *Speaker
 }
 
-func (m PointOfOrderCategory) CollectionName() string {
+func (m *PointOfOrderCategory) CollectionName() string {
 	return "point_of_order_category"
 }
 
@@ -37,7 +37,7 @@ func (m *PointOfOrderCategory) Speakers() *Speaker {
 	return m.speakers
 }
 
-func (m PointOfOrderCategory) Get(field string) interface{} {
+func (m *PointOfOrderCategory) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -54,7 +54,7 @@ func (m PointOfOrderCategory) Get(field string) interface{} {
 	return nil
 }
 
-func (m PointOfOrderCategory) Update(data map[string]string) error {
+func (m *PointOfOrderCategory) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

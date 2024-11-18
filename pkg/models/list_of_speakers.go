@@ -16,22 +16,14 @@ type ListOfSpeakers struct {
 	SpeakerIDs                      []int  `json:"speaker_ids"`
 	StructureLevelListOfSpeakersIDs []int  `json:"structure_level_list_of_speakers_ids"`
 	loadedRelations                 map[string]struct{}
-	projections                     *Projection
 	speakers                        *Speaker
 	structureLevelListOfSpeakerss   *StructureLevelListOfSpeakers
 	meeting                         *Meeting
+	projections                     *Projection
 }
 
-func (m ListOfSpeakers) CollectionName() string {
+func (m *ListOfSpeakers) CollectionName() string {
 	return "list_of_speakers"
-}
-
-func (m *ListOfSpeakers) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of ListOfSpeakers which was not loaded.")
-	}
-
-	return m.projections
 }
 
 func (m *ListOfSpeakers) Speakers() *Speaker {
@@ -58,7 +50,15 @@ func (m *ListOfSpeakers) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m ListOfSpeakers) Get(field string) interface{} {
+func (m *ListOfSpeakers) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of ListOfSpeakers which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *ListOfSpeakers) Get(field string) interface{} {
 	switch field {
 	case "closed":
 		return m.Closed
@@ -81,7 +81,7 @@ func (m ListOfSpeakers) Get(field string) interface{} {
 	return nil
 }
 
-func (m ListOfSpeakers) Update(data map[string]string) error {
+func (m *ListOfSpeakers) Update(data map[string]string) error {
 	if val, ok := data["closed"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Closed)
 		if err != nil {

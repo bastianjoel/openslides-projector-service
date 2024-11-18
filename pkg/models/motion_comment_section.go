@@ -17,30 +17,14 @@ type MotionCommentSection struct {
 	Weight            *int   `json:"weight"`
 	WriteGroupIDs     []int  `json:"write_group_ids"`
 	loadedRelations   map[string]struct{}
-	readGroups        *Group
-	writeGroups       *Group
 	comments          *MotionComment
+	writeGroups       *Group
+	readGroups        *Group
 	meeting           *Meeting
 }
 
-func (m MotionCommentSection) CollectionName() string {
+func (m *MotionCommentSection) CollectionName() string {
 	return "motion_comment_section"
-}
-
-func (m *MotionCommentSection) ReadGroups() *Group {
-	if _, ok := m.loadedRelations["read_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access ReadGroups relation of MotionCommentSection which was not loaded.")
-	}
-
-	return m.readGroups
-}
-
-func (m *MotionCommentSection) WriteGroups() *Group {
-	if _, ok := m.loadedRelations["write_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access WriteGroups relation of MotionCommentSection which was not loaded.")
-	}
-
-	return m.writeGroups
 }
 
 func (m *MotionCommentSection) Comments() *MotionComment {
@@ -51,6 +35,22 @@ func (m *MotionCommentSection) Comments() *MotionComment {
 	return m.comments
 }
 
+func (m *MotionCommentSection) WriteGroups() *Group {
+	if _, ok := m.loadedRelations["write_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access WriteGroups relation of MotionCommentSection which was not loaded.")
+	}
+
+	return m.writeGroups
+}
+
+func (m *MotionCommentSection) ReadGroups() *Group {
+	if _, ok := m.loadedRelations["read_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access ReadGroups relation of MotionCommentSection which was not loaded.")
+	}
+
+	return m.readGroups
+}
+
 func (m *MotionCommentSection) Meeting() Meeting {
 	if _, ok := m.loadedRelations["meeting_id"]; !ok {
 		log.Panic().Msg("Tried to access Meeting relation of MotionCommentSection which was not loaded.")
@@ -59,7 +59,7 @@ func (m *MotionCommentSection) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m MotionCommentSection) Get(field string) interface{} {
+func (m *MotionCommentSection) Get(field string) interface{} {
 	switch field {
 	case "comment_ids":
 		return m.CommentIDs
@@ -84,7 +84,7 @@ func (m MotionCommentSection) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionCommentSection) Update(data map[string]string) error {
+func (m *MotionCommentSection) Update(data map[string]string) error {
 	if val, ok := data["comment_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.CommentIDs)
 		if err != nil {

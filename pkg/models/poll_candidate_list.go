@@ -12,13 +12,21 @@ type PollCandidateList struct {
 	OptionID         int   `json:"option_id"`
 	PollCandidateIDs []int `json:"poll_candidate_ids"`
 	loadedRelations  map[string]struct{}
+	meeting          *Meeting
 	option           *Option
 	pollCandidates   *PollCandidate
-	meeting          *Meeting
 }
 
-func (m PollCandidateList) CollectionName() string {
+func (m *PollCandidateList) CollectionName() string {
 	return "poll_candidate_list"
+}
+
+func (m *PollCandidateList) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of PollCandidateList which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m *PollCandidateList) Option() Option {
@@ -37,15 +45,7 @@ func (m *PollCandidateList) PollCandidates() *PollCandidate {
 	return m.pollCandidates
 }
 
-func (m *PollCandidateList) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of PollCandidateList which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m PollCandidateList) Get(field string) interface{} {
+func (m *PollCandidateList) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -60,7 +60,7 @@ func (m PollCandidateList) Get(field string) interface{} {
 	return nil
 }
 
-func (m PollCandidateList) Update(data map[string]string) error {
+func (m *PollCandidateList) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

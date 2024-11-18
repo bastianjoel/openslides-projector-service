@@ -62,7 +62,7 @@ type Theme struct {
 	themeForOrganization   *Organization
 }
 
-func (m Theme) CollectionName() string {
+func (m *Theme) CollectionName() string {
 	return "theme"
 }
 
@@ -82,7 +82,7 @@ func (m *Theme) ThemeForOrganization() *Organization {
 	return m.themeForOrganization
 }
 
-func (m Theme) Get(field string) interface{} {
+func (m *Theme) Get(field string) interface{} {
 	switch field {
 	case "abstain":
 		return m.Abstain
@@ -189,7 +189,7 @@ func (m Theme) Get(field string) interface{} {
 	return nil
 }
 
-func (m Theme) Update(data map[string]string) error {
+func (m *Theme) Update(data map[string]string) error {
 	if val, ok := data["abstain"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Abstain)
 		if err != nil {

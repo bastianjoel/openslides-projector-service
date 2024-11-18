@@ -25,23 +25,15 @@ type AgendaItem struct {
 	Type            *string `json:"type"`
 	Weight          *int    `json:"weight"`
 	loadedRelations map[string]struct{}
-	meeting         *Meeting
 	childs          *AgendaItem
+	meeting         *Meeting
 	parent          *AgendaItem
 	projections     *Projection
 	tags            *Tag
 }
 
-func (m AgendaItem) CollectionName() string {
+func (m *AgendaItem) CollectionName() string {
 	return "agenda_item"
-}
-
-func (m *AgendaItem) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of AgendaItem which was not loaded.")
-	}
-
-	return *m.meeting
 }
 
 func (m *AgendaItem) Childs() *AgendaItem {
@@ -50,6 +42,14 @@ func (m *AgendaItem) Childs() *AgendaItem {
 	}
 
 	return m.childs
+}
+
+func (m *AgendaItem) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of AgendaItem which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m *AgendaItem) Parent() *AgendaItem {
@@ -76,7 +76,7 @@ func (m *AgendaItem) Tags() *Tag {
 	return m.tags
 }
 
-func (m AgendaItem) Get(field string) interface{} {
+func (m *AgendaItem) Get(field string) interface{} {
 	switch field {
 	case "child_ids":
 		return m.ChildIDs
@@ -117,7 +117,7 @@ func (m AgendaItem) Get(field string) interface{} {
 	return nil
 }
 
-func (m AgendaItem) Update(data map[string]string) error {
+func (m *AgendaItem) Update(data map[string]string) error {
 	if val, ok := data["child_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ChildIDs)
 		if err != nil {

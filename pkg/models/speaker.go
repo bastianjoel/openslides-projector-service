@@ -23,15 +23,39 @@ type Speaker struct {
 	UnpauseTime                    *int    `json:"unpause_time"`
 	Weight                         *int    `json:"weight"`
 	loadedRelations                map[string]struct{}
+	meeting                        *Meeting
+	listOfSpeakers                 *ListOfSpeakers
+	meetingUser                    *MeetingUser
 	pointOfOrderCategory           *PointOfOrderCategory
 	structureLevelListOfSpeakers   *StructureLevelListOfSpeakers
-	meeting                        *Meeting
-	meetingUser                    *MeetingUser
-	listOfSpeakers                 *ListOfSpeakers
 }
 
-func (m Speaker) CollectionName() string {
+func (m *Speaker) CollectionName() string {
 	return "speaker"
+}
+
+func (m *Speaker) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Speaker which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Speaker) ListOfSpeakers() ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of Speaker which was not loaded.")
+	}
+
+	return *m.listOfSpeakers
+}
+
+func (m *Speaker) MeetingUser() *MeetingUser {
+	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
+		log.Panic().Msg("Tried to access MeetingUser relation of Speaker which was not loaded.")
+	}
+
+	return m.meetingUser
 }
 
 func (m *Speaker) PointOfOrderCategory() *PointOfOrderCategory {
@@ -50,31 +74,7 @@ func (m *Speaker) StructureLevelListOfSpeakers() *StructureLevelListOfSpeakers {
 	return m.structureLevelListOfSpeakers
 }
 
-func (m *Speaker) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Speaker which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *Speaker) MeetingUser() *MeetingUser {
-	if _, ok := m.loadedRelations["meeting_user_id"]; !ok {
-		log.Panic().Msg("Tried to access MeetingUser relation of Speaker which was not loaded.")
-	}
-
-	return m.meetingUser
-}
-
-func (m *Speaker) ListOfSpeakers() ListOfSpeakers {
-	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakers relation of Speaker which was not loaded.")
-	}
-
-	return *m.listOfSpeakers
-}
-
-func (m Speaker) Get(field string) interface{} {
+func (m *Speaker) Get(field string) interface{} {
 	switch field {
 	case "begin_time":
 		return m.BeginTime
@@ -111,7 +111,7 @@ func (m Speaker) Get(field string) interface{} {
 	return nil
 }
 
-func (m Speaker) Update(data map[string]string) error {
+func (m *Speaker) Update(data map[string]string) error {
 	if val, ok := data["begin_time"]; ok {
 		err := json.Unmarshal([]byte(val), &m.BeginTime)
 		if err != nil {

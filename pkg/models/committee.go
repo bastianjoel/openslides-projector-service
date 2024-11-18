@@ -22,17 +22,17 @@ type Committee struct {
 	UserIDs                            []int   `json:"user_ids"`
 	loadedRelations                    map[string]struct{}
 	defaultMeeting                     *Meeting
-	forwardToCommittees                *Committee
 	managers                           *User
 	meetings                           *Meeting
-	users                              *User
-	forwardingUser                     *User
 	organization                       *Organization
+	users                              *User
+	forwardToCommittees                *Committee
+	forwardingUser                     *User
 	organizationTags                   *OrganizationTag
 	receiveForwardingsFromCommittees   *Committee
 }
 
-func (m Committee) CollectionName() string {
+func (m *Committee) CollectionName() string {
 	return "committee"
 }
 
@@ -42,14 +42,6 @@ func (m *Committee) DefaultMeeting() *Meeting {
 	}
 
 	return m.defaultMeeting
-}
-
-func (m *Committee) ForwardToCommittees() *Committee {
-	if _, ok := m.loadedRelations["forward_to_committee_ids"]; !ok {
-		log.Panic().Msg("Tried to access ForwardToCommittees relation of Committee which was not loaded.")
-	}
-
-	return m.forwardToCommittees
 }
 
 func (m *Committee) Managers() *User {
@@ -68,6 +60,14 @@ func (m *Committee) Meetings() *Meeting {
 	return m.meetings
 }
 
+func (m *Committee) Organization() Organization {
+	if _, ok := m.loadedRelations["organization_id"]; !ok {
+		log.Panic().Msg("Tried to access Organization relation of Committee which was not loaded.")
+	}
+
+	return *m.organization
+}
+
 func (m *Committee) Users() *User {
 	if _, ok := m.loadedRelations["user_ids"]; !ok {
 		log.Panic().Msg("Tried to access Users relation of Committee which was not loaded.")
@@ -76,20 +76,20 @@ func (m *Committee) Users() *User {
 	return m.users
 }
 
+func (m *Committee) ForwardToCommittees() *Committee {
+	if _, ok := m.loadedRelations["forward_to_committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access ForwardToCommittees relation of Committee which was not loaded.")
+	}
+
+	return m.forwardToCommittees
+}
+
 func (m *Committee) ForwardingUser() *User {
 	if _, ok := m.loadedRelations["forwarding_user_id"]; !ok {
 		log.Panic().Msg("Tried to access ForwardingUser relation of Committee which was not loaded.")
 	}
 
 	return m.forwardingUser
-}
-
-func (m *Committee) Organization() Organization {
-	if _, ok := m.loadedRelations["organization_id"]; !ok {
-		log.Panic().Msg("Tried to access Organization relation of Committee which was not loaded.")
-	}
-
-	return *m.organization
 }
 
 func (m *Committee) OrganizationTags() *OrganizationTag {
@@ -108,7 +108,7 @@ func (m *Committee) ReceiveForwardingsFromCommittees() *Committee {
 	return m.receiveForwardingsFromCommittees
 }
 
-func (m Committee) Get(field string) interface{} {
+func (m *Committee) Get(field string) interface{} {
 	switch field {
 	case "default_meeting_id":
 		return m.DefaultMeetingID
@@ -141,7 +141,7 @@ func (m Committee) Get(field string) interface{} {
 	return nil
 }
 
-func (m Committee) Update(data map[string]string) error {
+func (m *Committee) Update(data map[string]string) error {
 	if val, ok := data["default_meeting_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.DefaultMeetingID)
 		if err != nil {

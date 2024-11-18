@@ -18,7 +18,7 @@ type MotionSubmitter struct {
 	motion          *Motion
 }
 
-func (m MotionSubmitter) CollectionName() string {
+func (m *MotionSubmitter) CollectionName() string {
 	return "motion_submitter"
 }
 
@@ -46,7 +46,7 @@ func (m *MotionSubmitter) Motion() Motion {
 	return *m.motion
 }
 
-func (m MotionSubmitter) Get(field string) interface{} {
+func (m *MotionSubmitter) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -63,7 +63,7 @@ func (m MotionSubmitter) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionSubmitter) Update(data map[string]string) error {
+func (m *MotionSubmitter) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

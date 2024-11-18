@@ -13,21 +13,13 @@ type MotionComment struct {
 	MotionID        int     `json:"motion_id"`
 	SectionID       int     `json:"section_id"`
 	loadedRelations map[string]struct{}
-	section         *MotionCommentSection
 	meeting         *Meeting
 	motion          *Motion
+	section         *MotionCommentSection
 }
 
-func (m MotionComment) CollectionName() string {
+func (m *MotionComment) CollectionName() string {
 	return "motion_comment"
-}
-
-func (m *MotionComment) Section() MotionCommentSection {
-	if _, ok := m.loadedRelations["section_id"]; !ok {
-		log.Panic().Msg("Tried to access Section relation of MotionComment which was not loaded.")
-	}
-
-	return *m.section
 }
 
 func (m *MotionComment) Meeting() Meeting {
@@ -46,7 +38,15 @@ func (m *MotionComment) Motion() Motion {
 	return *m.motion
 }
 
-func (m MotionComment) Get(field string) interface{} {
+func (m *MotionComment) Section() MotionCommentSection {
+	if _, ok := m.loadedRelations["section_id"]; !ok {
+		log.Panic().Msg("Tried to access Section relation of MotionComment which was not loaded.")
+	}
+
+	return *m.section
+}
+
+func (m *MotionComment) Get(field string) interface{} {
 	switch field {
 	case "comment":
 		return m.Comment
@@ -63,7 +63,7 @@ func (m MotionComment) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionComment) Update(data map[string]string) error {
+func (m *MotionComment) Update(data map[string]string) error {
 	if val, ok := data["comment"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Comment)
 		if err != nil {

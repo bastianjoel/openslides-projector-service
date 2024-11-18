@@ -13,13 +13,21 @@ type MotionEditor struct {
 	MotionID        int  `json:"motion_id"`
 	Weight          *int `json:"weight"`
 	loadedRelations map[string]struct{}
+	meeting         *Meeting
 	meetingUser     *MeetingUser
 	motion          *Motion
-	meeting         *Meeting
 }
 
-func (m MotionEditor) CollectionName() string {
+func (m *MotionEditor) CollectionName() string {
 	return "motion_editor"
+}
+
+func (m *MotionEditor) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionEditor which was not loaded.")
+	}
+
+	return *m.meeting
 }
 
 func (m *MotionEditor) MeetingUser() MeetingUser {
@@ -38,15 +46,7 @@ func (m *MotionEditor) Motion() Motion {
 	return *m.motion
 }
 
-func (m *MotionEditor) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionEditor which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m MotionEditor) Get(field string) interface{} {
+func (m *MotionEditor) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -63,7 +63,7 @@ func (m MotionEditor) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionEditor) Update(data map[string]string) error {
+func (m *MotionEditor) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

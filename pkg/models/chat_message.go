@@ -19,7 +19,7 @@ type ChatMessage struct {
 	chatGroup       *ChatGroup
 }
 
-func (m ChatMessage) CollectionName() string {
+func (m *ChatMessage) CollectionName() string {
 	return "chat_message"
 }
 
@@ -47,7 +47,7 @@ func (m *ChatMessage) ChatGroup() ChatGroup {
 	return *m.chatGroup
 }
 
-func (m ChatMessage) Get(field string) interface{} {
+func (m *ChatMessage) Get(field string) interface{} {
 	switch field {
 	case "chat_group_id":
 		return m.ChatGroupID
@@ -66,7 +66,7 @@ func (m ChatMessage) Get(field string) interface{} {
 	return nil
 }
 
-func (m ChatMessage) Update(data map[string]string) error {
+func (m *ChatMessage) Update(data map[string]string) error {
 	if val, ok := data["chat_group_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ChatGroupID)
 		if err != nil {

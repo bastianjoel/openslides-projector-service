@@ -22,7 +22,7 @@ type Vote struct {
 	user            *User
 }
 
-func (m Vote) CollectionName() string {
+func (m *Vote) CollectionName() string {
 	return "vote"
 }
 
@@ -58,7 +58,7 @@ func (m *Vote) User() *User {
 	return m.user
 }
 
-func (m Vote) Get(field string) interface{} {
+func (m *Vote) Get(field string) interface{} {
 	switch field {
 	case "delegated_user_id":
 		return m.DelegatedUserID
@@ -81,7 +81,7 @@ func (m Vote) Get(field string) interface{} {
 	return nil
 }
 
-func (m Vote) Update(data map[string]string) error {
+func (m *Vote) Update(data map[string]string) error {
 	if val, ok := data["delegated_user_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.DelegatedUserID)
 		if err != nil {

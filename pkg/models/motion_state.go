@@ -33,19 +33,59 @@ type MotionState struct {
 	Weight                           int      `json:"weight"`
 	WorkflowID                       int      `json:"workflow_id"`
 	loadedRelations                  map[string]struct{}
+	submitterWithdrawBacks           *MotionState
+	workflow                         *MotionWorkflow
+	motions                          *Motion
+	submitterWithdrawState           *MotionState
+	firstStateOfWorkflow             *MotionWorkflow
 	meeting                          *Meeting
 	motionRecommendations            *Motion
-	submitterWithdrawState           *MotionState
-	workflow                         *MotionWorkflow
-	firstStateOfWorkflow             *MotionWorkflow
-	nextStates                       *MotionState
 	previousStates                   *MotionState
-	submitterWithdrawBacks           *MotionState
-	motions                          *Motion
+	nextStates                       *MotionState
 }
 
-func (m MotionState) CollectionName() string {
+func (m *MotionState) CollectionName() string {
 	return "motion_state"
+}
+
+func (m *MotionState) SubmitterWithdrawBacks() *MotionState {
+	if _, ok := m.loadedRelations["submitter_withdraw_back_ids"]; !ok {
+		log.Panic().Msg("Tried to access SubmitterWithdrawBacks relation of MotionState which was not loaded.")
+	}
+
+	return m.submitterWithdrawBacks
+}
+
+func (m *MotionState) Workflow() MotionWorkflow {
+	if _, ok := m.loadedRelations["workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access Workflow relation of MotionState which was not loaded.")
+	}
+
+	return *m.workflow
+}
+
+func (m *MotionState) Motions() *Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of MotionState which was not loaded.")
+	}
+
+	return m.motions
+}
+
+func (m *MotionState) SubmitterWithdrawState() *MotionState {
+	if _, ok := m.loadedRelations["submitter_withdraw_state_id"]; !ok {
+		log.Panic().Msg("Tried to access SubmitterWithdrawState relation of MotionState which was not loaded.")
+	}
+
+	return m.submitterWithdrawState
+}
+
+func (m *MotionState) FirstStateOfWorkflow() *MotionWorkflow {
+	if _, ok := m.loadedRelations["first_state_of_workflow_id"]; !ok {
+		log.Panic().Msg("Tried to access FirstStateOfWorkflow relation of MotionState which was not loaded.")
+	}
+
+	return m.firstStateOfWorkflow
 }
 
 func (m *MotionState) Meeting() Meeting {
@@ -64,28 +104,12 @@ func (m *MotionState) MotionRecommendations() *Motion {
 	return m.motionRecommendations
 }
 
-func (m *MotionState) SubmitterWithdrawState() *MotionState {
-	if _, ok := m.loadedRelations["submitter_withdraw_state_id"]; !ok {
-		log.Panic().Msg("Tried to access SubmitterWithdrawState relation of MotionState which was not loaded.")
+func (m *MotionState) PreviousStates() *MotionState {
+	if _, ok := m.loadedRelations["previous_state_ids"]; !ok {
+		log.Panic().Msg("Tried to access PreviousStates relation of MotionState which was not loaded.")
 	}
 
-	return m.submitterWithdrawState
-}
-
-func (m *MotionState) Workflow() MotionWorkflow {
-	if _, ok := m.loadedRelations["workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access Workflow relation of MotionState which was not loaded.")
-	}
-
-	return *m.workflow
-}
-
-func (m *MotionState) FirstStateOfWorkflow() *MotionWorkflow {
-	if _, ok := m.loadedRelations["first_state_of_workflow_id"]; !ok {
-		log.Panic().Msg("Tried to access FirstStateOfWorkflow relation of MotionState which was not loaded.")
-	}
-
-	return m.firstStateOfWorkflow
+	return m.previousStates
 }
 
 func (m *MotionState) NextStates() *MotionState {
@@ -96,31 +120,7 @@ func (m *MotionState) NextStates() *MotionState {
 	return m.nextStates
 }
 
-func (m *MotionState) PreviousStates() *MotionState {
-	if _, ok := m.loadedRelations["previous_state_ids"]; !ok {
-		log.Panic().Msg("Tried to access PreviousStates relation of MotionState which was not loaded.")
-	}
-
-	return m.previousStates
-}
-
-func (m *MotionState) SubmitterWithdrawBacks() *MotionState {
-	if _, ok := m.loadedRelations["submitter_withdraw_back_ids"]; !ok {
-		log.Panic().Msg("Tried to access SubmitterWithdrawBacks relation of MotionState which was not loaded.")
-	}
-
-	return m.submitterWithdrawBacks
-}
-
-func (m *MotionState) Motions() *Motion {
-	if _, ok := m.loadedRelations["motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access Motions relation of MotionState which was not loaded.")
-	}
-
-	return m.motions
-}
-
-func (m MotionState) Get(field string) interface{} {
+func (m *MotionState) Get(field string) interface{} {
 	switch field {
 	case "allow_create_poll":
 		return m.AllowCreatePoll
@@ -177,7 +177,7 @@ func (m MotionState) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionState) Update(data map[string]string) error {
+func (m *MotionState) Update(data map[string]string) error {
 	if val, ok := data["allow_create_poll"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AllowCreatePoll)
 		if err != nil {

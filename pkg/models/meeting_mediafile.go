@@ -33,64 +33,56 @@ type MeetingMediafile struct {
 	UsedAsLogoProjectorMainInMeetingID     *int     `json:"used_as_logo_projector_main_in_meeting_id"`
 	UsedAsLogoWebHeaderInMeetingID         *int     `json:"used_as_logo_web_header_in_meeting_id"`
 	loadedRelations                        map[string]struct{}
-	mediafile                              *Mediafile
-	projections                            *Projection
-	usedAsLogoPdfFooterLInMeeting          *Meeting
-	usedAsLogoPdfHeaderRInMeeting          *Meeting
+	listOfSpeakers                         *ListOfSpeakers
+	usedAsFontMonospaceInMeeting           *Meeting
+	usedAsLogoPdfBallotPaperInMeeting      *Meeting
 	usedAsLogoProjectorMainInMeeting       *Meeting
-	usedAsLogoWebHeaderInMeeting           *Meeting
-	usedAsFontProjectorH1InMeeting         *Meeting
-	meeting                                *Meeting
-	inheritedAccessGroups                  *Group
+	accessGroups                           *Group
 	usedAsFontBoldInMeeting                *Meeting
-	usedAsFontBoldItalicInMeeting          *Meeting
 	usedAsFontChyronSpeakerNameInMeeting   *Meeting
 	usedAsFontItalicInMeeting              *Meeting
-	accessGroups                           *Group
+	usedAsFontProjectorH1InMeeting         *Meeting
 	usedAsFontRegularInMeeting             *Meeting
-	usedAsFontMonospaceInMeeting           *Meeting
+	inheritedAccessGroups                  *Group
+	mediafile                              *Mediafile
+	projections                            *Projection
+	usedAsFontBoldItalicInMeeting          *Meeting
 	usedAsFontProjectorH2InMeeting         *Meeting
-	usedAsLogoPdfBallotPaperInMeeting      *Meeting
 	usedAsLogoPdfFooterRInMeeting          *Meeting
-	usedAsLogoPdfHeaderLInMeeting          *Meeting
+	usedAsLogoPdfHeaderRInMeeting          *Meeting
 	usedAsLogoProjectorHeaderInMeeting     *Meeting
-	listOfSpeakers                         *ListOfSpeakers
+	usedAsLogoWebHeaderInMeeting           *Meeting
+	meeting                                *Meeting
+	usedAsLogoPdfFooterLInMeeting          *Meeting
+	usedAsLogoPdfHeaderLInMeeting          *Meeting
 }
 
-func (m MeetingMediafile) CollectionName() string {
+func (m *MeetingMediafile) CollectionName() string {
 	return "meeting_mediafile"
 }
 
-func (m *MeetingMediafile) Mediafile() Mediafile {
-	if _, ok := m.loadedRelations["mediafile_id"]; !ok {
-		log.Panic().Msg("Tried to access Mediafile relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) ListOfSpeakers() *ListOfSpeakers {
+	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
+		log.Panic().Msg("Tried to access ListOfSpeakers relation of MeetingMediafile which was not loaded.")
 	}
 
-	return *m.mediafile
+	return m.listOfSpeakers
 }
 
-func (m *MeetingMediafile) Projections() *Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) UsedAsFontMonospaceInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_font_monospace_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsFontMonospaceInMeeting relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.projections
+	return m.usedAsFontMonospaceInMeeting
 }
 
-func (m *MeetingMediafile) UsedAsLogoPdfFooterLInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_logo_pdf_footer_l_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsLogoPdfFooterLInMeeting relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) UsedAsLogoPdfBallotPaperInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_logo_pdf_ballot_paper_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsLogoPdfBallotPaperInMeeting relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.usedAsLogoPdfFooterLInMeeting
-}
-
-func (m *MeetingMediafile) UsedAsLogoPdfHeaderRInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_logo_pdf_header_r_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsLogoPdfHeaderRInMeeting relation of MeetingMediafile which was not loaded.")
-	}
-
-	return m.usedAsLogoPdfHeaderRInMeeting
+	return m.usedAsLogoPdfBallotPaperInMeeting
 }
 
 func (m *MeetingMediafile) UsedAsLogoProjectorMainInMeeting() *Meeting {
@@ -101,36 +93,12 @@ func (m *MeetingMediafile) UsedAsLogoProjectorMainInMeeting() *Meeting {
 	return m.usedAsLogoProjectorMainInMeeting
 }
 
-func (m *MeetingMediafile) UsedAsLogoWebHeaderInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_logo_web_header_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsLogoWebHeaderInMeeting relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) AccessGroups() *Group {
+	if _, ok := m.loadedRelations["access_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access AccessGroups relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.usedAsLogoWebHeaderInMeeting
-}
-
-func (m *MeetingMediafile) UsedAsFontProjectorH1InMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_font_projector_h1_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsFontProjectorH1InMeeting relation of MeetingMediafile which was not loaded.")
-	}
-
-	return m.usedAsFontProjectorH1InMeeting
-}
-
-func (m *MeetingMediafile) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MeetingMediafile which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *MeetingMediafile) InheritedAccessGroups() *Group {
-	if _, ok := m.loadedRelations["inherited_access_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access InheritedAccessGroups relation of MeetingMediafile which was not loaded.")
-	}
-
-	return m.inheritedAccessGroups
+	return m.accessGroups
 }
 
 func (m *MeetingMediafile) UsedAsFontBoldInMeeting() *Meeting {
@@ -139,14 +107,6 @@ func (m *MeetingMediafile) UsedAsFontBoldInMeeting() *Meeting {
 	}
 
 	return m.usedAsFontBoldInMeeting
-}
-
-func (m *MeetingMediafile) UsedAsFontBoldItalicInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_font_bold_italic_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsFontBoldItalicInMeeting relation of MeetingMediafile which was not loaded.")
-	}
-
-	return m.usedAsFontBoldItalicInMeeting
 }
 
 func (m *MeetingMediafile) UsedAsFontChyronSpeakerNameInMeeting() *Meeting {
@@ -165,12 +125,12 @@ func (m *MeetingMediafile) UsedAsFontItalicInMeeting() *Meeting {
 	return m.usedAsFontItalicInMeeting
 }
 
-func (m *MeetingMediafile) AccessGroups() *Group {
-	if _, ok := m.loadedRelations["access_group_ids"]; !ok {
-		log.Panic().Msg("Tried to access AccessGroups relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) UsedAsFontProjectorH1InMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_font_projector_h1_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsFontProjectorH1InMeeting relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.accessGroups
+	return m.usedAsFontProjectorH1InMeeting
 }
 
 func (m *MeetingMediafile) UsedAsFontRegularInMeeting() *Meeting {
@@ -181,12 +141,36 @@ func (m *MeetingMediafile) UsedAsFontRegularInMeeting() *Meeting {
 	return m.usedAsFontRegularInMeeting
 }
 
-func (m *MeetingMediafile) UsedAsFontMonospaceInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_font_monospace_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsFontMonospaceInMeeting relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) InheritedAccessGroups() *Group {
+	if _, ok := m.loadedRelations["inherited_access_group_ids"]; !ok {
+		log.Panic().Msg("Tried to access InheritedAccessGroups relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.usedAsFontMonospaceInMeeting
+	return m.inheritedAccessGroups
+}
+
+func (m *MeetingMediafile) Mediafile() Mediafile {
+	if _, ok := m.loadedRelations["mediafile_id"]; !ok {
+		log.Panic().Msg("Tried to access Mediafile relation of MeetingMediafile which was not loaded.")
+	}
+
+	return *m.mediafile
+}
+
+func (m *MeetingMediafile) Projections() *Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of MeetingMediafile which was not loaded.")
+	}
+
+	return m.projections
+}
+
+func (m *MeetingMediafile) UsedAsFontBoldItalicInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_font_bold_italic_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsFontBoldItalicInMeeting relation of MeetingMediafile which was not loaded.")
+	}
+
+	return m.usedAsFontBoldItalicInMeeting
 }
 
 func (m *MeetingMediafile) UsedAsFontProjectorH2InMeeting() *Meeting {
@@ -197,14 +181,6 @@ func (m *MeetingMediafile) UsedAsFontProjectorH2InMeeting() *Meeting {
 	return m.usedAsFontProjectorH2InMeeting
 }
 
-func (m *MeetingMediafile) UsedAsLogoPdfBallotPaperInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_logo_pdf_ballot_paper_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsLogoPdfBallotPaperInMeeting relation of MeetingMediafile which was not loaded.")
-	}
-
-	return m.usedAsLogoPdfBallotPaperInMeeting
-}
-
 func (m *MeetingMediafile) UsedAsLogoPdfFooterRInMeeting() *Meeting {
 	if _, ok := m.loadedRelations["used_as_logo_pdf_footer_r_in_meeting_id"]; !ok {
 		log.Panic().Msg("Tried to access UsedAsLogoPdfFooterRInMeeting relation of MeetingMediafile which was not loaded.")
@@ -213,12 +189,12 @@ func (m *MeetingMediafile) UsedAsLogoPdfFooterRInMeeting() *Meeting {
 	return m.usedAsLogoPdfFooterRInMeeting
 }
 
-func (m *MeetingMediafile) UsedAsLogoPdfHeaderLInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_logo_pdf_header_l_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsLogoPdfHeaderLInMeeting relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) UsedAsLogoPdfHeaderRInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_logo_pdf_header_r_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsLogoPdfHeaderRInMeeting relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.usedAsLogoPdfHeaderLInMeeting
+	return m.usedAsLogoPdfHeaderRInMeeting
 }
 
 func (m *MeetingMediafile) UsedAsLogoProjectorHeaderInMeeting() *Meeting {
@@ -229,15 +205,39 @@ func (m *MeetingMediafile) UsedAsLogoProjectorHeaderInMeeting() *Meeting {
 	return m.usedAsLogoProjectorHeaderInMeeting
 }
 
-func (m *MeetingMediafile) ListOfSpeakers() *ListOfSpeakers {
-	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
-		log.Panic().Msg("Tried to access ListOfSpeakers relation of MeetingMediafile which was not loaded.")
+func (m *MeetingMediafile) UsedAsLogoWebHeaderInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_logo_web_header_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsLogoWebHeaderInMeeting relation of MeetingMediafile which was not loaded.")
 	}
 
-	return m.listOfSpeakers
+	return m.usedAsLogoWebHeaderInMeeting
 }
 
-func (m MeetingMediafile) Get(field string) interface{} {
+func (m *MeetingMediafile) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MeetingMediafile which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MeetingMediafile) UsedAsLogoPdfFooterLInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_logo_pdf_footer_l_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsLogoPdfFooterLInMeeting relation of MeetingMediafile which was not loaded.")
+	}
+
+	return m.usedAsLogoPdfFooterLInMeeting
+}
+
+func (m *MeetingMediafile) UsedAsLogoPdfHeaderLInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_logo_pdf_header_l_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsLogoPdfHeaderLInMeeting relation of MeetingMediafile which was not loaded.")
+	}
+
+	return m.usedAsLogoPdfHeaderLInMeeting
+}
+
+func (m *MeetingMediafile) Get(field string) interface{} {
 	switch field {
 	case "access_group_ids":
 		return m.AccessGroupIDs
@@ -294,7 +294,7 @@ func (m MeetingMediafile) Get(field string) interface{} {
 	return nil
 }
 
-func (m MeetingMediafile) Update(data map[string]string) error {
+func (m *MeetingMediafile) Update(data map[string]string) error {
 	if val, ok := data["access_group_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AccessGroupIDs)
 		if err != nil {

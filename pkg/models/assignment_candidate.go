@@ -18,7 +18,7 @@ type AssignmentCandidate struct {
 	assignment      *Assignment
 }
 
-func (m AssignmentCandidate) CollectionName() string {
+func (m *AssignmentCandidate) CollectionName() string {
 	return "assignment_candidate"
 }
 
@@ -46,7 +46,7 @@ func (m *AssignmentCandidate) Assignment() Assignment {
 	return *m.assignment
 }
 
-func (m AssignmentCandidate) Get(field string) interface{} {
+func (m *AssignmentCandidate) Get(field string) interface{} {
 	switch field {
 	case "assignment_id":
 		return m.AssignmentID
@@ -63,7 +63,7 @@ func (m AssignmentCandidate) Get(field string) interface{} {
 	return nil
 }
 
-func (m AssignmentCandidate) Update(data map[string]string) error {
+func (m *AssignmentCandidate) Update(data map[string]string) error {
 	if val, ok := data["assignment_id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.AssignmentID)
 		if err != nil {

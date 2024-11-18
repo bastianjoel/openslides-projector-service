@@ -18,7 +18,7 @@ type MotionWorkingGroupSpeaker struct {
 	meeting         *Meeting
 }
 
-func (m MotionWorkingGroupSpeaker) CollectionName() string {
+func (m *MotionWorkingGroupSpeaker) CollectionName() string {
 	return "motion_working_group_speaker"
 }
 
@@ -46,7 +46,7 @@ func (m *MotionWorkingGroupSpeaker) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m MotionWorkingGroupSpeaker) Get(field string) interface{} {
+func (m *MotionWorkingGroupSpeaker) Get(field string) interface{} {
 	switch field {
 	case "id":
 		return m.ID
@@ -63,7 +63,7 @@ func (m MotionWorkingGroupSpeaker) Get(field string) interface{} {
 	return nil
 }
 
-func (m MotionWorkingGroupSpeaker) Update(data map[string]string) error {
+func (m *MotionWorkingGroupSpeaker) Update(data map[string]string) error {
 	if val, ok := data["id"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ID)
 		if err != nil {

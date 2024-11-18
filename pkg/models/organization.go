@@ -45,61 +45,21 @@ type Organization struct {
 	UsersEmailSubject          *string         `json:"users_email_subject"`
 	VoteDecryptPublicMainKey   *string         `json:"vote_decrypt_public_main_key"`
 	loadedRelations            map[string]struct{}
-	genders                    *Gender
-	themes                     *Theme
-	users                      *User
-	theme                      *Theme
-	mediafiles                 *Mediafile
 	archivedMeetings           *Meeting
-	publishedMediafiles        *Mediafile
-	committees                 *Committee
-	activeMeetings             *Meeting
-	templateMeetings           *Meeting
+	theme                      *Theme
 	organizationTags           *OrganizationTag
+	publishedMediafiles        *Mediafile
+	users                      *User
+	templateMeetings           *Meeting
+	themes                     *Theme
+	committees                 *Committee
+	mediafiles                 *Mediafile
+	activeMeetings             *Meeting
+	genders                    *Gender
 }
 
-func (m Organization) CollectionName() string {
+func (m *Organization) CollectionName() string {
 	return "organization"
-}
-
-func (m *Organization) Genders() *Gender {
-	if _, ok := m.loadedRelations["gender_ids"]; !ok {
-		log.Panic().Msg("Tried to access Genders relation of Organization which was not loaded.")
-	}
-
-	return m.genders
-}
-
-func (m *Organization) Themes() *Theme {
-	if _, ok := m.loadedRelations["theme_ids"]; !ok {
-		log.Panic().Msg("Tried to access Themes relation of Organization which was not loaded.")
-	}
-
-	return m.themes
-}
-
-func (m *Organization) Users() *User {
-	if _, ok := m.loadedRelations["user_ids"]; !ok {
-		log.Panic().Msg("Tried to access Users relation of Organization which was not loaded.")
-	}
-
-	return m.users
-}
-
-func (m *Organization) Theme() Theme {
-	if _, ok := m.loadedRelations["theme_id"]; !ok {
-		log.Panic().Msg("Tried to access Theme relation of Organization which was not loaded.")
-	}
-
-	return *m.theme
-}
-
-func (m *Organization) Mediafiles() *Mediafile {
-	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access Mediafiles relation of Organization which was not loaded.")
-	}
-
-	return m.mediafiles
 }
 
 func (m *Organization) ArchivedMeetings() *Meeting {
@@ -110,36 +70,12 @@ func (m *Organization) ArchivedMeetings() *Meeting {
 	return m.archivedMeetings
 }
 
-func (m *Organization) PublishedMediafiles() *Mediafile {
-	if _, ok := m.loadedRelations["published_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access PublishedMediafiles relation of Organization which was not loaded.")
+func (m *Organization) Theme() Theme {
+	if _, ok := m.loadedRelations["theme_id"]; !ok {
+		log.Panic().Msg("Tried to access Theme relation of Organization which was not loaded.")
 	}
 
-	return m.publishedMediafiles
-}
-
-func (m *Organization) Committees() *Committee {
-	if _, ok := m.loadedRelations["committee_ids"]; !ok {
-		log.Panic().Msg("Tried to access Committees relation of Organization which was not loaded.")
-	}
-
-	return m.committees
-}
-
-func (m *Organization) ActiveMeetings() *Meeting {
-	if _, ok := m.loadedRelations["active_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access ActiveMeetings relation of Organization which was not loaded.")
-	}
-
-	return m.activeMeetings
-}
-
-func (m *Organization) TemplateMeetings() *Meeting {
-	if _, ok := m.loadedRelations["template_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access TemplateMeetings relation of Organization which was not loaded.")
-	}
-
-	return m.templateMeetings
+	return *m.theme
 }
 
 func (m *Organization) OrganizationTags() *OrganizationTag {
@@ -150,7 +86,71 @@ func (m *Organization) OrganizationTags() *OrganizationTag {
 	return m.organizationTags
 }
 
-func (m Organization) Get(field string) interface{} {
+func (m *Organization) PublishedMediafiles() *Mediafile {
+	if _, ok := m.loadedRelations["published_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access PublishedMediafiles relation of Organization which was not loaded.")
+	}
+
+	return m.publishedMediafiles
+}
+
+func (m *Organization) Users() *User {
+	if _, ok := m.loadedRelations["user_ids"]; !ok {
+		log.Panic().Msg("Tried to access Users relation of Organization which was not loaded.")
+	}
+
+	return m.users
+}
+
+func (m *Organization) TemplateMeetings() *Meeting {
+	if _, ok := m.loadedRelations["template_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access TemplateMeetings relation of Organization which was not loaded.")
+	}
+
+	return m.templateMeetings
+}
+
+func (m *Organization) Themes() *Theme {
+	if _, ok := m.loadedRelations["theme_ids"]; !ok {
+		log.Panic().Msg("Tried to access Themes relation of Organization which was not loaded.")
+	}
+
+	return m.themes
+}
+
+func (m *Organization) Committees() *Committee {
+	if _, ok := m.loadedRelations["committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access Committees relation of Organization which was not loaded.")
+	}
+
+	return m.committees
+}
+
+func (m *Organization) Mediafiles() *Mediafile {
+	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access Mediafiles relation of Organization which was not loaded.")
+	}
+
+	return m.mediafiles
+}
+
+func (m *Organization) ActiveMeetings() *Meeting {
+	if _, ok := m.loadedRelations["active_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access ActiveMeetings relation of Organization which was not loaded.")
+	}
+
+	return m.activeMeetings
+}
+
+func (m *Organization) Genders() *Gender {
+	if _, ok := m.loadedRelations["gender_ids"]; !ok {
+		log.Panic().Msg("Tried to access Genders relation of Organization which was not loaded.")
+	}
+
+	return m.genders
+}
+
+func (m *Organization) Get(field string) interface{} {
 	switch field {
 	case "active_meeting_ids":
 		return m.ActiveMeetingIDs
@@ -231,7 +231,7 @@ func (m Organization) Get(field string) interface{} {
 	return nil
 }
 
-func (m Organization) Update(data map[string]string) error {
+func (m *Organization) Update(data map[string]string) error {
 	if val, ok := data["active_meeting_ids"]; ok {
 		err := json.Unmarshal([]byte(val), &m.ActiveMeetingIDs)
 		if err != nil {

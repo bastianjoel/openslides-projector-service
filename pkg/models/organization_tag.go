@@ -16,7 +16,7 @@ type OrganizationTag struct {
 	organization    *Organization
 }
 
-func (m OrganizationTag) CollectionName() string {
+func (m *OrganizationTag) CollectionName() string {
 	return "organization_tag"
 }
 
@@ -28,7 +28,7 @@ func (m *OrganizationTag) Organization() Organization {
 	return *m.organization
 }
 
-func (m OrganizationTag) Get(field string) interface{} {
+func (m *OrganizationTag) Get(field string) interface{} {
 	switch field {
 	case "color":
 		return m.Color
@@ -45,7 +45,7 @@ func (m OrganizationTag) Get(field string) interface{} {
 	return nil
 }
 
-func (m OrganizationTag) Update(data map[string]string) error {
+func (m *OrganizationTag) Update(data map[string]string) error {
 	if val, ok := data["color"]; ok {
 		err := json.Unmarshal([]byte(val), &m.Color)
 		if err != nil {
