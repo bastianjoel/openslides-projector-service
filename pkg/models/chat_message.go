@@ -69,32 +69,48 @@ func (m *ChatMessage) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *ChatMessage) SetRelatedJSON(field string, content []byte) error {
+func (m *ChatMessage) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "chat_group_id":
-		err := json.Unmarshal(content, &m.chatGroup)
+		var entry ChatGroup
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.chatGroup = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "meeting_user_id":
-		err := json.Unmarshal(content, &m.meetingUser)
+		var entry MeetingUser
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meetingUser = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *ChatMessage) Get(field string) interface{} {
@@ -176,4 +192,12 @@ func (m *ChatMessage) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *ChatMessage) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

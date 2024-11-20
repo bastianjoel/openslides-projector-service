@@ -26,34 +26,26 @@ type Assignment struct {
 	TagIDs                        []int   `json:"tag_ids"`
 	Title                         string  `json:"title"`
 	loadedRelations               map[string]struct{}
-	attachmentMeetingMediafiles   []MeetingMediafile
-	polls                         []Poll
+	projections                   []*Projection
 	agendaItem                    *AgendaItem
-	meeting                       *Meeting
-	projections                   []Projection
-	tags                          []Tag
-	candidates                    []AssignmentCandidate
 	listOfSpeakers                *ListOfSpeakers
+	meeting                       *Meeting
+	attachmentMeetingMediafiles   []*MeetingMediafile
+	candidates                    []*AssignmentCandidate
+	polls                         []*Poll
+	tags                          []*Tag
 }
 
 func (m *Assignment) CollectionName() string {
 	return "assignment"
 }
 
-func (m *Assignment) AttachmentMeetingMediafiles() []MeetingMediafile {
-	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Assignment which was not loaded.")
+func (m *Assignment) Projections() []*Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Assignment which was not loaded.")
 	}
 
-	return m.attachmentMeetingMediafiles
-}
-
-func (m *Assignment) Polls() []Poll {
-	if _, ok := m.loadedRelations["poll_ids"]; !ok {
-		log.Panic().Msg("Tried to access Polls relation of Assignment which was not loaded.")
-	}
-
-	return m.polls
+	return m.projections
 }
 
 func (m *Assignment) AgendaItem() *AgendaItem {
@@ -64,38 +56,6 @@ func (m *Assignment) AgendaItem() *AgendaItem {
 	return m.agendaItem
 }
 
-func (m *Assignment) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Assignment which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *Assignment) Projections() []Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of Assignment which was not loaded.")
-	}
-
-	return m.projections
-}
-
-func (m *Assignment) Tags() []Tag {
-	if _, ok := m.loadedRelations["tag_ids"]; !ok {
-		log.Panic().Msg("Tried to access Tags relation of Assignment which was not loaded.")
-	}
-
-	return m.tags
-}
-
-func (m *Assignment) Candidates() []AssignmentCandidate {
-	if _, ok := m.loadedRelations["candidate_ids"]; !ok {
-		log.Panic().Msg("Tried to access Candidates relation of Assignment which was not loaded.")
-	}
-
-	return m.candidates
-}
-
 func (m *Assignment) ListOfSpeakers() ListOfSpeakers {
 	if _, ok := m.loadedRelations["list_of_speakers_id"]; !ok {
 		log.Panic().Msg("Tried to access ListOfSpeakers relation of Assignment which was not loaded.")
@@ -104,25 +64,65 @@ func (m *Assignment) ListOfSpeakers() ListOfSpeakers {
 	return *m.listOfSpeakers
 }
 
+func (m *Assignment) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Assignment which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Assignment) AttachmentMeetingMediafiles() []*MeetingMediafile {
+	if _, ok := m.loadedRelations["attachment_meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access AttachmentMeetingMediafiles relation of Assignment which was not loaded.")
+	}
+
+	return m.attachmentMeetingMediafiles
+}
+
+func (m *Assignment) Candidates() []*AssignmentCandidate {
+	if _, ok := m.loadedRelations["candidate_ids"]; !ok {
+		log.Panic().Msg("Tried to access Candidates relation of Assignment which was not loaded.")
+	}
+
+	return m.candidates
+}
+
+func (m *Assignment) Polls() []*Poll {
+	if _, ok := m.loadedRelations["poll_ids"]; !ok {
+		log.Panic().Msg("Tried to access Polls relation of Assignment which was not loaded.")
+	}
+
+	return m.polls
+}
+
+func (m *Assignment) Tags() []*Tag {
+	if _, ok := m.loadedRelations["tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access Tags relation of Assignment which was not loaded.")
+	}
+
+	return m.tags
+}
+
 func (m *Assignment) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "attachment_meeting_mediafile_ids":
-			m.attachmentMeetingMediafiles = content.([]MeetingMediafile)
-		case "poll_ids":
-			m.polls = content.([]Poll)
+		case "projection_ids":
+			m.projections = content.([]*Projection)
 		case "agenda_item_id":
 			m.agendaItem = content.(*AgendaItem)
-		case "meeting_id":
-			m.meeting = content.(*Meeting)
-		case "projection_ids":
-			m.projections = content.([]Projection)
-		case "tag_ids":
-			m.tags = content.([]Tag)
-		case "candidate_ids":
-			m.candidates = content.([]AssignmentCandidate)
 		case "list_of_speakers_id":
 			m.listOfSpeakers = content.(*ListOfSpeakers)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "attachment_meeting_mediafile_ids":
+			m.attachmentMeetingMediafiles = content.([]*MeetingMediafile)
+		case "candidate_ids":
+			m.candidates = content.([]*AssignmentCandidate)
+		case "poll_ids":
+			m.polls = content.([]*Poll)
+		case "tag_ids":
+			m.tags = content.([]*Tag)
 		default:
 			return
 		}
@@ -134,57 +134,98 @@ func (m *Assignment) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Assignment) SetRelatedJSON(field string, content []byte) error {
+func (m *Assignment) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "attachment_meeting_mediafile_ids":
-		err := json.Unmarshal(content, &m.attachmentMeetingMediafiles)
-		if err != nil {
-			return err
-		}
-	case "poll_ids":
-		err := json.Unmarshal(content, &m.polls)
-		if err != nil {
-			return err
-		}
-	case "agenda_item_id":
-		err := json.Unmarshal(content, &m.agendaItem)
-		if err != nil {
-			return err
-		}
-	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
-		if err != nil {
-			return err
-		}
 	case "projection_ids":
-		err := json.Unmarshal(content, &m.projections)
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
-	case "tag_ids":
-		err := json.Unmarshal(content, &m.tags)
+
+		m.projections = append(m.projections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "agenda_item_id":
+		var entry AgendaItem
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
-	case "candidate_ids":
-		err := json.Unmarshal(content, &m.candidates)
-		if err != nil {
-			return err
-		}
+
+		m.agendaItem = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "list_of_speakers_id":
-		err := json.Unmarshal(content, &m.listOfSpeakers)
+		var entry ListOfSpeakers
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.listOfSpeakers = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "attachment_meeting_mediafile_ids":
+		var entry MeetingMediafile
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.attachmentMeetingMediafiles = append(m.attachmentMeetingMediafiles, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "candidate_ids":
+		var entry AssignmentCandidate
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.candidates = append(m.candidates, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "poll_ids":
+		var entry Poll
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.polls = append(m.polls, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "tag_ids":
+		var entry Tag
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.tags = append(m.tags, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Assignment) Get(field string) interface{} {
@@ -228,17 +269,10 @@ func (m *Assignment) Get(field string) interface{} {
 
 func (m *Assignment) GetFqids(field string) []string {
 	switch field {
-	case "attachment_meeting_mediafile_ids":
-		r := make([]string, len(m.AttachmentMeetingMediafileIDs))
-		for i, id := range m.AttachmentMeetingMediafileIDs {
-			r[i] = "meeting_mediafile/" + strconv.Itoa(id)
-		}
-		return r
-
-	case "poll_ids":
-		r := make([]string, len(m.PollIDs))
-		for i, id := range m.PollIDs {
-			r[i] = "poll/" + strconv.Itoa(id)
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
 		}
 		return r
 
@@ -247,20 +281,16 @@ func (m *Assignment) GetFqids(field string) []string {
 			return []string{"agenda_item/" + strconv.Itoa(*m.AgendaItemID)}
 		}
 
+	case "list_of_speakers_id":
+		return []string{"list_of_speakers/" + strconv.Itoa(m.ListOfSpeakersID)}
+
 	case "meeting_id":
 		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
 
-	case "projection_ids":
-		r := make([]string, len(m.ProjectionIDs))
-		for i, id := range m.ProjectionIDs {
-			r[i] = "projection/" + strconv.Itoa(id)
-		}
-		return r
-
-	case "tag_ids":
-		r := make([]string, len(m.TagIDs))
-		for i, id := range m.TagIDs {
-			r[i] = "tag/" + strconv.Itoa(id)
+	case "attachment_meeting_mediafile_ids":
+		r := make([]string, len(m.AttachmentMeetingMediafileIDs))
+		for i, id := range m.AttachmentMeetingMediafileIDs {
+			r[i] = "meeting_mediafile/" + strconv.Itoa(id)
 		}
 		return r
 
@@ -271,8 +301,19 @@ func (m *Assignment) GetFqids(field string) []string {
 		}
 		return r
 
-	case "list_of_speakers_id":
-		return []string{"list_of_speakers/" + strconv.Itoa(m.ListOfSpeakersID)}
+	case "poll_ids":
+		r := make([]string, len(m.PollIDs))
+		for i, id := range m.PollIDs {
+			r[i] = "poll/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "tag_ids":
+		r := make([]string, len(m.TagIDs))
+		for i, id := range m.TagIDs {
+			r[i] = "tag/" + strconv.Itoa(id)
+		}
+		return r
 	}
 	return []string{}
 }
@@ -391,4 +432,12 @@ func (m *Assignment) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Assignment) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

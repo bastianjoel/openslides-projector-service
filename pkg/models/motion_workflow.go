@@ -19,24 +19,16 @@ type MotionWorkflow struct {
 	SequentialNumber                         int    `json:"sequential_number"`
 	StateIDs                                 []int  `json:"state_ids"`
 	loadedRelations                          map[string]struct{}
-	defaultAmendmentWorkflowMeeting          *Meeting
 	defaultWorkflowMeeting                   *Meeting
 	firstState                               *MotionState
 	meeting                                  *Meeting
-	states                                   []MotionState
+	states                                   []*MotionState
+	defaultAmendmentWorkflowMeeting          *Meeting
 	defaultStatuteAmendmentWorkflowMeeting   *Meeting
 }
 
 func (m *MotionWorkflow) CollectionName() string {
 	return "motion_workflow"
-}
-
-func (m *MotionWorkflow) DefaultAmendmentWorkflowMeeting() *Meeting {
-	if _, ok := m.loadedRelations["default_amendment_workflow_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access DefaultAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
-	}
-
-	return m.defaultAmendmentWorkflowMeeting
 }
 
 func (m *MotionWorkflow) DefaultWorkflowMeeting() *Meeting {
@@ -63,12 +55,20 @@ func (m *MotionWorkflow) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *MotionWorkflow) States() []MotionState {
+func (m *MotionWorkflow) States() []*MotionState {
 	if _, ok := m.loadedRelations["state_ids"]; !ok {
 		log.Panic().Msg("Tried to access States relation of MotionWorkflow which was not loaded.")
 	}
 
 	return m.states
+}
+
+func (m *MotionWorkflow) DefaultAmendmentWorkflowMeeting() *Meeting {
+	if _, ok := m.loadedRelations["default_amendment_workflow_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access DefaultAmendmentWorkflowMeeting relation of MotionWorkflow which was not loaded.")
+	}
+
+	return m.defaultAmendmentWorkflowMeeting
 }
 
 func (m *MotionWorkflow) DefaultStatuteAmendmentWorkflowMeeting() *Meeting {
@@ -82,8 +82,6 @@ func (m *MotionWorkflow) DefaultStatuteAmendmentWorkflowMeeting() *Meeting {
 func (m *MotionWorkflow) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "default_amendment_workflow_meeting_id":
-			m.defaultAmendmentWorkflowMeeting = content.(*Meeting)
 		case "default_workflow_meeting_id":
 			m.defaultWorkflowMeeting = content.(*Meeting)
 		case "first_state_id":
@@ -91,7 +89,9 @@ func (m *MotionWorkflow) SetRelated(field string, content interface{}) {
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
 		case "state_ids":
-			m.states = content.([]MotionState)
+			m.states = content.([]*MotionState)
+		case "default_amendment_workflow_meeting_id":
+			m.defaultAmendmentWorkflowMeeting = content.(*Meeting)
 		case "default_statute_amendment_workflow_meeting_id":
 			m.defaultStatuteAmendmentWorkflowMeeting = content.(*Meeting)
 		default:
@@ -105,47 +105,78 @@ func (m *MotionWorkflow) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *MotionWorkflow) SetRelatedJSON(field string, content []byte) error {
+func (m *MotionWorkflow) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "default_amendment_workflow_meeting_id":
-		err := json.Unmarshal(content, &m.defaultAmendmentWorkflowMeeting)
-		if err != nil {
-			return err
-		}
 	case "default_workflow_meeting_id":
-		err := json.Unmarshal(content, &m.defaultWorkflowMeeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.defaultWorkflowMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "first_state_id":
-		err := json.Unmarshal(content, &m.firstState)
+		var entry MotionState
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.firstState = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "state_ids":
-		err := json.Unmarshal(content, &m.states)
+		var entry MotionState
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.states = append(m.states, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "default_amendment_workflow_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.defaultAmendmentWorkflowMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "default_statute_amendment_workflow_meeting_id":
-		err := json.Unmarshal(content, &m.defaultStatuteAmendmentWorkflowMeeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.defaultStatuteAmendmentWorkflowMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *MotionWorkflow) Get(field string) interface{} {
@@ -175,11 +206,6 @@ func (m *MotionWorkflow) Get(field string) interface{} {
 
 func (m *MotionWorkflow) GetFqids(field string) []string {
 	switch field {
-	case "default_amendment_workflow_meeting_id":
-		if m.DefaultAmendmentWorkflowMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.DefaultAmendmentWorkflowMeetingID)}
-		}
-
 	case "default_workflow_meeting_id":
 		if m.DefaultWorkflowMeetingID != nil {
 			return []string{"meeting/" + strconv.Itoa(*m.DefaultWorkflowMeetingID)}
@@ -197,6 +223,11 @@ func (m *MotionWorkflow) GetFqids(field string) []string {
 			r[i] = "motion_state/" + strconv.Itoa(id)
 		}
 		return r
+
+	case "default_amendment_workflow_meeting_id":
+		if m.DefaultAmendmentWorkflowMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.DefaultAmendmentWorkflowMeetingID)}
+		}
 
 	case "default_statute_amendment_workflow_meeting_id":
 		if m.DefaultStatuteAmendmentWorkflowMeetingID != nil {
@@ -271,4 +302,12 @@ func (m *MotionWorkflow) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *MotionWorkflow) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

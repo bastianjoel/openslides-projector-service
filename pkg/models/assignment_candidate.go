@@ -15,21 +15,13 @@ type AssignmentCandidate struct {
 	MeetingUserID   *int `json:"meeting_user_id"`
 	Weight          *int `json:"weight"`
 	loadedRelations map[string]struct{}
-	assignment      *Assignment
 	meeting         *Meeting
 	meetingUser     *MeetingUser
+	assignment      *Assignment
 }
 
 func (m *AssignmentCandidate) CollectionName() string {
 	return "assignment_candidate"
-}
-
-func (m *AssignmentCandidate) Assignment() Assignment {
-	if _, ok := m.loadedRelations["assignment_id"]; !ok {
-		log.Panic().Msg("Tried to access Assignment relation of AssignmentCandidate which was not loaded.")
-	}
-
-	return *m.assignment
 }
 
 func (m *AssignmentCandidate) Meeting() Meeting {
@@ -48,15 +40,23 @@ func (m *AssignmentCandidate) MeetingUser() *MeetingUser {
 	return m.meetingUser
 }
 
+func (m *AssignmentCandidate) Assignment() Assignment {
+	if _, ok := m.loadedRelations["assignment_id"]; !ok {
+		log.Panic().Msg("Tried to access Assignment relation of AssignmentCandidate which was not loaded.")
+	}
+
+	return *m.assignment
+}
+
 func (m *AssignmentCandidate) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "assignment_id":
-			m.assignment = content.(*Assignment)
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
 		case "meeting_user_id":
 			m.meetingUser = content.(*MeetingUser)
+		case "assignment_id":
+			m.assignment = content.(*Assignment)
 		default:
 			return
 		}
@@ -68,32 +68,48 @@ func (m *AssignmentCandidate) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *AssignmentCandidate) SetRelatedJSON(field string, content []byte) error {
+func (m *AssignmentCandidate) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "assignment_id":
-		err := json.Unmarshal(content, &m.assignment)
-		if err != nil {
-			return err
-		}
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "meeting_user_id":
-		err := json.Unmarshal(content, &m.meetingUser)
+		var entry MeetingUser
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meetingUser = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "assignment_id":
+		var entry Assignment
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.assignment = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *AssignmentCandidate) Get(field string) interface{} {
@@ -115,9 +131,6 @@ func (m *AssignmentCandidate) Get(field string) interface{} {
 
 func (m *AssignmentCandidate) GetFqids(field string) []string {
 	switch field {
-	case "assignment_id":
-		return []string{"assignment/" + strconv.Itoa(m.AssignmentID)}
-
 	case "meeting_id":
 		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
 
@@ -125,6 +138,9 @@ func (m *AssignmentCandidate) GetFqids(field string) []string {
 		if m.MeetingUserID != nil {
 			return []string{"meeting_user/" + strconv.Itoa(*m.MeetingUserID)}
 		}
+
+	case "assignment_id":
+		return []string{"assignment/" + strconv.Itoa(m.AssignmentID)}
 	}
 	return []string{}
 }
@@ -166,4 +182,12 @@ func (m *AssignmentCandidate) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *AssignmentCandidate) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

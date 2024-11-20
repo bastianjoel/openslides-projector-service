@@ -19,15 +19,31 @@ type MotionBlock struct {
 	SequentialNumber int    `json:"sequential_number"`
 	Title            string `json:"title"`
 	loadedRelations  map[string]struct{}
-	listOfSpeakers   *ListOfSpeakers
-	motions          []Motion
-	agendaItem       *AgendaItem
 	meeting          *Meeting
-	projections      []Projection
+	projections      []*Projection
+	listOfSpeakers   *ListOfSpeakers
+	motions          []*Motion
+	agendaItem       *AgendaItem
 }
 
 func (m *MotionBlock) CollectionName() string {
 	return "motion_block"
+}
+
+func (m *MotionBlock) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of MotionBlock which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *MotionBlock) Projections() []*Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
+	}
+
+	return m.projections
 }
 
 func (m *MotionBlock) ListOfSpeakers() ListOfSpeakers {
@@ -38,7 +54,7 @@ func (m *MotionBlock) ListOfSpeakers() ListOfSpeakers {
 	return *m.listOfSpeakers
 }
 
-func (m *MotionBlock) Motions() []Motion {
+func (m *MotionBlock) Motions() []*Motion {
 	if _, ok := m.loadedRelations["motion_ids"]; !ok {
 		log.Panic().Msg("Tried to access Motions relation of MotionBlock which was not loaded.")
 	}
@@ -54,35 +70,19 @@ func (m *MotionBlock) AgendaItem() *AgendaItem {
 	return m.agendaItem
 }
 
-func (m *MotionBlock) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of MotionBlock which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *MotionBlock) Projections() []Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of MotionBlock which was not loaded.")
-	}
-
-	return m.projections
-}
-
 func (m *MotionBlock) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "list_of_speakers_id":
-			m.listOfSpeakers = content.(*ListOfSpeakers)
-		case "motion_ids":
-			m.motions = content.([]Motion)
-		case "agenda_item_id":
-			m.agendaItem = content.(*AgendaItem)
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
 		case "projection_ids":
-			m.projections = content.([]Projection)
+			m.projections = content.([]*Projection)
+		case "list_of_speakers_id":
+			m.listOfSpeakers = content.(*ListOfSpeakers)
+		case "motion_ids":
+			m.motions = content.([]*Motion)
+		case "agenda_item_id":
+			m.agendaItem = content.(*AgendaItem)
 		default:
 			return
 		}
@@ -94,42 +94,68 @@ func (m *MotionBlock) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *MotionBlock) SetRelatedJSON(field string, content []byte) error {
+func (m *MotionBlock) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "list_of_speakers_id":
-		err := json.Unmarshal(content, &m.listOfSpeakers)
-		if err != nil {
-			return err
-		}
-	case "motion_ids":
-		err := json.Unmarshal(content, &m.motions)
-		if err != nil {
-			return err
-		}
-	case "agenda_item_id":
-		err := json.Unmarshal(content, &m.agendaItem)
-		if err != nil {
-			return err
-		}
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "projection_ids":
-		err := json.Unmarshal(content, &m.projections)
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.projections = append(m.projections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "list_of_speakers_id":
+		var entry ListOfSpeakers
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.listOfSpeakers = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "motion_ids":
+		var entry Motion
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.motions = append(m.motions, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "agenda_item_id":
+		var entry AgendaItem
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.agendaItem = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *MotionBlock) Get(field string) interface{} {
@@ -159,6 +185,16 @@ func (m *MotionBlock) Get(field string) interface{} {
 
 func (m *MotionBlock) GetFqids(field string) []string {
 	switch field {
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
 	case "list_of_speakers_id":
 		return []string{"list_of_speakers/" + strconv.Itoa(m.ListOfSpeakersID)}
 
@@ -173,16 +209,6 @@ func (m *MotionBlock) GetFqids(field string) []string {
 		if m.AgendaItemID != nil {
 			return []string{"agenda_item/" + strconv.Itoa(*m.AgendaItemID)}
 		}
-
-	case "meeting_id":
-		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
-
-	case "projection_ids":
-		r := make([]string, len(m.ProjectionIDs))
-		for i, id := range m.ProjectionIDs {
-			r[i] = "projection/" + strconv.Itoa(id)
-		}
-		return r
 	}
 	return []string{}
 }
@@ -252,4 +278,12 @@ func (m *MotionBlock) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *MotionBlock) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

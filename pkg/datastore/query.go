@@ -5,20 +5,13 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/OpenSlides/openslides-projector-service/pkg/models"
 	"github.com/iancoleman/strcase"
+	"github.com/rs/zerolog/log"
 )
 
-type baseModel interface {
-	CollectionName() string
-	Get(field string) interface{}
-	GetFqids(field string) []string
-	Update(data map[string]string) error
-	SetRelated(string, interface{})
-	SetRelatedJSON(string, []byte) error
-}
-
 type baseModelPtr[T any] interface {
-	baseModel
+	models.IBaseModel
 	*T
 }
 
@@ -33,6 +26,7 @@ func (q *recursiveSubqueryList) With(idField string, fields []string) *recursive
 		sq = &recursiveSubqueryList{}
 	}
 	sq.Fields = fields
+	sq.subquerys = map[string]*recursiveSubqueryList{}
 	q.subquerys[idField] = sq
 
 	return sq
@@ -58,6 +52,7 @@ func (q *query[T, PT]) With(idField string, fields []string) *query[T, PT] {
 		sq = &recursiveSubqueryList{}
 	}
 	sq.Fields = fields
+	sq.subquerys = map[string]*recursiveSubqueryList{}
 
 	q.subquerys[idField] = sq
 
@@ -155,25 +150,41 @@ func (q *query[T, PT]) resultStructs() (map[string]PT, error) {
 		if err != nil {
 			return nil, err
 		}
-		for field := range q.subquerys {
-			subDsResult, err := q.datastore.getFull(el.GetFqids(field))
+		for field, subQuery := range q.subquerys {
+			err := q.recursiveLoadSubqueries(el.GetRelatedModelsAccessor(), field, subQuery)
 			if err != nil {
 				return nil, err
-			}
-
-			if len(subDsResult) == 0 {
-				el.SetRelated(field, nil)
-			} else {
-				for _, dsResult := range subDsResult {
-					err := el.SetRelatedJSON(field, dsResult)
-					if err != nil {
-						return nil, err
-					}
-				}
 			}
 		}
 		results[fqid] = el
 	}
 
 	return results, nil
+}
+
+func (q *query[T, PT]) recursiveLoadSubqueries(el *models.RelatedModelsAccessor, field string, subQuery *recursiveSubqueryList) error {
+	subDsResult, err := q.datastore.getFull(el.GetFqids(field))
+	if err != nil {
+		return err
+	}
+
+	if len(subDsResult) == 0 {
+		el.SetRelated(field, nil)
+	} else {
+		for _, dsResult := range subDsResult {
+			model, err := el.SetRelatedJSON(field, dsResult)
+			if err != nil {
+				log.Err(err).Msgf("Failed to parse JSON (%s)", string(dsResult))
+			} else if model != nil {
+				for sField, nextSubQuery := range subQuery.subquerys {
+					err := q.recursiveLoadSubqueries(model, sField, nextSubQuery)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+
+	return nil
 }

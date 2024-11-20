@@ -16,7 +16,12 @@ func CurrentListOfSpeakersSlideHandler(ctx context.Context, req *projectionReque
 	projection := req.Projection
 
 	var los models.ListOfSpeakers
-	losSub, err := datastore.Collection(req.DB, &models.ListOfSpeakers{}).SetFqids(projection.ContentObjectID).SubscribeOne(&los)
+	q := datastore.Collection(req.DB, &models.ListOfSpeakers{}).With("speaker_ids", nil).SetFqids(projection.ContentObjectID)
+	speakersQ := q.GetSubquery("speaker_ids")
+	meetingUsersQ := speakersQ.With("meeting_user_id", nil)
+	meetingUsersQ.With("user_id", nil)
+
+	losSub, err := q.SubscribeOne(&los)
 	if err != nil {
 		return nil, fmt.Errorf("CurrentListOfSpeakersSlideHandler: %w", err)
 	}
@@ -40,6 +45,11 @@ func getCurrentListOfSpeakersSlideContent(los *models.ListOfSpeakers) string {
 	if err != nil {
 		log.Error().Err(err).Msg("could not load current-list-of-speakers template")
 		return ""
+	}
+
+	for _, speaker := range los.Speakers() {
+		firstName := speaker.MeetingUser().User().Username
+		fmt.Println(firstName)
 	}
 
 	var content bytes.Buffer

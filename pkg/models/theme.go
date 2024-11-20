@@ -60,20 +60,12 @@ type Theme struct {
 	WarnA700               *string `json:"warn_a700"`
 	Yes                    *string `json:"yes"`
 	loadedRelations        map[string]struct{}
-	organization           *Organization
 	themeForOrganization   *Organization
+	organization           *Organization
 }
 
 func (m *Theme) CollectionName() string {
 	return "theme"
-}
-
-func (m *Theme) Organization() Organization {
-	if _, ok := m.loadedRelations["organization_id"]; !ok {
-		log.Panic().Msg("Tried to access Organization relation of Theme which was not loaded.")
-	}
-
-	return *m.organization
 }
 
 func (m *Theme) ThemeForOrganization() *Organization {
@@ -84,13 +76,21 @@ func (m *Theme) ThemeForOrganization() *Organization {
 	return m.themeForOrganization
 }
 
+func (m *Theme) Organization() Organization {
+	if _, ok := m.loadedRelations["organization_id"]; !ok {
+		log.Panic().Msg("Tried to access Organization relation of Theme which was not loaded.")
+	}
+
+	return *m.organization
+}
+
 func (m *Theme) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "organization_id":
-			m.organization = content.(*Organization)
 		case "theme_for_organization_id":
 			m.themeForOrganization = content.(*Organization)
+		case "organization_id":
+			m.organization = content.(*Organization)
 		default:
 			return
 		}
@@ -102,27 +102,38 @@ func (m *Theme) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Theme) SetRelatedJSON(field string, content []byte) error {
+func (m *Theme) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "organization_id":
-		err := json.Unmarshal(content, &m.organization)
-		if err != nil {
-			return err
-		}
 	case "theme_for_organization_id":
-		err := json.Unmarshal(content, &m.themeForOrganization)
+		var entry Organization
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.themeForOrganization = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "organization_id":
+		var entry Organization
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.organization = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Theme) Get(field string) interface{} {
@@ -234,13 +245,13 @@ func (m *Theme) Get(field string) interface{} {
 
 func (m *Theme) GetFqids(field string) []string {
 	switch field {
-	case "organization_id":
-		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
-
 	case "theme_for_organization_id":
 		if m.ThemeForOrganizationID != nil {
 			return []string{"organization/" + strconv.Itoa(*m.ThemeForOrganizationID)}
 		}
+
+	case "organization_id":
+		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
 	}
 	return []string{}
 }
@@ -597,4 +608,12 @@ func (m *Theme) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Theme) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

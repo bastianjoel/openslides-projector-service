@@ -51,149 +51,29 @@ type Projector struct {
 	UsedAsReferenceProjectorMeetingID                         *int    `json:"used_as_reference_projector_meeting_id"`
 	Width                                                     *int    `json:"width"`
 	loadedRelations                                           map[string]struct{}
-	meeting                                                   *Meeting
-	usedAsDefaultProjectorForAssignmentPollInMeeting          *Meeting
-	usedAsDefaultProjectorForListOfSpeakersInMeeting          *Meeting
-	usedAsDefaultProjectorForMotionBlockInMeeting             *Meeting
-	usedAsDefaultProjectorForAgendaItemListInMeeting          *Meeting
-	usedAsDefaultProjectorForPollInMeeting                    *Meeting
-	usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting   *Meeting
-	usedAsReferenceProjectorMeeting                           *Meeting
-	currentProjections                                        []Projection
-	usedAsDefaultProjectorForCountdownInMeeting               *Meeting
-	usedAsDefaultProjectorForMotionPollInMeeting              *Meeting
-	historyProjections                                        []Projection
-	usedAsDefaultProjectorForMediafileInMeeting               *Meeting
-	usedAsDefaultProjectorForTopicInMeeting                   *Meeting
-	previewProjections                                        []Projection
 	usedAsDefaultProjectorForAmendmentInMeeting               *Meeting
-	usedAsDefaultProjectorForAssignmentInMeeting              *Meeting
+	usedAsDefaultProjectorForTopicInMeeting                   *Meeting
+	usedAsDefaultProjectorForMotionPollInMeeting              *Meeting
 	usedAsDefaultProjectorForMessageInMeeting                 *Meeting
+	previewProjections                                        []*Projection
+	usedAsDefaultProjectorForMotionBlockInMeeting             *Meeting
+	usedAsDefaultProjectorForListOfSpeakersInMeeting          *Meeting
+	usedAsDefaultProjectorForMediafileInMeeting               *Meeting
+	usedAsDefaultProjectorForPollInMeeting                    *Meeting
+	meeting                                                   *Meeting
+	usedAsDefaultProjectorForCountdownInMeeting               *Meeting
+	currentProjections                                        []*Projection
+	usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting   *Meeting
+	historyProjections                                        []*Projection
 	usedAsDefaultProjectorForMotionInMeeting                  *Meeting
+	usedAsReferenceProjectorMeeting                           *Meeting
+	usedAsDefaultProjectorForAssignmentPollInMeeting          *Meeting
+	usedAsDefaultProjectorForAgendaItemListInMeeting          *Meeting
+	usedAsDefaultProjectorForAssignmentInMeeting              *Meeting
 }
 
 func (m *Projector) CollectionName() string {
 	return "projector"
-}
-
-func (m *Projector) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of Projector which was not loaded.")
-	}
-
-	return *m.meeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForAssignmentPollInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_assignment_poll_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForAssignmentPollInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForAssignmentPollInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForListOfSpeakersInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_list_of_speakers_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForListOfSpeakersInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForListOfSpeakersInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForMotionBlockInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_motion_block_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMotionBlockInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForMotionBlockInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForAgendaItemListInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_agenda_item_list_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForAgendaItemListInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForAgendaItemListInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForPollInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_poll_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForPollInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForPollInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForCurrentListOfSpeakersInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_current_list_of_speakers_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForCurrentListOfSpeakersInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting
-}
-
-func (m *Projector) UsedAsReferenceProjectorMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_reference_projector_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsReferenceProjectorMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsReferenceProjectorMeeting
-}
-
-func (m *Projector) CurrentProjections() []Projection {
-	if _, ok := m.loadedRelations["current_projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access CurrentProjections relation of Projector which was not loaded.")
-	}
-
-	return m.currentProjections
-}
-
-func (m *Projector) UsedAsDefaultProjectorForCountdownInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_countdown_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForCountdownInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForCountdownInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForMotionPollInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_motion_poll_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMotionPollInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForMotionPollInMeeting
-}
-
-func (m *Projector) HistoryProjections() []Projection {
-	if _, ok := m.loadedRelations["history_projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access HistoryProjections relation of Projector which was not loaded.")
-	}
-
-	return m.historyProjections
-}
-
-func (m *Projector) UsedAsDefaultProjectorForMediafileInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_mediafile_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMediafileInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForMediafileInMeeting
-}
-
-func (m *Projector) UsedAsDefaultProjectorForTopicInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_topic_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForTopicInMeeting relation of Projector which was not loaded.")
-	}
-
-	return m.usedAsDefaultProjectorForTopicInMeeting
-}
-
-func (m *Projector) PreviewProjections() []Projection {
-	if _, ok := m.loadedRelations["preview_projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access PreviewProjections relation of Projector which was not loaded.")
-	}
-
-	return m.previewProjections
 }
 
 func (m *Projector) UsedAsDefaultProjectorForAmendmentInMeeting() *Meeting {
@@ -204,12 +84,20 @@ func (m *Projector) UsedAsDefaultProjectorForAmendmentInMeeting() *Meeting {
 	return m.usedAsDefaultProjectorForAmendmentInMeeting
 }
 
-func (m *Projector) UsedAsDefaultProjectorForAssignmentInMeeting() *Meeting {
-	if _, ok := m.loadedRelations["used_as_default_projector_for_assignment_in_meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForAssignmentInMeeting relation of Projector which was not loaded.")
+func (m *Projector) UsedAsDefaultProjectorForTopicInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_topic_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForTopicInMeeting relation of Projector which was not loaded.")
 	}
 
-	return m.usedAsDefaultProjectorForAssignmentInMeeting
+	return m.usedAsDefaultProjectorForTopicInMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForMotionPollInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_motion_poll_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMotionPollInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForMotionPollInMeeting
 }
 
 func (m *Projector) UsedAsDefaultProjectorForMessageInMeeting() *Meeting {
@@ -220,6 +108,86 @@ func (m *Projector) UsedAsDefaultProjectorForMessageInMeeting() *Meeting {
 	return m.usedAsDefaultProjectorForMessageInMeeting
 }
 
+func (m *Projector) PreviewProjections() []*Projection {
+	if _, ok := m.loadedRelations["preview_projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access PreviewProjections relation of Projector which was not loaded.")
+	}
+
+	return m.previewProjections
+}
+
+func (m *Projector) UsedAsDefaultProjectorForMotionBlockInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_motion_block_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMotionBlockInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForMotionBlockInMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForListOfSpeakersInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_list_of_speakers_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForListOfSpeakersInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForListOfSpeakersInMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForMediafileInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_mediafile_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMediafileInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForMediafileInMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForPollInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_poll_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForPollInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForPollInMeeting
+}
+
+func (m *Projector) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of Projector which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForCountdownInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_countdown_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForCountdownInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForCountdownInMeeting
+}
+
+func (m *Projector) CurrentProjections() []*Projection {
+	if _, ok := m.loadedRelations["current_projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access CurrentProjections relation of Projector which was not loaded.")
+	}
+
+	return m.currentProjections
+}
+
+func (m *Projector) UsedAsDefaultProjectorForCurrentListOfSpeakersInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_current_list_of_speakers_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForCurrentListOfSpeakersInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting
+}
+
+func (m *Projector) HistoryProjections() []*Projection {
+	if _, ok := m.loadedRelations["history_projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access HistoryProjections relation of Projector which was not loaded.")
+	}
+
+	return m.historyProjections
+}
+
 func (m *Projector) UsedAsDefaultProjectorForMotionInMeeting() *Meeting {
 	if _, ok := m.loadedRelations["used_as_default_projector_for_motion_in_meeting_id"]; !ok {
 		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForMotionInMeeting relation of Projector which was not loaded.")
@@ -228,47 +196,79 @@ func (m *Projector) UsedAsDefaultProjectorForMotionInMeeting() *Meeting {
 	return m.usedAsDefaultProjectorForMotionInMeeting
 }
 
+func (m *Projector) UsedAsReferenceProjectorMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_reference_projector_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsReferenceProjectorMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsReferenceProjectorMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForAssignmentPollInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_assignment_poll_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForAssignmentPollInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForAssignmentPollInMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForAgendaItemListInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_agenda_item_list_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForAgendaItemListInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForAgendaItemListInMeeting
+}
+
+func (m *Projector) UsedAsDefaultProjectorForAssignmentInMeeting() *Meeting {
+	if _, ok := m.loadedRelations["used_as_default_projector_for_assignment_in_meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access UsedAsDefaultProjectorForAssignmentInMeeting relation of Projector which was not loaded.")
+	}
+
+	return m.usedAsDefaultProjectorForAssignmentInMeeting
+}
+
 func (m *Projector) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "meeting_id":
-			m.meeting = content.(*Meeting)
-		case "used_as_default_projector_for_assignment_poll_in_meeting_id":
-			m.usedAsDefaultProjectorForAssignmentPollInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_list_of_speakers_in_meeting_id":
-			m.usedAsDefaultProjectorForListOfSpeakersInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_motion_block_in_meeting_id":
-			m.usedAsDefaultProjectorForMotionBlockInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_agenda_item_list_in_meeting_id":
-			m.usedAsDefaultProjectorForAgendaItemListInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_poll_in_meeting_id":
-			m.usedAsDefaultProjectorForPollInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_current_list_of_speakers_in_meeting_id":
-			m.usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting = content.(*Meeting)
-		case "used_as_reference_projector_meeting_id":
-			m.usedAsReferenceProjectorMeeting = content.(*Meeting)
-		case "current_projection_ids":
-			m.currentProjections = content.([]Projection)
-		case "used_as_default_projector_for_countdown_in_meeting_id":
-			m.usedAsDefaultProjectorForCountdownInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_motion_poll_in_meeting_id":
-			m.usedAsDefaultProjectorForMotionPollInMeeting = content.(*Meeting)
-		case "history_projection_ids":
-			m.historyProjections = content.([]Projection)
-		case "used_as_default_projector_for_mediafile_in_meeting_id":
-			m.usedAsDefaultProjectorForMediafileInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_topic_in_meeting_id":
-			m.usedAsDefaultProjectorForTopicInMeeting = content.(*Meeting)
-		case "preview_projection_ids":
-			m.previewProjections = content.([]Projection)
 		case "used_as_default_projector_for_amendment_in_meeting_id":
 			m.usedAsDefaultProjectorForAmendmentInMeeting = content.(*Meeting)
-		case "used_as_default_projector_for_assignment_in_meeting_id":
-			m.usedAsDefaultProjectorForAssignmentInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_topic_in_meeting_id":
+			m.usedAsDefaultProjectorForTopicInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_motion_poll_in_meeting_id":
+			m.usedAsDefaultProjectorForMotionPollInMeeting = content.(*Meeting)
 		case "used_as_default_projector_for_message_in_meeting_id":
 			m.usedAsDefaultProjectorForMessageInMeeting = content.(*Meeting)
+		case "preview_projection_ids":
+			m.previewProjections = content.([]*Projection)
+		case "used_as_default_projector_for_motion_block_in_meeting_id":
+			m.usedAsDefaultProjectorForMotionBlockInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_list_of_speakers_in_meeting_id":
+			m.usedAsDefaultProjectorForListOfSpeakersInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_mediafile_in_meeting_id":
+			m.usedAsDefaultProjectorForMediafileInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_poll_in_meeting_id":
+			m.usedAsDefaultProjectorForPollInMeeting = content.(*Meeting)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
+		case "used_as_default_projector_for_countdown_in_meeting_id":
+			m.usedAsDefaultProjectorForCountdownInMeeting = content.(*Meeting)
+		case "current_projection_ids":
+			m.currentProjections = content.([]*Projection)
+		case "used_as_default_projector_for_current_list_of_speakers_in_meeting_id":
+			m.usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting = content.(*Meeting)
+		case "history_projection_ids":
+			m.historyProjections = content.([]*Projection)
 		case "used_as_default_projector_for_motion_in_meeting_id":
 			m.usedAsDefaultProjectorForMotionInMeeting = content.(*Meeting)
+		case "used_as_reference_projector_meeting_id":
+			m.usedAsReferenceProjectorMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_assignment_poll_in_meeting_id":
+			m.usedAsDefaultProjectorForAssignmentPollInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_agenda_item_list_in_meeting_id":
+			m.usedAsDefaultProjectorForAgendaItemListInMeeting = content.(*Meeting)
+		case "used_as_default_projector_for_assignment_in_meeting_id":
+			m.usedAsDefaultProjectorForAssignmentInMeeting = content.(*Meeting)
 		default:
 			return
 		}
@@ -280,112 +280,208 @@ func (m *Projector) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Projector) SetRelatedJSON(field string, content []byte) error {
+func (m *Projector) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_assignment_poll_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForAssignmentPollInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_list_of_speakers_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForListOfSpeakersInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_motion_block_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForMotionBlockInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_agenda_item_list_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForAgendaItemListInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_poll_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForPollInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_current_list_of_speakers_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_reference_projector_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsReferenceProjectorMeeting)
-		if err != nil {
-			return err
-		}
-	case "current_projection_ids":
-		err := json.Unmarshal(content, &m.currentProjections)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_countdown_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForCountdownInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_motion_poll_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForMotionPollInMeeting)
-		if err != nil {
-			return err
-		}
-	case "history_projection_ids":
-		err := json.Unmarshal(content, &m.historyProjections)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_mediafile_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForMediafileInMeeting)
-		if err != nil {
-			return err
-		}
-	case "used_as_default_projector_for_topic_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForTopicInMeeting)
-		if err != nil {
-			return err
-		}
-	case "preview_projection_ids":
-		err := json.Unmarshal(content, &m.previewProjections)
-		if err != nil {
-			return err
-		}
 	case "used_as_default_projector_for_amendment_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForAmendmentInMeeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
-	case "used_as_default_projector_for_assignment_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForAssignmentInMeeting)
+
+		m.usedAsDefaultProjectorForAmendmentInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_topic_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.usedAsDefaultProjectorForTopicInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_motion_poll_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForMotionPollInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "used_as_default_projector_for_message_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForMessageInMeeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.usedAsDefaultProjectorForMessageInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "preview_projection_ids":
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.previewProjections = append(m.previewProjections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_motion_block_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForMotionBlockInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_list_of_speakers_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForListOfSpeakersInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_mediafile_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForMediafileInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_poll_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForPollInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_countdown_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForCountdownInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "current_projection_ids":
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.currentProjections = append(m.currentProjections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_current_list_of_speakers_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForCurrentListOfSpeakersInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "history_projection_ids":
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.historyProjections = append(m.historyProjections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "used_as_default_projector_for_motion_in_meeting_id":
-		err := json.Unmarshal(content, &m.usedAsDefaultProjectorForMotionInMeeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.usedAsDefaultProjectorForMotionInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_reference_projector_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsReferenceProjectorMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_assignment_poll_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForAssignmentPollInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_agenda_item_list_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForAgendaItemListInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "used_as_default_projector_for_assignment_in_meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.usedAsDefaultProjectorForAssignmentInMeeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Projector) Get(field string) interface{} {
@@ -479,54 +575,14 @@ func (m *Projector) Get(field string) interface{} {
 
 func (m *Projector) GetFqids(field string) []string {
 	switch field {
-	case "meeting_id":
-		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
-
-	case "used_as_default_projector_for_assignment_poll_in_meeting_id":
-		if m.UsedAsDefaultProjectorForAssignmentPollInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAssignmentPollInMeetingID)}
+	case "used_as_default_projector_for_amendment_in_meeting_id":
+		if m.UsedAsDefaultProjectorForAmendmentInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAmendmentInMeetingID)}
 		}
 
-	case "used_as_default_projector_for_list_of_speakers_in_meeting_id":
-		if m.UsedAsDefaultProjectorForListOfSpeakersInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForListOfSpeakersInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_motion_block_in_meeting_id":
-		if m.UsedAsDefaultProjectorForMotionBlockInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMotionBlockInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_agenda_item_list_in_meeting_id":
-		if m.UsedAsDefaultProjectorForAgendaItemListInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAgendaItemListInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_poll_in_meeting_id":
-		if m.UsedAsDefaultProjectorForPollInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForPollInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_current_list_of_speakers_in_meeting_id":
-		if m.UsedAsDefaultProjectorForCurrentListOfSpeakersInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForCurrentListOfSpeakersInMeetingID)}
-		}
-
-	case "used_as_reference_projector_meeting_id":
-		if m.UsedAsReferenceProjectorMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsReferenceProjectorMeetingID)}
-		}
-
-	case "current_projection_ids":
-		r := make([]string, len(m.CurrentProjectionIDs))
-		for i, id := range m.CurrentProjectionIDs {
-			r[i] = "projection/" + strconv.Itoa(id)
-		}
-		return r
-
-	case "used_as_default_projector_for_countdown_in_meeting_id":
-		if m.UsedAsDefaultProjectorForCountdownInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForCountdownInMeetingID)}
+	case "used_as_default_projector_for_topic_in_meeting_id":
+		if m.UsedAsDefaultProjectorForTopicInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForTopicInMeetingID)}
 		}
 
 	case "used_as_default_projector_for_motion_poll_in_meeting_id":
@@ -534,21 +590,9 @@ func (m *Projector) GetFqids(field string) []string {
 			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMotionPollInMeetingID)}
 		}
 
-	case "history_projection_ids":
-		r := make([]string, len(m.HistoryProjectionIDs))
-		for i, id := range m.HistoryProjectionIDs {
-			r[i] = "projection/" + strconv.Itoa(id)
-		}
-		return r
-
-	case "used_as_default_projector_for_mediafile_in_meeting_id":
-		if m.UsedAsDefaultProjectorForMediafileInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMediafileInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_topic_in_meeting_id":
-		if m.UsedAsDefaultProjectorForTopicInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForTopicInMeetingID)}
+	case "used_as_default_projector_for_message_in_meeting_id":
+		if m.UsedAsDefaultProjectorForMessageInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMessageInMeetingID)}
 		}
 
 	case "preview_projection_ids":
@@ -558,24 +602,76 @@ func (m *Projector) GetFqids(field string) []string {
 		}
 		return r
 
-	case "used_as_default_projector_for_amendment_in_meeting_id":
-		if m.UsedAsDefaultProjectorForAmendmentInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAmendmentInMeetingID)}
+	case "used_as_default_projector_for_motion_block_in_meeting_id":
+		if m.UsedAsDefaultProjectorForMotionBlockInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMotionBlockInMeetingID)}
+		}
+
+	case "used_as_default_projector_for_list_of_speakers_in_meeting_id":
+		if m.UsedAsDefaultProjectorForListOfSpeakersInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForListOfSpeakersInMeetingID)}
+		}
+
+	case "used_as_default_projector_for_mediafile_in_meeting_id":
+		if m.UsedAsDefaultProjectorForMediafileInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMediafileInMeetingID)}
+		}
+
+	case "used_as_default_projector_for_poll_in_meeting_id":
+		if m.UsedAsDefaultProjectorForPollInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForPollInMeetingID)}
+		}
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
+	case "used_as_default_projector_for_countdown_in_meeting_id":
+		if m.UsedAsDefaultProjectorForCountdownInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForCountdownInMeetingID)}
+		}
+
+	case "current_projection_ids":
+		r := make([]string, len(m.CurrentProjectionIDs))
+		for i, id := range m.CurrentProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "used_as_default_projector_for_current_list_of_speakers_in_meeting_id":
+		if m.UsedAsDefaultProjectorForCurrentListOfSpeakersInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForCurrentListOfSpeakersInMeetingID)}
+		}
+
+	case "history_projection_ids":
+		r := make([]string, len(m.HistoryProjectionIDs))
+		for i, id := range m.HistoryProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "used_as_default_projector_for_motion_in_meeting_id":
+		if m.UsedAsDefaultProjectorForMotionInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMotionInMeetingID)}
+		}
+
+	case "used_as_reference_projector_meeting_id":
+		if m.UsedAsReferenceProjectorMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsReferenceProjectorMeetingID)}
+		}
+
+	case "used_as_default_projector_for_assignment_poll_in_meeting_id":
+		if m.UsedAsDefaultProjectorForAssignmentPollInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAssignmentPollInMeetingID)}
+		}
+
+	case "used_as_default_projector_for_agenda_item_list_in_meeting_id":
+		if m.UsedAsDefaultProjectorForAgendaItemListInMeetingID != nil {
+			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAgendaItemListInMeetingID)}
 		}
 
 	case "used_as_default_projector_for_assignment_in_meeting_id":
 		if m.UsedAsDefaultProjectorForAssignmentInMeetingID != nil {
 			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForAssignmentInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_message_in_meeting_id":
-		if m.UsedAsDefaultProjectorForMessageInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMessageInMeetingID)}
-		}
-
-	case "used_as_default_projector_for_motion_in_meeting_id":
-		if m.UsedAsDefaultProjectorForMotionInMeetingID != nil {
-			return []string{"meeting/" + strconv.Itoa(*m.UsedAsDefaultProjectorForMotionInMeetingID)}
 		}
 	}
 	return []string{}
@@ -870,4 +966,12 @@ func (m *Projector) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Projector) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

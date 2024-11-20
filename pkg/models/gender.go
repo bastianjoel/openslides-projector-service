@@ -14,20 +14,12 @@ type Gender struct {
 	OrganizationID  int    `json:"organization_id"`
 	UserIDs         []int  `json:"user_ids"`
 	loadedRelations map[string]struct{}
-	users           []User
 	organization    *Organization
+	users           []*User
 }
 
 func (m *Gender) CollectionName() string {
 	return "gender"
-}
-
-func (m *Gender) Users() []User {
-	if _, ok := m.loadedRelations["user_ids"]; !ok {
-		log.Panic().Msg("Tried to access Users relation of Gender which was not loaded.")
-	}
-
-	return m.users
 }
 
 func (m *Gender) Organization() Organization {
@@ -38,13 +30,21 @@ func (m *Gender) Organization() Organization {
 	return *m.organization
 }
 
+func (m *Gender) Users() []*User {
+	if _, ok := m.loadedRelations["user_ids"]; !ok {
+		log.Panic().Msg("Tried to access Users relation of Gender which was not loaded.")
+	}
+
+	return m.users
+}
+
 func (m *Gender) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "user_ids":
-			m.users = content.([]User)
 		case "organization_id":
 			m.organization = content.(*Organization)
+		case "user_ids":
+			m.users = content.([]*User)
 		default:
 			return
 		}
@@ -56,27 +56,38 @@ func (m *Gender) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Gender) SetRelatedJSON(field string, content []byte) error {
+func (m *Gender) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "user_ids":
-		err := json.Unmarshal(content, &m.users)
-		if err != nil {
-			return err
-		}
 	case "organization_id":
-		err := json.Unmarshal(content, &m.organization)
+		var entry Organization
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.organization = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "user_ids":
+		var entry User
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.users = append(m.users, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Gender) Get(field string) interface{} {
@@ -96,15 +107,15 @@ func (m *Gender) Get(field string) interface{} {
 
 func (m *Gender) GetFqids(field string) []string {
 	switch field {
+	case "organization_id":
+		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
+
 	case "user_ids":
 		r := make([]string, len(m.UserIDs))
 		for i, id := range m.UserIDs {
 			r[i] = "user/" + strconv.Itoa(id)
 		}
 		return r
-
-	case "organization_id":
-		return []string{"organization/" + strconv.Itoa(m.OrganizationID)}
 	}
 	return []string{}
 }
@@ -139,4 +150,12 @@ func (m *Gender) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Gender) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

@@ -42,16 +42,32 @@ type Poll struct {
 	Votesinvalid          *string         `json:"votesinvalid"`
 	Votesvalid            *string         `json:"votesvalid"`
 	loadedRelations       map[string]struct{}
+	voteds                []*User
+	options               []*Option
 	meeting               *Meeting
-	projections           []Projection
-	options               []Option
-	entitledGroups        []Group
-	voteds                []User
+	entitledGroups        []*Group
+	projections           []*Projection
 	globalOption          *Option
 }
 
 func (m *Poll) CollectionName() string {
 	return "poll"
+}
+
+func (m *Poll) Voteds() []*User {
+	if _, ok := m.loadedRelations["voted_ids"]; !ok {
+		log.Panic().Msg("Tried to access Voteds relation of Poll which was not loaded.")
+	}
+
+	return m.voteds
+}
+
+func (m *Poll) Options() []*Option {
+	if _, ok := m.loadedRelations["option_ids"]; !ok {
+		log.Panic().Msg("Tried to access Options relation of Poll which was not loaded.")
+	}
+
+	return m.options
 }
 
 func (m *Poll) Meeting() Meeting {
@@ -62,23 +78,7 @@ func (m *Poll) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *Poll) Projections() []Projection {
-	if _, ok := m.loadedRelations["projection_ids"]; !ok {
-		log.Panic().Msg("Tried to access Projections relation of Poll which was not loaded.")
-	}
-
-	return m.projections
-}
-
-func (m *Poll) Options() []Option {
-	if _, ok := m.loadedRelations["option_ids"]; !ok {
-		log.Panic().Msg("Tried to access Options relation of Poll which was not loaded.")
-	}
-
-	return m.options
-}
-
-func (m *Poll) EntitledGroups() []Group {
+func (m *Poll) EntitledGroups() []*Group {
 	if _, ok := m.loadedRelations["entitled_group_ids"]; !ok {
 		log.Panic().Msg("Tried to access EntitledGroups relation of Poll which was not loaded.")
 	}
@@ -86,12 +86,12 @@ func (m *Poll) EntitledGroups() []Group {
 	return m.entitledGroups
 }
 
-func (m *Poll) Voteds() []User {
-	if _, ok := m.loadedRelations["voted_ids"]; !ok {
-		log.Panic().Msg("Tried to access Voteds relation of Poll which was not loaded.")
+func (m *Poll) Projections() []*Projection {
+	if _, ok := m.loadedRelations["projection_ids"]; !ok {
+		log.Panic().Msg("Tried to access Projections relation of Poll which was not loaded.")
 	}
 
-	return m.voteds
+	return m.projections
 }
 
 func (m *Poll) GlobalOption() *Option {
@@ -105,16 +105,16 @@ func (m *Poll) GlobalOption() *Option {
 func (m *Poll) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
+		case "voted_ids":
+			m.voteds = content.([]*User)
+		case "option_ids":
+			m.options = content.([]*Option)
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
-		case "projection_ids":
-			m.projections = content.([]Projection)
-		case "option_ids":
-			m.options = content.([]Option)
 		case "entitled_group_ids":
-			m.entitledGroups = content.([]Group)
-		case "voted_ids":
-			m.voteds = content.([]User)
+			m.entitledGroups = content.([]*Group)
+		case "projection_ids":
+			m.projections = content.([]*Projection)
 		case "global_option_id":
 			m.globalOption = content.(*Option)
 		default:
@@ -128,47 +128,78 @@ func (m *Poll) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Poll) SetRelatedJSON(field string, content []byte) error {
+func (m *Poll) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
-		if err != nil {
-			return err
-		}
-	case "projection_ids":
-		err := json.Unmarshal(content, &m.projections)
-		if err != nil {
-			return err
-		}
-	case "option_ids":
-		err := json.Unmarshal(content, &m.options)
-		if err != nil {
-			return err
-		}
-	case "entitled_group_ids":
-		err := json.Unmarshal(content, &m.entitledGroups)
-		if err != nil {
-			return err
-		}
 	case "voted_ids":
-		err := json.Unmarshal(content, &m.voteds)
+		var entry User
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.voteds = append(m.voteds, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "option_ids":
+		var entry Option
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.options = append(m.options, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "entitled_group_ids":
+		var entry Group
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.entitledGroups = append(m.entitledGroups, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "projection_ids":
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.projections = append(m.projections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "global_option_id":
-		err := json.Unmarshal(content, &m.globalOption)
+		var entry Option
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.globalOption = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Poll) Get(field string) interface{} {
@@ -244,13 +275,10 @@ func (m *Poll) Get(field string) interface{} {
 
 func (m *Poll) GetFqids(field string) []string {
 	switch field {
-	case "meeting_id":
-		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
-
-	case "projection_ids":
-		r := make([]string, len(m.ProjectionIDs))
-		for i, id := range m.ProjectionIDs {
-			r[i] = "projection/" + strconv.Itoa(id)
+	case "voted_ids":
+		r := make([]string, len(m.VotedIDs))
+		for i, id := range m.VotedIDs {
+			r[i] = "user/" + strconv.Itoa(id)
 		}
 		return r
 
@@ -261,6 +289,9 @@ func (m *Poll) GetFqids(field string) []string {
 		}
 		return r
 
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
+
 	case "entitled_group_ids":
 		r := make([]string, len(m.EntitledGroupIDs))
 		for i, id := range m.EntitledGroupIDs {
@@ -268,10 +299,10 @@ func (m *Poll) GetFqids(field string) []string {
 		}
 		return r
 
-	case "voted_ids":
-		r := make([]string, len(m.VotedIDs))
-		for i, id := range m.VotedIDs {
-			r[i] = "user/" + strconv.Itoa(id)
+	case "projection_ids":
+		r := make([]string, len(m.ProjectionIDs))
+		for i, id := range m.ProjectionIDs {
+			r[i] = "projection/" + strconv.Itoa(id)
 		}
 		return r
 
@@ -509,4 +540,12 @@ func (m *Poll) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Poll) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

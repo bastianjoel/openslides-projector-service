@@ -20,17 +20,25 @@ type MotionCategory struct {
 	SequentialNumber int     `json:"sequential_number"`
 	Weight           *int    `json:"weight"`
 	loadedRelations  map[string]struct{}
-	childs           []MotionCategory
-	meeting          *Meeting
 	parent           *MotionCategory
-	motions          []Motion
+	childs           []*MotionCategory
+	meeting          *Meeting
+	motions          []*Motion
 }
 
 func (m *MotionCategory) CollectionName() string {
 	return "motion_category"
 }
 
-func (m *MotionCategory) Childs() []MotionCategory {
+func (m *MotionCategory) Parent() *MotionCategory {
+	if _, ok := m.loadedRelations["parent_id"]; !ok {
+		log.Panic().Msg("Tried to access Parent relation of MotionCategory which was not loaded.")
+	}
+
+	return m.parent
+}
+
+func (m *MotionCategory) Childs() []*MotionCategory {
 	if _, ok := m.loadedRelations["child_ids"]; !ok {
 		log.Panic().Msg("Tried to access Childs relation of MotionCategory which was not loaded.")
 	}
@@ -46,15 +54,7 @@ func (m *MotionCategory) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *MotionCategory) Parent() *MotionCategory {
-	if _, ok := m.loadedRelations["parent_id"]; !ok {
-		log.Panic().Msg("Tried to access Parent relation of MotionCategory which was not loaded.")
-	}
-
-	return m.parent
-}
-
-func (m *MotionCategory) Motions() []Motion {
+func (m *MotionCategory) Motions() []*Motion {
 	if _, ok := m.loadedRelations["motion_ids"]; !ok {
 		log.Panic().Msg("Tried to access Motions relation of MotionCategory which was not loaded.")
 	}
@@ -65,14 +65,14 @@ func (m *MotionCategory) Motions() []Motion {
 func (m *MotionCategory) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "child_ids":
-			m.childs = content.([]MotionCategory)
-		case "meeting_id":
-			m.meeting = content.(*Meeting)
 		case "parent_id":
 			m.parent = content.(*MotionCategory)
+		case "child_ids":
+			m.childs = content.([]*MotionCategory)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
 		case "motion_ids":
-			m.motions = content.([]Motion)
+			m.motions = content.([]*Motion)
 		default:
 			return
 		}
@@ -84,37 +84,58 @@ func (m *MotionCategory) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *MotionCategory) SetRelatedJSON(field string, content []byte) error {
+func (m *MotionCategory) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "child_ids":
-		err := json.Unmarshal(content, &m.childs)
-		if err != nil {
-			return err
-		}
-	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
-		if err != nil {
-			return err
-		}
 	case "parent_id":
-		err := json.Unmarshal(content, &m.parent)
+		var entry MotionCategory
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.parent = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "child_ids":
+		var entry MotionCategory
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.childs = append(m.childs, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "motion_ids":
-		err := json.Unmarshal(content, &m.motions)
+		var entry Motion
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.motions = append(m.motions, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *MotionCategory) Get(field string) interface{} {
@@ -146,6 +167,11 @@ func (m *MotionCategory) Get(field string) interface{} {
 
 func (m *MotionCategory) GetFqids(field string) []string {
 	switch field {
+	case "parent_id":
+		if m.ParentID != nil {
+			return []string{"motion_category/" + strconv.Itoa(*m.ParentID)}
+		}
+
 	case "child_ids":
 		r := make([]string, len(m.ChildIDs))
 		for i, id := range m.ChildIDs {
@@ -155,11 +181,6 @@ func (m *MotionCategory) GetFqids(field string) []string {
 
 	case "meeting_id":
 		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
-
-	case "parent_id":
-		if m.ParentID != nil {
-			return []string{"motion_category/" + strconv.Itoa(*m.ParentID)}
-		}
 
 	case "motion_ids":
 		r := make([]string, len(m.MotionIDs))
@@ -243,4 +264,12 @@ func (m *MotionCategory) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *MotionCategory) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

@@ -46,22 +46,28 @@ func (m *OrganizationTag) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *OrganizationTag) SetRelatedJSON(field string, content []byte) error {
+func (m *OrganizationTag) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "organization_id":
-		err := json.Unmarshal(content, &m.organization)
+		var entry Organization
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.organization = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *OrganizationTag) Get(field string) interface{} {
@@ -126,4 +132,12 @@ func (m *OrganizationTag) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *OrganizationTag) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

@@ -68,32 +68,48 @@ func (m *MotionWorkingGroupSpeaker) SetRelated(field string, content interface{}
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *MotionWorkingGroupSpeaker) SetRelatedJSON(field string, content []byte) error {
+func (m *MotionWorkingGroupSpeaker) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "meeting_user_id":
-		err := json.Unmarshal(content, &m.meetingUser)
+		var entry MeetingUser
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meetingUser = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "motion_id":
-		err := json.Unmarshal(content, &m.motion)
+		var entry Motion
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.motion = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *MotionWorkingGroupSpeaker) Get(field string) interface{} {
@@ -164,4 +180,12 @@ func (m *MotionWorkingGroupSpeaker) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *MotionWorkingGroupSpeaker) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

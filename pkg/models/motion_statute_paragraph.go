@@ -17,12 +17,20 @@ type MotionStatuteParagraph struct {
 	Title            string  `json:"title"`
 	Weight           *int    `json:"weight"`
 	loadedRelations  map[string]struct{}
+	motions          []*Motion
 	meeting          *Meeting
-	motions          []Motion
 }
 
 func (m *MotionStatuteParagraph) CollectionName() string {
 	return "motion_statute_paragraph"
+}
+
+func (m *MotionStatuteParagraph) Motions() []*Motion {
+	if _, ok := m.loadedRelations["motion_ids"]; !ok {
+		log.Panic().Msg("Tried to access Motions relation of MotionStatuteParagraph which was not loaded.")
+	}
+
+	return m.motions
 }
 
 func (m *MotionStatuteParagraph) Meeting() Meeting {
@@ -33,21 +41,13 @@ func (m *MotionStatuteParagraph) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *MotionStatuteParagraph) Motions() []Motion {
-	if _, ok := m.loadedRelations["motion_ids"]; !ok {
-		log.Panic().Msg("Tried to access Motions relation of MotionStatuteParagraph which was not loaded.")
-	}
-
-	return m.motions
-}
-
 func (m *MotionStatuteParagraph) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
+		case "motion_ids":
+			m.motions = content.([]*Motion)
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
-		case "motion_ids":
-			m.motions = content.([]Motion)
 		default:
 			return
 		}
@@ -59,27 +59,38 @@ func (m *MotionStatuteParagraph) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *MotionStatuteParagraph) SetRelatedJSON(field string, content []byte) error {
+func (m *MotionStatuteParagraph) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
-		if err != nil {
-			return err
-		}
 	case "motion_ids":
-		err := json.Unmarshal(content, &m.motions)
+		var entry Motion
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.motions = append(m.motions, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *MotionStatuteParagraph) Get(field string) interface{} {
@@ -105,15 +116,15 @@ func (m *MotionStatuteParagraph) Get(field string) interface{} {
 
 func (m *MotionStatuteParagraph) GetFqids(field string) []string {
 	switch field {
-	case "meeting_id":
-		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
-
 	case "motion_ids":
 		r := make([]string, len(m.MotionIDs))
 		for i, id := range m.MotionIDs {
 			r[i] = "motion/" + strconv.Itoa(id)
 		}
 		return r
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
 	}
 	return []string{}
 }
@@ -169,4 +180,12 @@ func (m *MotionStatuteParagraph) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *MotionStatuteParagraph) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

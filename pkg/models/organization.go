@@ -47,48 +47,24 @@ type Organization struct {
 	UsersEmailSubject          *string         `json:"users_email_subject"`
 	VoteDecryptPublicMainKey   *string         `json:"vote_decrypt_public_main_key"`
 	loadedRelations            map[string]struct{}
-	genders                    []Gender
-	themes                     []Theme
-	users                      []User
-	activeMeetings             []Meeting
-	committees                 []Committee
-	mediafiles                 []Mediafile
-	templateMeetings           []Meeting
+	activeMeetings             []*Meeting
+	genders                    []*Gender
+	mediafiles                 []*Mediafile
+	organizationTags           []*OrganizationTag
 	theme                      *Theme
-	archivedMeetings           []Meeting
-	organizationTags           []OrganizationTag
-	publishedMediafiles        []Mediafile
+	themes                     []*Theme
+	archivedMeetings           []*Meeting
+	templateMeetings           []*Meeting
+	users                      []*User
+	publishedMediafiles        []*Mediafile
+	committees                 []*Committee
 }
 
 func (m *Organization) CollectionName() string {
 	return "organization"
 }
 
-func (m *Organization) Genders() []Gender {
-	if _, ok := m.loadedRelations["gender_ids"]; !ok {
-		log.Panic().Msg("Tried to access Genders relation of Organization which was not loaded.")
-	}
-
-	return m.genders
-}
-
-func (m *Organization) Themes() []Theme {
-	if _, ok := m.loadedRelations["theme_ids"]; !ok {
-		log.Panic().Msg("Tried to access Themes relation of Organization which was not loaded.")
-	}
-
-	return m.themes
-}
-
-func (m *Organization) Users() []User {
-	if _, ok := m.loadedRelations["user_ids"]; !ok {
-		log.Panic().Msg("Tried to access Users relation of Organization which was not loaded.")
-	}
-
-	return m.users
-}
-
-func (m *Organization) ActiveMeetings() []Meeting {
+func (m *Organization) ActiveMeetings() []*Meeting {
 	if _, ok := m.loadedRelations["active_meeting_ids"]; !ok {
 		log.Panic().Msg("Tried to access ActiveMeetings relation of Organization which was not loaded.")
 	}
@@ -96,15 +72,15 @@ func (m *Organization) ActiveMeetings() []Meeting {
 	return m.activeMeetings
 }
 
-func (m *Organization) Committees() []Committee {
-	if _, ok := m.loadedRelations["committee_ids"]; !ok {
-		log.Panic().Msg("Tried to access Committees relation of Organization which was not loaded.")
+func (m *Organization) Genders() []*Gender {
+	if _, ok := m.loadedRelations["gender_ids"]; !ok {
+		log.Panic().Msg("Tried to access Genders relation of Organization which was not loaded.")
 	}
 
-	return m.committees
+	return m.genders
 }
 
-func (m *Organization) Mediafiles() []Mediafile {
+func (m *Organization) Mediafiles() []*Mediafile {
 	if _, ok := m.loadedRelations["mediafile_ids"]; !ok {
 		log.Panic().Msg("Tried to access Mediafiles relation of Organization which was not loaded.")
 	}
@@ -112,12 +88,12 @@ func (m *Organization) Mediafiles() []Mediafile {
 	return m.mediafiles
 }
 
-func (m *Organization) TemplateMeetings() []Meeting {
-	if _, ok := m.loadedRelations["template_meeting_ids"]; !ok {
-		log.Panic().Msg("Tried to access TemplateMeetings relation of Organization which was not loaded.")
+func (m *Organization) OrganizationTags() []*OrganizationTag {
+	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
+		log.Panic().Msg("Tried to access OrganizationTags relation of Organization which was not loaded.")
 	}
 
-	return m.templateMeetings
+	return m.organizationTags
 }
 
 func (m *Organization) Theme() Theme {
@@ -128,7 +104,15 @@ func (m *Organization) Theme() Theme {
 	return *m.theme
 }
 
-func (m *Organization) ArchivedMeetings() []Meeting {
+func (m *Organization) Themes() []*Theme {
+	if _, ok := m.loadedRelations["theme_ids"]; !ok {
+		log.Panic().Msg("Tried to access Themes relation of Organization which was not loaded.")
+	}
+
+	return m.themes
+}
+
+func (m *Organization) ArchivedMeetings() []*Meeting {
 	if _, ok := m.loadedRelations["archived_meeting_ids"]; !ok {
 		log.Panic().Msg("Tried to access ArchivedMeetings relation of Organization which was not loaded.")
 	}
@@ -136,15 +120,23 @@ func (m *Organization) ArchivedMeetings() []Meeting {
 	return m.archivedMeetings
 }
 
-func (m *Organization) OrganizationTags() []OrganizationTag {
-	if _, ok := m.loadedRelations["organization_tag_ids"]; !ok {
-		log.Panic().Msg("Tried to access OrganizationTags relation of Organization which was not loaded.")
+func (m *Organization) TemplateMeetings() []*Meeting {
+	if _, ok := m.loadedRelations["template_meeting_ids"]; !ok {
+		log.Panic().Msg("Tried to access TemplateMeetings relation of Organization which was not loaded.")
 	}
 
-	return m.organizationTags
+	return m.templateMeetings
 }
 
-func (m *Organization) PublishedMediafiles() []Mediafile {
+func (m *Organization) Users() []*User {
+	if _, ok := m.loadedRelations["user_ids"]; !ok {
+		log.Panic().Msg("Tried to access Users relation of Organization which was not loaded.")
+	}
+
+	return m.users
+}
+
+func (m *Organization) PublishedMediafiles() []*Mediafile {
 	if _, ok := m.loadedRelations["published_mediafile_ids"]; !ok {
 		log.Panic().Msg("Tried to access PublishedMediafiles relation of Organization which was not loaded.")
 	}
@@ -152,31 +144,39 @@ func (m *Organization) PublishedMediafiles() []Mediafile {
 	return m.publishedMediafiles
 }
 
+func (m *Organization) Committees() []*Committee {
+	if _, ok := m.loadedRelations["committee_ids"]; !ok {
+		log.Panic().Msg("Tried to access Committees relation of Organization which was not loaded.")
+	}
+
+	return m.committees
+}
+
 func (m *Organization) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "gender_ids":
-			m.genders = content.([]Gender)
-		case "theme_ids":
-			m.themes = content.([]Theme)
-		case "user_ids":
-			m.users = content.([]User)
 		case "active_meeting_ids":
-			m.activeMeetings = content.([]Meeting)
-		case "committee_ids":
-			m.committees = content.([]Committee)
+			m.activeMeetings = content.([]*Meeting)
+		case "gender_ids":
+			m.genders = content.([]*Gender)
 		case "mediafile_ids":
-			m.mediafiles = content.([]Mediafile)
-		case "template_meeting_ids":
-			m.templateMeetings = content.([]Meeting)
+			m.mediafiles = content.([]*Mediafile)
+		case "organization_tag_ids":
+			m.organizationTags = content.([]*OrganizationTag)
 		case "theme_id":
 			m.theme = content.(*Theme)
+		case "theme_ids":
+			m.themes = content.([]*Theme)
 		case "archived_meeting_ids":
-			m.archivedMeetings = content.([]Meeting)
-		case "organization_tag_ids":
-			m.organizationTags = content.([]OrganizationTag)
+			m.archivedMeetings = content.([]*Meeting)
+		case "template_meeting_ids":
+			m.templateMeetings = content.([]*Meeting)
+		case "user_ids":
+			m.users = content.([]*User)
 		case "published_mediafile_ids":
-			m.publishedMediafiles = content.([]Mediafile)
+			m.publishedMediafiles = content.([]*Mediafile)
+		case "committee_ids":
+			m.committees = content.([]*Committee)
 		default:
 			return
 		}
@@ -188,72 +188,128 @@ func (m *Organization) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Organization) SetRelatedJSON(field string, content []byte) error {
+func (m *Organization) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "gender_ids":
-		err := json.Unmarshal(content, &m.genders)
-		if err != nil {
-			return err
-		}
-	case "theme_ids":
-		err := json.Unmarshal(content, &m.themes)
-		if err != nil {
-			return err
-		}
-	case "user_ids":
-		err := json.Unmarshal(content, &m.users)
-		if err != nil {
-			return err
-		}
 	case "active_meeting_ids":
-		err := json.Unmarshal(content, &m.activeMeetings)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
-	case "committee_ids":
-		err := json.Unmarshal(content, &m.committees)
+
+		m.activeMeetings = append(m.activeMeetings, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "gender_ids":
+		var entry Gender
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.genders = append(m.genders, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "mediafile_ids":
-		err := json.Unmarshal(content, &m.mediafiles)
+		var entry Mediafile
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
-	case "template_meeting_ids":
-		err := json.Unmarshal(content, &m.templateMeetings)
-		if err != nil {
-			return err
-		}
-	case "theme_id":
-		err := json.Unmarshal(content, &m.theme)
-		if err != nil {
-			return err
-		}
-	case "archived_meeting_ids":
-		err := json.Unmarshal(content, &m.archivedMeetings)
-		if err != nil {
-			return err
-		}
+
+		m.mediafiles = append(m.mediafiles, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "organization_tag_ids":
-		err := json.Unmarshal(content, &m.organizationTags)
+		var entry OrganizationTag
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.organizationTags = append(m.organizationTags, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "theme_id":
+		var entry Theme
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.theme = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "theme_ids":
+		var entry Theme
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.themes = append(m.themes, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "archived_meeting_ids":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.archivedMeetings = append(m.archivedMeetings, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "template_meeting_ids":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.templateMeetings = append(m.templateMeetings, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "user_ids":
+		var entry User
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.users = append(m.users, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "published_mediafile_ids":
-		err := json.Unmarshal(content, &m.publishedMediafiles)
+		var entry Mediafile
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.publishedMediafiles = append(m.publishedMediafiles, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "committee_ids":
+		var entry Committee
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.committees = append(m.committees, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Organization) Get(field string) interface{} {
@@ -339,27 +395,6 @@ func (m *Organization) Get(field string) interface{} {
 
 func (m *Organization) GetFqids(field string) []string {
 	switch field {
-	case "gender_ids":
-		r := make([]string, len(m.GenderIDs))
-		for i, id := range m.GenderIDs {
-			r[i] = "gender/" + strconv.Itoa(id)
-		}
-		return r
-
-	case "theme_ids":
-		r := make([]string, len(m.ThemeIDs))
-		for i, id := range m.ThemeIDs {
-			r[i] = "theme/" + strconv.Itoa(id)
-		}
-		return r
-
-	case "user_ids":
-		r := make([]string, len(m.UserIDs))
-		for i, id := range m.UserIDs {
-			r[i] = "user/" + strconv.Itoa(id)
-		}
-		return r
-
 	case "active_meeting_ids":
 		r := make([]string, len(m.ActiveMeetingIDs))
 		for i, id := range m.ActiveMeetingIDs {
@@ -367,10 +402,10 @@ func (m *Organization) GetFqids(field string) []string {
 		}
 		return r
 
-	case "committee_ids":
-		r := make([]string, len(m.CommitteeIDs))
-		for i, id := range m.CommitteeIDs {
-			r[i] = "committee/" + strconv.Itoa(id)
+	case "gender_ids":
+		r := make([]string, len(m.GenderIDs))
+		for i, id := range m.GenderIDs {
+			r[i] = "gender/" + strconv.Itoa(id)
 		}
 		return r
 
@@ -381,15 +416,22 @@ func (m *Organization) GetFqids(field string) []string {
 		}
 		return r
 
-	case "template_meeting_ids":
-		r := make([]string, len(m.TemplateMeetingIDs))
-		for i, id := range m.TemplateMeetingIDs {
-			r[i] = "meeting/" + strconv.Itoa(id)
+	case "organization_tag_ids":
+		r := make([]string, len(m.OrganizationTagIDs))
+		for i, id := range m.OrganizationTagIDs {
+			r[i] = "organization_tag/" + strconv.Itoa(id)
 		}
 		return r
 
 	case "theme_id":
 		return []string{"theme/" + strconv.Itoa(m.ThemeID)}
+
+	case "theme_ids":
+		r := make([]string, len(m.ThemeIDs))
+		for i, id := range m.ThemeIDs {
+			r[i] = "theme/" + strconv.Itoa(id)
+		}
+		return r
 
 	case "archived_meeting_ids":
 		r := make([]string, len(m.ArchivedMeetingIDs))
@@ -398,10 +440,17 @@ func (m *Organization) GetFqids(field string) []string {
 		}
 		return r
 
-	case "organization_tag_ids":
-		r := make([]string, len(m.OrganizationTagIDs))
-		for i, id := range m.OrganizationTagIDs {
-			r[i] = "organization_tag/" + strconv.Itoa(id)
+	case "template_meeting_ids":
+		r := make([]string, len(m.TemplateMeetingIDs))
+		for i, id := range m.TemplateMeetingIDs {
+			r[i] = "meeting/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "user_ids":
+		r := make([]string, len(m.UserIDs))
+		for i, id := range m.UserIDs {
+			r[i] = "user/" + strconv.Itoa(id)
 		}
 		return r
 
@@ -409,6 +458,13 @@ func (m *Organization) GetFqids(field string) []string {
 		r := make([]string, len(m.PublishedMediafileIDs))
 		for i, id := range m.PublishedMediafileIDs {
 			r[i] = "mediafile/" + strconv.Itoa(id)
+		}
+		return r
+
+	case "committee_ids":
+		r := make([]string, len(m.CommitteeIDs))
+		for i, id := range m.CommitteeIDs {
+			r[i] = "committee/" + strconv.Itoa(id)
 		}
 		return r
 	}
@@ -676,4 +732,12 @@ func (m *Organization) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Organization) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

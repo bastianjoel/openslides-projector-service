@@ -24,38 +24,14 @@ type Mediafile struct {
 	Title                               *string         `json:"title"`
 	Token                               *string         `json:"token"`
 	loadedRelations                     map[string]struct{}
-	meetingMediafiles                   []MeetingMediafile
-	childs                              []Mediafile
-	publishedToMeetingsInOrganization   *Organization
 	parent                              *Mediafile
+	publishedToMeetingsInOrganization   *Organization
+	meetingMediafiles                   []*MeetingMediafile
+	childs                              []*Mediafile
 }
 
 func (m *Mediafile) CollectionName() string {
 	return "mediafile"
-}
-
-func (m *Mediafile) MeetingMediafiles() []MeetingMediafile {
-	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
-		log.Panic().Msg("Tried to access MeetingMediafiles relation of Mediafile which was not loaded.")
-	}
-
-	return m.meetingMediafiles
-}
-
-func (m *Mediafile) Childs() []Mediafile {
-	if _, ok := m.loadedRelations["child_ids"]; !ok {
-		log.Panic().Msg("Tried to access Childs relation of Mediafile which was not loaded.")
-	}
-
-	return m.childs
-}
-
-func (m *Mediafile) PublishedToMeetingsInOrganization() *Organization {
-	if _, ok := m.loadedRelations["published_to_meetings_in_organization_id"]; !ok {
-		log.Panic().Msg("Tried to access PublishedToMeetingsInOrganization relation of Mediafile which was not loaded.")
-	}
-
-	return m.publishedToMeetingsInOrganization
 }
 
 func (m *Mediafile) Parent() *Mediafile {
@@ -66,17 +42,41 @@ func (m *Mediafile) Parent() *Mediafile {
 	return m.parent
 }
 
+func (m *Mediafile) PublishedToMeetingsInOrganization() *Organization {
+	if _, ok := m.loadedRelations["published_to_meetings_in_organization_id"]; !ok {
+		log.Panic().Msg("Tried to access PublishedToMeetingsInOrganization relation of Mediafile which was not loaded.")
+	}
+
+	return m.publishedToMeetingsInOrganization
+}
+
+func (m *Mediafile) MeetingMediafiles() []*MeetingMediafile {
+	if _, ok := m.loadedRelations["meeting_mediafile_ids"]; !ok {
+		log.Panic().Msg("Tried to access MeetingMediafiles relation of Mediafile which was not loaded.")
+	}
+
+	return m.meetingMediafiles
+}
+
+func (m *Mediafile) Childs() []*Mediafile {
+	if _, ok := m.loadedRelations["child_ids"]; !ok {
+		log.Panic().Msg("Tried to access Childs relation of Mediafile which was not loaded.")
+	}
+
+	return m.childs
+}
+
 func (m *Mediafile) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "meeting_mediafile_ids":
-			m.meetingMediafiles = content.([]MeetingMediafile)
-		case "child_ids":
-			m.childs = content.([]Mediafile)
-		case "published_to_meetings_in_organization_id":
-			m.publishedToMeetingsInOrganization = content.(*Organization)
 		case "parent_id":
 			m.parent = content.(*Mediafile)
+		case "published_to_meetings_in_organization_id":
+			m.publishedToMeetingsInOrganization = content.(*Organization)
+		case "meeting_mediafile_ids":
+			m.meetingMediafiles = content.([]*MeetingMediafile)
+		case "child_ids":
+			m.childs = content.([]*Mediafile)
 		default:
 			return
 		}
@@ -88,37 +88,58 @@ func (m *Mediafile) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *Mediafile) SetRelatedJSON(field string, content []byte) error {
+func (m *Mediafile) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "meeting_mediafile_ids":
-		err := json.Unmarshal(content, &m.meetingMediafiles)
-		if err != nil {
-			return err
-		}
-	case "child_ids":
-		err := json.Unmarshal(content, &m.childs)
-		if err != nil {
-			return err
-		}
-	case "published_to_meetings_in_organization_id":
-		err := json.Unmarshal(content, &m.publishedToMeetingsInOrganization)
-		if err != nil {
-			return err
-		}
 	case "parent_id":
-		err := json.Unmarshal(content, &m.parent)
+		var entry Mediafile
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.parent = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "published_to_meetings_in_organization_id":
+		var entry Organization
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.publishedToMeetingsInOrganization = &entry
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_mediafile_ids":
+		var entry MeetingMediafile
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meetingMediafiles = append(m.meetingMediafiles, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "child_ids":
+		var entry Mediafile
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.childs = append(m.childs, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *Mediafile) Get(field string) interface{} {
@@ -158,6 +179,16 @@ func (m *Mediafile) Get(field string) interface{} {
 
 func (m *Mediafile) GetFqids(field string) []string {
 	switch field {
+	case "parent_id":
+		if m.ParentID != nil {
+			return []string{"mediafile/" + strconv.Itoa(*m.ParentID)}
+		}
+
+	case "published_to_meetings_in_organization_id":
+		if m.PublishedToMeetingsInOrganizationID != nil {
+			return []string{"organization/" + strconv.Itoa(*m.PublishedToMeetingsInOrganizationID)}
+		}
+
 	case "meeting_mediafile_ids":
 		r := make([]string, len(m.MeetingMediafileIDs))
 		for i, id := range m.MeetingMediafileIDs {
@@ -171,16 +202,6 @@ func (m *Mediafile) GetFqids(field string) []string {
 			r[i] = "mediafile/" + strconv.Itoa(id)
 		}
 		return r
-
-	case "published_to_meetings_in_organization_id":
-		if m.PublishedToMeetingsInOrganizationID != nil {
-			return []string{"organization/" + strconv.Itoa(*m.PublishedToMeetingsInOrganizationID)}
-		}
-
-	case "parent_id":
-		if m.ParentID != nil {
-			return []string{"mediafile/" + strconv.Itoa(*m.ParentID)}
-		}
 	}
 	return []string{}
 }
@@ -285,4 +306,12 @@ func (m *Mediafile) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *Mediafile) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

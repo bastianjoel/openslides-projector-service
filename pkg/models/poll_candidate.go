@@ -68,32 +68,48 @@ func (m *PollCandidate) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *PollCandidate) SetRelatedJSON(field string, content []byte) error {
+func (m *PollCandidate) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "poll_candidate_list_id":
-		err := json.Unmarshal(content, &m.pollCandidateList)
+		var entry PollCandidateList
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.pollCandidateList = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "user_id":
-		err := json.Unmarshal(content, &m.user)
+		var entry User
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.user = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *PollCandidate) Get(field string) interface{} {
@@ -166,4 +182,12 @@ func (m *PollCandidate) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *PollCandidate) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

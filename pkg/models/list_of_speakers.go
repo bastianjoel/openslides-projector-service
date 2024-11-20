@@ -19,9 +19,9 @@ type ListOfSpeakers struct {
 	StructureLevelListOfSpeakersIDs []int  `json:"structure_level_list_of_speakers_ids"`
 	loadedRelations                 map[string]struct{}
 	meeting                         *Meeting
-	projections                     []Projection
-	speakers                        []Speaker
-	structureLevelListOfSpeakerss   []StructureLevelListOfSpeakers
+	projections                     []*Projection
+	speakers                        []*Speaker
+	structureLevelListOfSpeakerss   []*StructureLevelListOfSpeakers
 }
 
 func (m *ListOfSpeakers) CollectionName() string {
@@ -36,7 +36,7 @@ func (m *ListOfSpeakers) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *ListOfSpeakers) Projections() []Projection {
+func (m *ListOfSpeakers) Projections() []*Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of ListOfSpeakers which was not loaded.")
 	}
@@ -44,7 +44,7 @@ func (m *ListOfSpeakers) Projections() []Projection {
 	return m.projections
 }
 
-func (m *ListOfSpeakers) Speakers() []Speaker {
+func (m *ListOfSpeakers) Speakers() []*Speaker {
 	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
 		log.Panic().Msg("Tried to access Speakers relation of ListOfSpeakers which was not loaded.")
 	}
@@ -52,7 +52,7 @@ func (m *ListOfSpeakers) Speakers() []Speaker {
 	return m.speakers
 }
 
-func (m *ListOfSpeakers) StructureLevelListOfSpeakerss() []StructureLevelListOfSpeakers {
+func (m *ListOfSpeakers) StructureLevelListOfSpeakerss() []*StructureLevelListOfSpeakers {
 	if _, ok := m.loadedRelations["structure_level_list_of_speakers_ids"]; !ok {
 		log.Panic().Msg("Tried to access StructureLevelListOfSpeakerss relation of ListOfSpeakers which was not loaded.")
 	}
@@ -66,11 +66,11 @@ func (m *ListOfSpeakers) SetRelated(field string, content interface{}) {
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
 		case "projection_ids":
-			m.projections = content.([]Projection)
+			m.projections = content.([]*Projection)
 		case "speaker_ids":
-			m.speakers = content.([]Speaker)
+			m.speakers = content.([]*Speaker)
 		case "structure_level_list_of_speakers_ids":
-			m.structureLevelListOfSpeakerss = content.([]StructureLevelListOfSpeakers)
+			m.structureLevelListOfSpeakerss = content.([]*StructureLevelListOfSpeakers)
 		default:
 			return
 		}
@@ -82,37 +82,58 @@ func (m *ListOfSpeakers) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *ListOfSpeakers) SetRelatedJSON(field string, content []byte) error {
+func (m *ListOfSpeakers) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "projection_ids":
-		err := json.Unmarshal(content, &m.projections)
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.projections = append(m.projections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "speaker_ids":
-		err := json.Unmarshal(content, &m.speakers)
+		var entry Speaker
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.speakers = append(m.speakers, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "structure_level_list_of_speakers_ids":
-		err := json.Unmarshal(content, &m.structureLevelListOfSpeakerss)
+		var entry StructureLevelListOfSpeakers
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.structureLevelListOfSpeakerss = append(m.structureLevelListOfSpeakerss, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *ListOfSpeakers) Get(field string) interface{} {
@@ -225,4 +246,12 @@ func (m *ListOfSpeakers) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *ListOfSpeakers) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

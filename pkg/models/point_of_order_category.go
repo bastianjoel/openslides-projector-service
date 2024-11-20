@@ -16,7 +16,7 @@ type PointOfOrderCategory struct {
 	Text            string `json:"text"`
 	loadedRelations map[string]struct{}
 	meeting         *Meeting
-	speakers        []Speaker
+	speakers        []*Speaker
 }
 
 func (m *PointOfOrderCategory) CollectionName() string {
@@ -31,7 +31,7 @@ func (m *PointOfOrderCategory) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *PointOfOrderCategory) Speakers() []Speaker {
+func (m *PointOfOrderCategory) Speakers() []*Speaker {
 	if _, ok := m.loadedRelations["speaker_ids"]; !ok {
 		log.Panic().Msg("Tried to access Speakers relation of PointOfOrderCategory which was not loaded.")
 	}
@@ -45,7 +45,7 @@ func (m *PointOfOrderCategory) SetRelated(field string, content interface{}) {
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
 		case "speaker_ids":
-			m.speakers = content.([]Speaker)
+			m.speakers = content.([]*Speaker)
 		default:
 			return
 		}
@@ -57,27 +57,38 @@ func (m *PointOfOrderCategory) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *PointOfOrderCategory) SetRelatedJSON(field string, content []byte) error {
+func (m *PointOfOrderCategory) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "speaker_ids":
-		err := json.Unmarshal(content, &m.speakers)
+		var entry Speaker
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.speakers = append(m.speakers, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *PointOfOrderCategory) Get(field string) interface{} {
@@ -149,4 +160,12 @@ func (m *PointOfOrderCategory) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *PointOfOrderCategory) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

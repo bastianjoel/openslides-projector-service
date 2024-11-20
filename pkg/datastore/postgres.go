@@ -34,7 +34,7 @@ func (ds *Datastore) getFull(fqids []string) (map[string][]byte, error) {
 	result := map[string][]byte{}
 	for rows.Next() {
 		raw := rows.RawValues()
-		result[string(raw[0])] = raw[1]
+		result[string(raw[0])] = append([]byte{}, raw[1]...)
 	}
 
 	return result, nil

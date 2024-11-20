@@ -11,14 +11,14 @@ import (
 type {{.GoName}} struct { {{range .Fields}}
 	{{.GoName}} {{.ValueType}} `json:"{{.FieldName}}"`{{end}}
 	{{if .HasRelations}}loadedRelations map[string]struct{}{{range .Relations}}
-	{{.PropNameLc}} {{if .List}}[]{{else}}*{{end}}{{.CollectionName}}{{end}}{{end}}
+	{{.PropNameLc}} {{if .List}}[]{{end}}*{{.CollectionName}}{{end}}{{end}}
 }
 
 func (m *{{.GoName}}) CollectionName() string {
 	return "{{.CollectionName}}"
 }
 
-{{range .Relations}}func (m *{{.GoName}}) {{.PropName}}() {{if .List}}[]{{else}}{{if not .Required}}*{{end}}{{end}}{{.CollectionName}} {
+{{range .Relations}}func (m *{{.GoName}}) {{.PropName}}() {{if .List}}[]*{{else}}{{if not .Required}}*{{end}}{{end}}{{.CollectionName}} {
 	if _, ok := m.loadedRelations["{{.IdField}}"]; !ok {
 		log.Panic().Msg("Tried to access {{.PropName}} relation of {{.GoName}} which was not loaded.")
 	}
@@ -31,7 +31,7 @@ func (m *{{.GoName}}) SetRelated(field string, content interface{}) { {{if .HasR
 	if content != nil {
 		switch field { {{range .Relations}}
 		case "{{.IdField}}":
-	  	m.{{.PropNameLc}} = content.({{if .List}}[]{{else}}*{{end}}{{.CollectionName}}){{end}}
+	  	m.{{.PropNameLc}} = content.({{if .List}}[]{{end}}*{{.CollectionName}}){{end}}
 		default:
 			return
 		}
@@ -43,22 +43,31 @@ func (m *{{.GoName}}) SetRelated(field string, content interface{}) { {{if .HasR
 	m.loadedRelations[field] = struct{}{}
 {{end}}}
 
-func (m *{{.GoName}}) SetRelatedJSON(field string, content []byte) error { {{if .HasRelations}}
+func (m *{{.GoName}}) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) { {{if .HasRelations}}
+	var result *RelatedModelsAccessor
 	switch field { {{range .Relations}}
 	case "{{.IdField}}":
-		err := json.Unmarshal(content, &m.{{.PropNameLc}})
+		var entry {{.CollectionName}}
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
-		}{{end}}
+			return nil, err
+		}
+		{{if .List}}
+		m.{{.PropNameLc}} = append(m.{{.PropNameLc}}, &entry)
+		{{else}}
+		m.{{.PropNameLc}} = &entry
+		{{end}}
+		result = entry.GetRelatedModelsAccessor() {{end}}
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
-	m.loadedRelations[field] = struct{}{}{{end}}
-	return nil
+	m.loadedRelations[field] = struct{}{}
+	return result, nil{{else}}
+	return nil, nil{{end}}
 }
 
 func (m *{{.GoName}}) Get(field string) interface{} {
@@ -100,3 +109,10 @@ func (m *{{.GoName}}) Update(data map[string]string) error { {{range .Fields}}
 	return nil
 }
 
+func (m *{{.GoName}}) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
+}

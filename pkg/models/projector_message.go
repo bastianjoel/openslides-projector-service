@@ -15,7 +15,7 @@ type ProjectorMessage struct {
 	ProjectionIDs   []int   `json:"projection_ids"`
 	loadedRelations map[string]struct{}
 	meeting         *Meeting
-	projections     []Projection
+	projections     []*Projection
 }
 
 func (m *ProjectorMessage) CollectionName() string {
@@ -30,7 +30,7 @@ func (m *ProjectorMessage) Meeting() Meeting {
 	return *m.meeting
 }
 
-func (m *ProjectorMessage) Projections() []Projection {
+func (m *ProjectorMessage) Projections() []*Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of ProjectorMessage which was not loaded.")
 	}
@@ -44,7 +44,7 @@ func (m *ProjectorMessage) SetRelated(field string, content interface{}) {
 		case "meeting_id":
 			m.meeting = content.(*Meeting)
 		case "projection_ids":
-			m.projections = content.([]Projection)
+			m.projections = content.([]*Projection)
 		default:
 			return
 		}
@@ -56,27 +56,38 @@ func (m *ProjectorMessage) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *ProjectorMessage) SetRelatedJSON(field string, content []byte) error {
+func (m *ProjectorMessage) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
 	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "projection_ids":
-		err := json.Unmarshal(content, &m.projections)
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.projections = append(m.projections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *ProjectorMessage) Get(field string) interface{} {
@@ -139,4 +150,12 @@ func (m *ProjectorMessage) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *ProjectorMessage) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }

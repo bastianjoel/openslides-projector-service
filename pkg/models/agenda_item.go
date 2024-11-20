@@ -27,23 +27,15 @@ type AgendaItem struct {
 	Type            *string `json:"type"`
 	Weight          *int    `json:"weight"`
 	loadedRelations map[string]struct{}
-	meeting         *Meeting
 	parent          *AgendaItem
-	projections     []Projection
-	tags            []Tag
-	childs          []AgendaItem
+	projections     []*Projection
+	tags            []*Tag
+	childs          []*AgendaItem
+	meeting         *Meeting
 }
 
 func (m *AgendaItem) CollectionName() string {
 	return "agenda_item"
-}
-
-func (m *AgendaItem) Meeting() Meeting {
-	if _, ok := m.loadedRelations["meeting_id"]; !ok {
-		log.Panic().Msg("Tried to access Meeting relation of AgendaItem which was not loaded.")
-	}
-
-	return *m.meeting
 }
 
 func (m *AgendaItem) Parent() *AgendaItem {
@@ -54,7 +46,7 @@ func (m *AgendaItem) Parent() *AgendaItem {
 	return m.parent
 }
 
-func (m *AgendaItem) Projections() []Projection {
+func (m *AgendaItem) Projections() []*Projection {
 	if _, ok := m.loadedRelations["projection_ids"]; !ok {
 		log.Panic().Msg("Tried to access Projections relation of AgendaItem which was not loaded.")
 	}
@@ -62,7 +54,7 @@ func (m *AgendaItem) Projections() []Projection {
 	return m.projections
 }
 
-func (m *AgendaItem) Tags() []Tag {
+func (m *AgendaItem) Tags() []*Tag {
 	if _, ok := m.loadedRelations["tag_ids"]; !ok {
 		log.Panic().Msg("Tried to access Tags relation of AgendaItem which was not loaded.")
 	}
@@ -70,7 +62,7 @@ func (m *AgendaItem) Tags() []Tag {
 	return m.tags
 }
 
-func (m *AgendaItem) Childs() []AgendaItem {
+func (m *AgendaItem) Childs() []*AgendaItem {
 	if _, ok := m.loadedRelations["child_ids"]; !ok {
 		log.Panic().Msg("Tried to access Childs relation of AgendaItem which was not loaded.")
 	}
@@ -78,19 +70,27 @@ func (m *AgendaItem) Childs() []AgendaItem {
 	return m.childs
 }
 
+func (m *AgendaItem) Meeting() Meeting {
+	if _, ok := m.loadedRelations["meeting_id"]; !ok {
+		log.Panic().Msg("Tried to access Meeting relation of AgendaItem which was not loaded.")
+	}
+
+	return *m.meeting
+}
+
 func (m *AgendaItem) SetRelated(field string, content interface{}) {
 	if content != nil {
 		switch field {
-		case "meeting_id":
-			m.meeting = content.(*Meeting)
 		case "parent_id":
 			m.parent = content.(*AgendaItem)
 		case "projection_ids":
-			m.projections = content.([]Projection)
+			m.projections = content.([]*Projection)
 		case "tag_ids":
-			m.tags = content.([]Tag)
+			m.tags = content.([]*Tag)
 		case "child_ids":
-			m.childs = content.([]AgendaItem)
+			m.childs = content.([]*AgendaItem)
+		case "meeting_id":
+			m.meeting = content.(*Meeting)
 		default:
 			return
 		}
@@ -102,42 +102,68 @@ func (m *AgendaItem) SetRelated(field string, content interface{}) {
 	m.loadedRelations[field] = struct{}{}
 }
 
-func (m *AgendaItem) SetRelatedJSON(field string, content []byte) error {
+func (m *AgendaItem) SetRelatedJSON(field string, content []byte) (*RelatedModelsAccessor, error) {
+	var result *RelatedModelsAccessor
 	switch field {
-	case "meeting_id":
-		err := json.Unmarshal(content, &m.meeting)
-		if err != nil {
-			return err
-		}
 	case "parent_id":
-		err := json.Unmarshal(content, &m.parent)
+		var entry AgendaItem
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.parent = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	case "projection_ids":
-		err := json.Unmarshal(content, &m.projections)
+		var entry Projection
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.projections = append(m.projections, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "tag_ids":
-		err := json.Unmarshal(content, &m.tags)
+		var entry Tag
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.tags = append(m.tags, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
 	case "child_ids":
-		err := json.Unmarshal(content, &m.childs)
+		var entry AgendaItem
+		err := json.Unmarshal(content, &entry)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		m.childs = append(m.childs, &entry)
+
+		result = entry.GetRelatedModelsAccessor()
+	case "meeting_id":
+		var entry Meeting
+		err := json.Unmarshal(content, &entry)
+		if err != nil {
+			return nil, err
+		}
+
+		m.meeting = &entry
+
+		result = entry.GetRelatedModelsAccessor()
 	default:
-		return fmt.Errorf("set related field json on not existing field")
+		return nil, fmt.Errorf("set related field json on not existing field")
 	}
 
 	if m.loadedRelations == nil {
 		m.loadedRelations = map[string]struct{}{}
 	}
 	m.loadedRelations[field] = struct{}{}
-	return nil
+	return result, nil
 }
 
 func (m *AgendaItem) Get(field string) interface{} {
@@ -183,9 +209,6 @@ func (m *AgendaItem) Get(field string) interface{} {
 
 func (m *AgendaItem) GetFqids(field string) []string {
 	switch field {
-	case "meeting_id":
-		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
-
 	case "parent_id":
 		if m.ParentID != nil {
 			return []string{"agenda_item/" + strconv.Itoa(*m.ParentID)}
@@ -211,6 +234,9 @@ func (m *AgendaItem) GetFqids(field string) []string {
 			r[i] = "agenda_item/" + strconv.Itoa(id)
 		}
 		return r
+
+	case "meeting_id":
+		return []string{"meeting/" + strconv.Itoa(m.MeetingID)}
 	}
 	return []string{}
 }
@@ -336,4 +362,12 @@ func (m *AgendaItem) Update(data map[string]string) error {
 	}
 
 	return nil
+}
+
+func (m *AgendaItem) GetRelatedModelsAccessor() *RelatedModelsAccessor {
+	return &RelatedModelsAccessor{
+		m.GetFqids,
+		m.SetRelated,
+		m.SetRelatedJSON,
+	}
 }
