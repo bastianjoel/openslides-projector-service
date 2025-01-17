@@ -1,3 +1,5 @@
+@import "fonts.css";
+
 :root {
   --projector-color: #000000;
   --projector-background-color: #FFFFFF;
@@ -15,6 +17,7 @@ body {
   margin: 0;
   background-color: var(--projector-background-color);
   color: var(--projector-color);
+  font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
 
 .header-footer {
@@ -30,6 +33,36 @@ body {
   background-size: 100% 100%;
 }
 
+#eventdata {
+  padding-left: 50px;
+  padding-top: 12px;
+  padding-right: 130px;
+  height: 50px;
+  overflow: hidden;
+  line-height: 1.1;
+}
+
+#eventdata .event-name {
+  font-size: 26px;
+  font-weight: 400;
+}
+
+#eventdata .event-description {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.slide {
+  display: flex;
+  justify-content: center;
+}
+
+#slides .slide > .content {
+  width: calc(100% - 100px);
+  line-height: 1.5;
+  margin-top: 20px;
+}
+
 #footer {
   position: fixed;
   width: 100%;
@@ -40,6 +73,11 @@ body {
 
 h1 {
   color: var(--projector-header-h1-color);
+  font-size: 1.8em;
+  font-weight: 500;
+  line-height: 1.1em;
+  margin: 0;
+  padding-bottom: 10px;
 }
 
 #projector-page {
@@ -71,4 +109,7 @@ h1 {
   width: calc(var(--projector-width) * 1px);
   height: calc(var(--projector-height) * 1px);
   transform: scale(calc(var(--projector-container-width) / var(--projector-width)));
+
+  font-size: 22px;
+  line-height: 24px;
 }

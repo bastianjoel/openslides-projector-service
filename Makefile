@@ -17,7 +17,7 @@ gofmt:
 	gofmt -l -s -w .
 
 build-web-assets:
-	esbuild web/projector.js web/projector.css web/slide/*.css web/slide/*.js --outdir=static/ --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
+	esbuild web/projector.js web/projector.css web/slide/*.css web/slide/*.js --outdir=static/ --external:*.woff --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
 
 build-watch-web-assets:
-	esbuild web/projector.js web/projector.css web/slide/*.css web/slide/*.js --outdir=static/ --watch --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
+	esbuild web/projector.js web/projector.css web/slide/*.css web/slide/*.js --outdir=static/ --external:*.woff --watch --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16
