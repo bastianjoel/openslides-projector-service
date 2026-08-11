@@ -2,9 +2,10 @@ package viewmodels
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/OpenSlides/openslides-go/datastore/dsmodels"
-	"github.com/rs/zerolog/log"
 	"github.com/shopspring/decimal"
 )
 
@@ -19,10 +20,9 @@ func Poll_ShouldShowChart(poll dsmodels.Poll) bool {
 	return false
 }
 
+/*
 func Poll_OneHundredPercentBase(poll dsmodels.Poll, option *dsmodels.PollOption) decimal.Decimal {
 	switch config := poll.Config.(type) {
-	case *dsmodels.PollConfigApproval:
-		return Poll_OneHundredPercentBaseApproval(poll, config)
 	case *dsmodels.PollConfigRatingApproval:
 		return Poll_OneHundredPercentBaseRatingApproval(poll, config, option)
 	case *dsmodels.PollConfigRatingScore:
@@ -33,27 +33,7 @@ func Poll_OneHundredPercentBase(poll dsmodels.Poll, option *dsmodels.PollOption)
 
 	return decimal.Decimal{}
 }
-
-func Poll_OneHundredPercentBaseApproval(poll dsmodels.Poll, config *dsmodels.PollConfigApproval) decimal.Decimal {
-	var result PollResultApproval
-
-	err := json.Unmarshal([]byte(poll.Result), &result)
-	if err != nil {
-		log.Err(err).Msg("could not parse a poll result")
-		return decimal.Decimal{}
-	}
-
-	switch config.OnehundredPercentBase {
-	case "yes_no":
-		return result.Yes.Add(result.No)
-	case "valid":
-		return result.Yes.Add(result.No).Add(result.Abstain)
-	case "cast":
-		return decimal.NewFromInt(int64(result.TotalBallots))
-	}
-
-	return decimal.Decimal{}
-}
+*/
 
 func Poll_OneHundredPercentBaseSelection(poll dsmodels.Poll, config *dsmodels.PollConfigSelection) decimal.Decimal {
 	return decimal.Decimal{}
@@ -67,6 +47,12 @@ func Poll_OneHundredPercentBaseRatingScore(poll dsmodels.Poll, config *dsmodels.
 	return decimal.Decimal{}
 }
 
+type PollResult interface {
+	VotesInvalid() int64
+	VotesValid() int64
+	VotesCast() int64
+}
+
 type PollResultApproval struct {
 	Yes          decimal.Decimal `json:"yes"`
 	No           decimal.Decimal `json:"no"`
@@ -75,12 +61,88 @@ type PollResultApproval struct {
 	TotalBallots int             `json:"total_ballots"`
 }
 
+func (r *PollResultApproval) VotesInvalid() int64 {
+	return int64(r.Invalid)
+}
+
+func (r *PollResultApproval) VotesValid() int64 {
+	return int64(r.TotalBallots - r.Invalid)
+}
+
+func (r *PollResultApproval) VotesCast() int64 {
+	return int64(r.TotalBallots)
+}
+
+func (r *PollResultApproval) OneHundredPercentBase(config *dsmodels.PollConfigApproval) decimal.Decimal {
+	switch config.OnehundredPercentBase {
+	case "yes_no":
+		return r.Yes.Add(r.No)
+	case "valid":
+		return r.Yes.Add(r.No).Add(r.Abstain)
+	}
+
+	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
+}
+
 type PollResultSelection struct {
-	Options      map[string]decimal.Decimal `json:",inline"`
+	Options      map[string]decimal.Decimal `json:"-"`
 	Nota         decimal.Decimal            `json:"nota"`
 	Abstain      decimal.Decimal            `json:"abstain"`
 	Invalid      int                        `json:"invalid"`
 	TotalBallots int                        `json:"total_ballots"`
+}
+
+func (p *PollResultSelection) UnmarshalJSON(data []byte) error {
+	type PollResultSelection_ PollResultSelection
+
+	var aux PollResultSelection_
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return fmt.Errorf("decode PollResultSelection: %w", err)
+	}
+	*p = PollResultSelection(aux)
+
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return fmt.Errorf("decode PollResultSelection raw map: %w", err)
+	}
+
+	delete(raw, "nota")
+	delete(raw, "abstain")
+	delete(raw, "invalid")
+	delete(raw, "total_ballots")
+
+	p.Options = make(map[string]decimal.Decimal, len(raw))
+	for key, value := range raw {
+		var d decimal.Decimal
+		if err := json.Unmarshal(value, &d); err != nil {
+			return fmt.Errorf("decode PollResultSelection option %q: %w", key, err)
+		}
+		p.Options[key] = d
+	}
+
+	return nil
+}
+
+func (r *PollResultSelection) VotesInvalid() int64 {
+	return int64(r.Invalid)
+}
+
+func (r *PollResultSelection) VotesValid() int64 {
+	return int64(r.TotalBallots - r.Invalid)
+}
+
+func (r *PollResultSelection) VotesCast() int64 {
+	return int64(r.TotalBallots)
+}
+
+func (r *PollResultSelection) OneHundredPercentBase(config *dsmodels.PollConfigSelection) decimal.Decimal {
+	// TODO: Add missing bases
+	switch config.OnehundredPercentBase {
+	case "no_general":
+	case "valid":
+	}
+
+	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
 }
 
 type PollResultRatingScore struct {
@@ -88,6 +150,56 @@ type PollResultRatingScore struct {
 	Abstain      decimal.Decimal            `json:"abstain"`
 	Invalid      int                        `json:"invalid"`
 	TotalBallots int                        `json:"total_ballots"`
+}
+
+func (p *PollResultRatingScore) UnmarshalJSON(data []byte) error {
+	type PollResultRatingScore_ PollResultRatingScore
+
+	var aux PollResultRatingScore_
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return fmt.Errorf("decode PollResultRatingScore: %w", err)
+	}
+	*p = PollResultRatingScore(aux)
+
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return fmt.Errorf("decode PollResultRatingScore raw map: %w", err)
+	}
+
+	delete(raw, "abstain")
+	delete(raw, "invalid")
+	delete(raw, "total_ballots")
+
+	p.Options = make(map[string]decimal.Decimal, len(raw))
+	for key, value := range raw {
+		var d decimal.Decimal
+		if err := json.Unmarshal(value, &d); err != nil {
+			return fmt.Errorf("decode PollResultRatingScore option %q: %w", key, err)
+		}
+		p.Options[key] = d
+	}
+
+	return nil
+}
+
+func (r *PollResultRatingScore) VotesInvalid() int64 {
+	return int64(r.Invalid)
+}
+
+func (r *PollResultRatingScore) VotesValid() int64 {
+	return int64(r.TotalBallots - r.Invalid)
+}
+
+func (r *PollResultRatingScore) VotesCast() int64 {
+	return int64(r.TotalBallots)
+}
+
+func (r *PollResultRatingScore) OneHundredPercentBase(config *dsmodels.PollConfigRatingScore) decimal.Decimal {
+	// TODO: Add missing bases
+	switch config.OnehundredPercentBase {
+	}
+
+	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
 }
 
 type PollResultRatingApprovalOption struct {
@@ -101,6 +213,76 @@ type PollResultRatingApproval struct {
 	Abstain      decimal.Decimal                           `json:"abstain"`
 	Invalid      int                                       `json:"invalid"`
 	TotalBallots int                                       `json:"total_ballots"`
+}
+
+func (p *PollResultRatingApproval) UnmarshalJSON(data []byte) error {
+	type PollResultRatingApproval_ PollResultRatingApproval
+
+	var aux PollResultRatingApproval_
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return fmt.Errorf("decode PollResultRatingApproval: %w", err)
+	}
+	*p = PollResultRatingApproval(aux)
+
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return fmt.Errorf("decode PollResultRatingApproval raw map: %w", err)
+	}
+
+	delete(raw, "abstain")
+	delete(raw, "invalid")
+	delete(raw, "total_ballots")
+
+	p.Options = make(map[string]PollResultRatingApprovalOption, len(raw))
+	for key, value := range raw {
+		var opt PollResultRatingApprovalOption
+		if err := json.Unmarshal(value, &opt); err != nil {
+			return fmt.Errorf("decode PollResultRatingApproval option %q: %w", key, err)
+		}
+		p.Options[key] = opt
+	}
+
+	return nil
+}
+
+func (r *PollResultRatingApproval) VotesInvalid() int64 {
+	return int64(r.Invalid)
+}
+
+func (r *PollResultRatingApproval) VotesValid() int64 {
+	return int64(r.TotalBallots - r.Invalid)
+}
+
+func (r *PollResultRatingApproval) VotesCast() int64 {
+	return int64(r.TotalBallots)
+}
+
+func (r *PollResultRatingApproval) OneHundredPercentBase(config *dsmodels.PollConfigRatingApproval, option *dsmodels.PollOption) decimal.Decimal {
+	if option == nil {
+		return decimal.Decimal{}
+	}
+
+	// TODO: Add missing bases
+	opt := r.Options[strconv.Itoa(option.ID)]
+	switch config.OnehundredPercentBase {
+	case "yes_no":
+		return opt.Yes.Add(opt.No)
+	case "valid":
+		return opt.Yes.Add(opt.No).Add(opt.Abstain)
+	}
+
+	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
+}
+
+func genericOnehundredPercentBase(r PollResult, base string) decimal.Decimal {
+	switch base {
+	case "cast":
+		return decimal.NewFromInt(r.VotesCast())
+	case "valid":
+		return decimal.NewFromInt(r.VotesValid())
+	}
+
+	return decimal.Decimal{}
 }
 
 /*
