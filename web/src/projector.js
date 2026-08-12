@@ -113,7 +113,7 @@ export function Projector(host, id, auth = () => ``, config = {}) {
 
       for (let prop in cssProperties) {
         if (cssProperties[prop] !== undefined) {
-          projectorContainer.style.setProperty(prop, cssProperties[prop]);
+          projectorContainer?.style.setProperty(prop, cssProperties[prop]);
         }
       }
 
