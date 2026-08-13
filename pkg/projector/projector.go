@@ -162,7 +162,7 @@ func (p *projector) initProjector(ctx context.Context) {
 			if updateCnt >= len(p.projector.CurrentProjectionIDs) {
 				break
 			}
-		} else if len(p.projector.CurrentProjectionIDs) == 0 {
+		} else if event.Event == "projector-replace" && len(p.projector.CurrentProjectionIDs) == 0 {
 			break
 		}
 	}
