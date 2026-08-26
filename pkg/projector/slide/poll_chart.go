@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"strings"
 
 	"github.com/OpenSlides/openslides-go/datastore/dsmodels"
+	"github.com/OpenSlides/openslides-go/datastore/dstypes"
 	"github.com/OpenSlides/openslides-projector-service/pkg/viewmodels"
 	"github.com/shopspring/decimal"
 )
@@ -63,9 +63,8 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 			Icon:       "check_circle",
 			Name:       req.Locale.Get("Yes"),
 			TotalVotes: result.Yes,
-			DisplayPerc: strings.Contains(config.OnehundredPercentBase, "Y") &&
-				config.OnehundredPercentBase != "cast" &&
-				config.OnehundredPercentBase != "valid",
+			DisplayPerc: config.OnehundredPercentBase == dstypes.ApprovalOnehundredPercentBasesYesNo ||
+				config.OnehundredPercentBase == dstypes.ApprovalOnehundredPercentBasesValid,
 		})
 
 		data.Options = append(data.Options, pollSlideProjectionOptionData{
@@ -74,21 +73,18 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 			Icon:       "cancel",
 			Name:       req.Locale.Get("No"),
 			TotalVotes: result.No,
-			DisplayPerc: strings.Contains(config.OnehundredPercentBase, "N") &&
-				config.OnehundredPercentBase != "cast" &&
-				config.OnehundredPercentBase != "valid",
+			DisplayPerc: config.OnehundredPercentBase == dstypes.ApprovalOnehundredPercentBasesYesNo ||
+				config.OnehundredPercentBase == dstypes.ApprovalOnehundredPercentBasesValid,
 		})
 
 		if config.AllowAbstain {
 			data.Options = append(data.Options, pollSlideProjectionOptionData{
-				Type:       'A',
-				Color:      "--theme-abstain",
-				Icon:       "circle",
-				Name:       req.Locale.Get("Abstain"),
-				TotalVotes: result.Abstain,
-				DisplayPerc: strings.Contains(config.OnehundredPercentBase, "A") &&
-					config.OnehundredPercentBase != "cast" &&
-					config.OnehundredPercentBase != "valid",
+				Type:        'A',
+				Color:       "--theme-abstain",
+				Icon:        "circle",
+				Name:        req.Locale.Get("Abstain"),
+				TotalVotes:  result.Abstain,
+				DisplayPerc: config.OnehundredPercentBase == dstypes.ApprovalOnehundredPercentBasesValid,
 			})
 		}
 

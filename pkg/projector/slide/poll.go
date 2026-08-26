@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/OpenSlides/openslides-go/datastore/dstypes"
 	"github.com/OpenSlides/openslides-projector-service/pkg/viewmodels"
 )
 
@@ -22,7 +23,7 @@ func PollSlideHandler(ctx context.Context, req *projectionRequest) (map[string]a
 		}
 	}
 
-	var pollState string
+	var pollState dstypes.Poll_State
 	var pollPublished bool
 	var pollTitle string
 	var pollLiveVotingEnabled bool

@@ -81,7 +81,7 @@ func (r *PollResultApproval) OneHundredPercentBase(config *dsmodels.PollConfigAp
 		return r.Yes.Add(r.No).Add(r.Abstain)
 	}
 
-	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
+	return genericOnehundredPercentBase(r, string(config.OnehundredPercentBase))
 }
 
 type PollResultSelection struct {
@@ -142,7 +142,7 @@ func (r *PollResultSelection) OneHundredPercentBase(config *dsmodels.PollConfigS
 	case "valid":
 	}
 
-	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
+	return genericOnehundredPercentBase(r, string(config.OnehundredPercentBase))
 }
 
 type PollResultRatingScore struct {
@@ -199,7 +199,7 @@ func (r *PollResultRatingScore) OneHundredPercentBase(config *dsmodels.PollConfi
 	switch config.OnehundredPercentBase {
 	}
 
-	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
+	return genericOnehundredPercentBase(r, string(config.OnehundredPercentBase))
 }
 
 type PollResultRatingApprovalOption struct {
@@ -271,7 +271,7 @@ func (r *PollResultRatingApproval) OneHundredPercentBase(config *dsmodels.PollCo
 		return opt.Yes.Add(opt.No).Add(opt.Abstain)
 	}
 
-	return genericOnehundredPercentBase(r, config.OnehundredPercentBase)
+	return genericOnehundredPercentBase(r, string(config.OnehundredPercentBase))
 }
 
 func genericOnehundredPercentBase(r PollResult, base string) decimal.Decimal {
@@ -300,7 +300,7 @@ func Poll_EntitledUsers(poll dsmodels.Poll) (EntitledUsersAtStop, error) {
 	return users, nil
 }
 
-func Poll_EntitledUserIDsSorted(poll dsmodels.Poll, nameOrderSetting string) []int {
+func Poll_EntitledUserIDsSorted(poll dsmodels.Poll, nameOrderSetting dstypes.Meeting_MotionPollProjectionNameOrderFirst) []int {
 	entitledUserIDsMap := map[int]struct{}{}
 	meetingUserMap := make(map[int]dsmodels.MeetingUser)
 
