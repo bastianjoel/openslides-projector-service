@@ -3,7 +3,7 @@ module github.com/OpenSlides/openslides-projector-service
 go 1.26.0
 
 require (
-	github.com/OpenSlides/openslides-go v0.0.0-20260826083532-eeb70e9c1e51
+	github.com/OpenSlides/openslides-go v0.0.0-20260901140746-cbbbb8954786
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/leonelquinteros/gotext v1.7.2
 	github.com/rs/zerolog v1.35.1
