@@ -12,8 +12,8 @@ import (
 func Option_OptionLabel(ctx context.Context, fetch *dsmodels.Fetch, locale *i18n.ProjectorLocale, option *dsmodels.PollOption) (string, error) {
 	if option.Text != "" {
 		return option.Text, nil
-	} else if muID, isSet := option.MeetingUserID.Value(); isSet {
-		muQ := fetch.MeetingUser(muID)
+	} else if mu, ok := option.ContentObject.(*dsmodels.MeetingUser); ok {
+		muQ := fetch.MeetingUser(mu.ID)
 		mu, err := muQ.Preload(muQ.User()).Preload(muQ.StructureLevelList()).First(ctx)
 		if err != nil {
 			return "", fmt.Errorf("could not fetch poll option meeting user: %w", err)

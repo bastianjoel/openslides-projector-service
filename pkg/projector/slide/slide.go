@@ -43,8 +43,8 @@ func New(ctx context.Context, db *database.Datastore, locale *i18n.ProjectorLoca
 	routes["agenda_item_list"] = AgendaItemListSlideHandler
 	routes["assignment"] = AssignmentSlideHandler
 	routes["current_los"] = ListOfSpeakersSlideHandler
+	routes["current_speaker"] = CurrentSpeakerSlideHandler
 	routes["current_speaker_chyron"] = CurrentSpeakerChyronSlideHandler
-	routes["current_speaking_structure_level"] = CurrentSpeakingStructureLevelSlideHandler
 	routes["current_structure_level_list"] = CurrentStructureLevelListSlideHandler
 	routes["home"] = HomeSlideHandler
 	routes["list_of_speakers"] = ListOfSpeakersSlideHandler

@@ -36,7 +36,7 @@ type pollSlideChartProjectionData struct {
 func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[string]any, error) {
 	pollID := *req.ContentObjectID
 	pQ := req.Fetch.Poll(pollID)
-	poll, err := req.Fetch.Poll(pollID).Preload(pQ.OptionList().MeetingUser().User()).Preload(pQ.Config()).First(ctx)
+	poll, err := req.Fetch.Poll(pollID).Preload(pQ.OptionList()).Preload(pQ.Config()).First(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not load poll %w", err)
 	}
