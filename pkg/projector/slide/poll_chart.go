@@ -38,7 +38,7 @@ type pollSlideChartProjectionData struct {
 func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[string]any, error) {
 	pollID := *req.ContentObjectID
 	pQ := req.Fetch.Poll(pollID)
-	poll, err := req.Fetch.Poll(pollID).Preload(pQ.OptionList()).Preload(pQ.Config()).First(ctx)
+	poll, err := req.Fetch.Poll(pollID).Preload(pQ.OptionList().ContentObject()).Preload(pQ.Config()).First(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not load poll %w", err)
 	}
@@ -108,9 +108,14 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 		onehundredPercentBase = result.OneHundredPercentBase(config)
 
 		for _, option := range poll.OptionList {
+			optionLabel, err := viewmodels.Option_OptionLabel(ctx, req.Fetch, req.Locale, &option)
+			if err != nil {
+				return nil, fmt.Errorf("parsing option label: %w", err)
+			}
+
 			data.Options = append(data.Options, pollSlideProjectionOptionData{
 				Icon:        "circle",
-				Name:        option.Text,
+				Name:        optionLabel,
 				TotalVotes:  result.Options[strconv.Itoa(option.ID)],
 				DisplayPerc: true,
 			})
