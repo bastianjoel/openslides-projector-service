@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"slices"
+	"strconv"
 
 	"github.com/OpenSlides/openslides-go/datastore/dsmodels"
 	"github.com/OpenSlides/openslides-go/datastore/dstypes"
@@ -99,61 +101,54 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 		if err := json.Unmarshal([]byte(poll.Result), &result); err != nil {
 			return nil, fmt.Errorf("parse approval poll result %w", err)
 		}
-	default:
-		return nil, fmt.Errorf("chart slide not implemented for this config type: %w", err)
-	}
 
-	/*
-		onehundredPercentBase := viewmodels.Poll_OneHundredPercentBase(poll, nil)
-		if len(poll.OptionList) == 1 {
-			opt := poll.OptionList[0]
+		config := poll.Config.(*dsmodels.PollConfigSelection)
+		onehundredPercentBase := result.OneHundredPercentBase(config)
 
-			optTitle, err := viewmodels.Option_OptionLabel(ctx, req.Fetch, req.Locale, &opt, nil)
-			if err != nil {
-				return nil, fmt.Errorf("could not load poll option name: %w", err)
-			}
-
-			data.ResultTitle = optTitle
-		} else {
-			for _, opt := range poll.OptionList {
-				data.Options = append(data.Options, pollSlideProjectionOptionData{
-					Icon:        "circle",
-					Name:        opt.Text,
-					TotalVotes:  opt.Yes,
-					DisplayPerc: true,
-				})
-			}
-
-			slices.SortStableFunc(data.Options, func(a pollSlideProjectionOptionData, b pollSlideProjectionOptionData) int {
-				return b.TotalVotes.Cmp(a.TotalVotes)
+		for _, option := range poll.OptionList {
+			data.Options = append(data.Options, pollSlideProjectionOptionData{
+				Icon:        "circle",
+				Name:        option.Text,
+				TotalVotes:  result.Options[strconv.Itoa(option.ID)],
+				DisplayPerc: true,
 			})
 		}
 
-		if poll.GlobalOption != nil && !poll.GlobalOption.Null() {
-			globalOption, _ := poll.GlobalOption.Value()
-			if poll.GlobalYes && poll.Pollmethod != "N" {
+		slices.SortStableFunc(data.Options, func(a pollSlideProjectionOptionData, b pollSlideProjectionOptionData) int {
+			return b.TotalVotes.Cmp(a.TotalVotes)
+		})
+
+		if config.AllowNota {
+			if config.StrikeOut {
 				data.Options = append(data.Options, pollSlideProjectionOptionData{
 					Name:         req.Locale.Get("General approval"),
-					TotalVotes:   globalOption.Yes,
+					TotalVotes:   result.Nota,
 					GlobalOption: true,
 				})
-			}
-			if poll.GlobalNo {
+			} else {
 				data.Options = append(data.Options, pollSlideProjectionOptionData{
 					Name:         req.Locale.Get("General rejection"),
-					TotalVotes:   globalOption.No,
-					GlobalOption: true,
-				})
-			}
-			if poll.GlobalAbstain {
-				data.Options = append(data.Options, pollSlideProjectionOptionData{
-					Name:         req.Locale.Get("General abstain"),
-					TotalVotes:   globalOption.Abstain,
+					TotalVotes:   result.Nota,
 					GlobalOption: true,
 				})
 			}
 		}
-	*/
+
+		if config.MinOptionsAmount == 0 {
+			data.Options = append(data.Options, pollSlideProjectionOptionData{
+				Name:         req.Locale.Get("General abstain"),
+				TotalVotes:   result.Abstain,
+				GlobalOption: true,
+			})
+		}
+
+		data.TotalValidvotes = decimal.NewFromInt(int64(result.TotalBallots - result.Invalid))
+		if !onehundredPercentBase.IsZero() {
+			data.PercValidvotes = data.TotalValidvotes.Div(onehundredPercentBase).Mul(decimal.NewFromInt(100)).Round(3).String()
+		}
+	default:
+		return nil, fmt.Errorf("chart slide not implemented for this config type: %w", err)
+	}
 
 	type chartDataEntry struct {
 		Color string  `json:"color,omitempty"`
@@ -162,11 +157,11 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 
 	chartData := []chartDataEntry{}
 	for _, option := range data.Options {
-		/*
-			if context.OnehundredPercentBase == "YN" && option.Type == 'A' {
-				continue
-			}
-		*/
+		if option.GlobalOption {
+			continue
+		}
+
+		// TODO:Hide abstain from chart for `yes_no` 100%-base
 
 		chartData = append(chartData, chartDataEntry{
 			Color: string(option.Color),
