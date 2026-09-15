@@ -51,6 +51,8 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 		Options: []pollSlideProjectionOptionData{},
 	}
 
+	var onehundredPercentBase decimal.Decimal
+
 	switch poll.Config.(type) {
 	case *dsmodels.PollConfigApproval:
 		var result viewmodels.PollResultApproval
@@ -90,7 +92,7 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 			})
 		}
 
-		onehundredPercentBase := result.OneHundredPercentBase(config)
+		onehundredPercentBase = result.OneHundredPercentBase(config)
 
 		data.TotalValidvotes = decimal.NewFromInt(int64(result.TotalBallots - result.Invalid))
 		if !onehundredPercentBase.IsZero() && config.OnehundredPercentBase != "yes_no" && config.OnehundredPercentBase != "yes_no_abstain" {
@@ -103,7 +105,7 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 		}
 
 		config := poll.Config.(*dsmodels.PollConfigSelection)
-		onehundredPercentBase := result.OneHundredPercentBase(config)
+		onehundredPercentBase = result.OneHundredPercentBase(config)
 
 		for _, option := range poll.OptionList {
 			data.Options = append(data.Options, pollSlideProjectionOptionData{
@@ -156,7 +158,7 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 	}
 
 	chartData := []chartDataEntry{}
-	for _, option := range data.Options {
+	for i, option := range data.Options {
 		if option.GlobalOption {
 			continue
 		}
@@ -168,11 +170,9 @@ func pollChartSlideHandler(ctx context.Context, req *projectionRequest) (map[str
 			Val:   option.TotalVotes.InexactFloat64(),
 		})
 
-		/*
-			if !onehundredPercentBase.IsZero() && option.DisplayPerc {
-				data.Options[i].PercVotes = option.TotalVotes.Div(onehundredPercentBase).Mul(decimal.NewFromInt(100)).Round(3).String()
-			}
-		*/
+		if !onehundredPercentBase.IsZero() && option.DisplayPerc {
+			data.Options[i].PercVotes = option.TotalVotes.Div(onehundredPercentBase).Mul(decimal.NewFromInt(100)).Round(3).String()
+		}
 	}
 
 	chartDataJSON, err := json.Marshal(chartData)
