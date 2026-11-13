@@ -36,6 +36,7 @@ type PollResultApproval struct {
 	Yes                  decimal.Decimal `json:"yes"`
 	No                   decimal.Decimal `json:"no"`
 	Abstain              decimal.Decimal `json:"abstain"`
+	Valid                int                        `json:"valid"`
 	Invalid              int             `json:"invalid"`
 	TotalBallots         int             `json:"total_ballots"`
 	EntitledUsers        int             `json:"entitled_users"`
@@ -92,6 +93,7 @@ type PollResultSelection struct {
 	Nota                 decimal.Decimal            `json:"nota"`
 	Abstain              decimal.Decimal            `json:"abstain"`
 	Empty                decimal.Decimal            `json:"empty"`
+	Valid                int                        `json:"valid"`
 	Invalid              int                        `json:"invalid"`
 	TotalBallots         int                        `json:"total_ballots"`
 	EntitledUsers        int                        `json:"entitled_users"`
@@ -114,6 +116,7 @@ func (p *PollResultSelection) UnmarshalJSON(data []byte) error {
 
 	delete(raw, "nota")
 	delete(raw, "abstain")
+	delete(raw, "valid")
 	delete(raw, "invalid")
 	delete(raw, "total_ballots")
 	delete(raw, "entitled_users")
@@ -198,6 +201,7 @@ func (r *PollResultSelection) OneHundredPercentBase(config *dsmodels.PollConfigS
 type PollResultRatingScore struct {
 	Options              map[string]decimal.Decimal `json:",inline"`
 	Abstain              decimal.Decimal            `json:"abstain"`
+	Valid                int                        `json:"valid"`
 	Invalid              int                        `json:"invalid"`
 	Empty                int                        `json:"empty"`
 	TotalBallots         int                        `json:"total_ballots"`
@@ -220,6 +224,7 @@ func (p *PollResultRatingScore) UnmarshalJSON(data []byte) error {
 	}
 
 	delete(raw, "abstain")
+	delete(raw, "valid")
 	delete(raw, "invalid")
 	delete(raw, "total_ballots")
 	delete(raw, "entitled_users")
@@ -297,6 +302,7 @@ type PollResultRatingApprovalOption struct {
 type PollResultRatingApproval struct {
 	Options              map[string]PollResultRatingApprovalOption `json:",inline"`
 	Abstain              decimal.Decimal                           `json:"abstain"`
+	Valid                int                        `json:"valid"`
 	Invalid              int                                       `json:"invalid"`
 	Empty                int                                       `json:"empty"`
 	TotalBallots         int                                       `json:"total_ballots"`
@@ -319,6 +325,7 @@ func (p *PollResultRatingApproval) UnmarshalJSON(data []byte) error {
 	}
 
 	delete(raw, "abstain")
+	delete(raw, "valid")
 	delete(raw, "invalid")
 	delete(raw, "total_ballots")
 	delete(raw, "entitled_users")
